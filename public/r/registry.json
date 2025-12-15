@@ -4,19 +4,6 @@
   "homepage": "https://acme.com",
   "items": [
     {
-      "name": "hello-world",
-      "type": "registry:component",
-      "title": "Hello World",
-      "description": "A simple hello world component",
-      "registryDependencies": ["button"],
-      "files": [
-        {
-          "path": "registry/new-york/blocks/hello-world/hello-world.tsx",
-          "type": "registry:component"
-        }
-      ]
-    },
-    {
       "name": "example-form",
       "type": "registry:component",
       "title": "Example Form",
@@ -61,18 +48,16 @@
       ]
     },
     {
-      "name": "example-with-css",
+      "name": "prompt-input",
       "type": "registry:component",
-      "title": "Example with CSS",
-      "description": "A login form with a CSS file.",
+      "title": "Prompt Input",
+      "description": "An input component for entering prompts with model selection and status indication.",
+      "registryDependencies": ["button", "input", "select", "spinner", "icon"],
       "files": [
         {
-          "path": "registry/new-york/blocks/example-with-css/example-card.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/new-york/blocks/example-with-css/example-card.css",
-          "type": "registry:component"
+          "path": "registry/new-york/blocks/prompt-input/page.tsx",
+          "type": "registry:page",
+          "target": "app/components/prompt-input/page.tsx"
         }
       ]
     }

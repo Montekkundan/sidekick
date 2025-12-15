@@ -3,6 +3,7 @@ import PokemonPage from "@/registry/new-york/blocks/complex-component/page";
 import { ExampleForm } from "@/registry/new-york/blocks/example-form/example-form";
 import { ExampleCard } from "@/registry/new-york/blocks/example-with-css/example-card";
 import { HelloWorld } from "@/registry/new-york/blocks/hello-world/hello-world";
+import PromptInputExample from "@/registry/new-york/blocks/prompt-input/page";
 // This page displays items from the custom registry.
 // You are free to implement this with your own design as needed.
 
@@ -24,7 +25,7 @@ export default function Home() {
             <OpenInV0Button className="w-fit" name="hello-world" />
           </div>
           <div className="relative flex min-h-[400px] items-center justify-center">
-            <HelloWorld />
+            <PromptInputExample />
           </div>
         </div>
 
@@ -49,18 +50,6 @@ export default function Home() {
           </div>
           <div className="relative flex min-h-[400px] items-center justify-center">
             <PokemonPage />
-          </div>
-        </div>
-
-        <div className="relative flex min-h-[450px] flex-col gap-4 rounded-lg border p-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-muted-foreground text-sm sm:pl-3">
-              A login form with a CSS file.
-            </h2>
-            <OpenInV0Button className="w-fit" name="example-with-css" />
-          </div>
-          <div className="relative flex min-h-[400px] items-center justify-center">
-            <ExampleCard />
           </div>
         </div>
       </main>
