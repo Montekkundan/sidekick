@@ -1,4 +1,4 @@
-import "./example-card.css"
+import "./example-card.css";
 
 export function ExampleCard() {
   return (
@@ -13,32 +13,32 @@ export function ExampleCard() {
             <label htmlFor="field-email">Email</label>
             <input
               id="field-email"
-              type="email"
               placeholder="Enter your email"
               required
+              type="email"
             />
           </div>
           <div className="form-group">
             <label htmlFor="field-password">Password</label>
             <input
               id="field-password"
-              type="password"
               placeholder="Enter your password"
               required
+              type="password"
             />
           </div>
           <div className="form-actions">
-            <button type="submit" className="login-button">
+            <button className="login-button" type="submit">
               Sign In
             </button>
           </div>
           <div className="form-footer">
-            <a href="#" className="forgot-password">
+            <a className="forgot-password" href="#">
               Forgot password?
             </a>
           </div>
         </form>
       </div>
     </div>
-  )
+  );
 }
