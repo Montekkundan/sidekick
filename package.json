@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "check": "ultracite check",
+    "fix": "ultracite fix",
     "registry:build": "shadcn build"
   },
   "dependencies": {
@@ -24,15 +25,14 @@
     "zod": "^4.2.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.3",
+    "@biomejs/biome": "2.3.8",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^25.0.2",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
-    "eslint": "^9.39.2",
-    "eslint-config-next": "16.0.10",
     "tailwindcss": "^4.1.18",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "ultracite": "6.4.1"
   },
   "pnpm": {
     "overrides": {
