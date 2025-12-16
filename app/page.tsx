@@ -1,23 +1,25 @@
-import Link from "next/link";
 import { SparklesIcon } from "lucide-react";
+import Link from "next/link";
 import { OpenInV0Button } from "@/components/open-in-v0-button";
 import PromptInputExample from "@/registry/new-york/blocks/prompt-input/page";
-import SidekickExample from "@/registry/new-york/blocks/sidekick/page";
 import {
-  SidekickProvider,
   SidekickInset,
+  SidekickProvider,
   SidekickTrigger,
 } from "@/registry/new-york/blocks/sidekick";
+import SidekickExample from "@/registry/new-york/blocks/sidekick/page";
 
 export default function Home() {
   return (
     <div className="mx-auto flex min-h-svh max-w-6xl flex-col gap-8 px-4 py-8">
       <header className="flex flex-col gap-1">
         <div className="flex items-center justify-between">
-          <h1 className="font-bold text-3xl tracking-tight">Sidekick Registry</h1>
+          <h1 className="font-bold text-3xl tracking-tight">
+            Sidekick Registry
+          </h1>
           <Link
+            className="rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground text-sm transition-colors hover:bg-primary/90"
             href="/docs"
-            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
           >
             Documentation
           </Link>
@@ -31,17 +33,20 @@ export default function Home() {
         <div className="relative flex flex-col gap-4 rounded-lg border p-4">
           <div className="flex items-center justify-between">
             <h2 className="text-muted-foreground text-sm sm:pl-3">
-              An AI chat sidebar component with conversation history and message bubbles.
+              An AI chat sidebar component with conversation history and message
+              bubbles.
             </h2>
             <OpenInV0Button className="w-fit" name="sidekick" />
           </div>
           <div className="relative h-[600px] w-full overflow-hidden rounded-lg border bg-background">
-            <SidekickProvider defaultOpen={true} className="h-full min-h-0">
+            <SidekickProvider className="h-full min-h-0" defaultOpen={true}>
               <SidekickInset className="bg-muted/30">
                 <div className="flex h-full flex-col items-center justify-center gap-4 p-8">
                   <div className="flex items-center gap-2">
                     <SparklesIcon className="size-6 text-primary" />
-                    <h2 className="font-semibold text-xl">Welcome to Sidekick</h2>
+                    <h2 className="font-semibold text-xl">
+                      Welcome to Sidekick
+                    </h2>
                   </div>
                   <p className="max-w-md text-center text-muted-foreground">
                     Your AI-powered chat assistant. Toggle the panel with{" "}
@@ -56,7 +61,7 @@ export default function Home() {
               <SidekickExample />
             </SidekickProvider>
           </div>
-          <p className="text-center text-sm text-muted-foreground">
+          <p className="text-center text-muted-foreground text-sm">
             A sidebar that toggles open and closed.
           </p>
         </div>

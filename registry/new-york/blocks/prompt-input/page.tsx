@@ -1,6 +1,7 @@
 "use client";
 
-
+import { GlobeIcon } from "lucide-react";
+import { useRef, useState } from "react";
 import {
   PromptInput,
   PromptInputActionAddAttachments,
@@ -22,8 +23,6 @@ import {
 } from "@/registry/new-york/blocks/prompt-input";
 import { Button } from "@/registry/new-york/ui/button";
 import { ButtonGroup } from "@/registry/new-york/ui/button-group";
-import { CheckIcon, GlobeIcon } from "lucide-react";
-import { useRef, useState } from "react";
 
 const models = [
   {

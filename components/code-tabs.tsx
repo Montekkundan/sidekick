@@ -1,26 +1,27 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
-import { useConfig } from "@/hooks/use-config"
-import { Tabs } from "@/registry/new-york/ui/tabs"
+import { useConfig } from "@/hooks/use-config";
+import { Tabs } from "@/registry/new-york/ui/tabs";
 
 export function CodeTabs({ children }: React.ComponentProps<typeof Tabs>) {
-  const [config, setConfig] = useConfig()
+  const [config, setConfig] = useConfig();
 
-  const installationType = React.useMemo(() => {
-    return config.installationType || "cli"
-  }, [config])
+  const installationType = React.useMemo(
+    () => config.installationType || "cli",
+    [config]
+  );
 
   return (
     <Tabs
-      value={installationType}
+      className="relative mt-6 w-full"
       onValueChange={(value) =>
         setConfig({ ...config, installationType: value as "cli" | "manual" })
       }
-      className="relative mt-6 w-full"
+      value={installationType}
     >
       {children}
     </Tabs>
-  )
+  );
 }

@@ -3,10 +3,7 @@
   "name": "prompt-input",
   "title": "Prompt Input",
   "description": "An input component for entering prompts with file attachments, speech recognition, and status indication.",
-  "dependencies": [
-    "nanoid",
-    "ai"
-  ],
+  "dependencies": ["nanoid", "ai"],
   "registryDependencies": [
     "button",
     "input",

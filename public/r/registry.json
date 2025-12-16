@@ -9,7 +9,13 @@
       "title": "Prompt Input",
       "description": "An input component for entering prompts with file attachments, speech recognition, and status indication.",
       "dependencies": ["nanoid", "ai"],
-      "registryDependencies": ["button", "input", "select", "dropdown-menu", "hover-card"],
+      "registryDependencies": [
+        "button",
+        "input",
+        "select",
+        "dropdown-menu",
+        "hover-card"
+      ],
       "files": [
         {
           "path": "registry/new-york/blocks/prompt-input/index.tsx",
@@ -28,7 +34,14 @@
       "title": "Sidekick",
       "description": "An AI chat sidebar component with conversation history, message bubbles, and integrated prompt input.",
       "dependencies": ["nanoid", "ai"],
-      "registryDependencies": ["button", "input", "separator", "sheet", "tooltip", "prompt-input"],
+      "registryDependencies": [
+        "button",
+        "input",
+        "separator",
+        "sheet",
+        "tooltip",
+        "prompt-input"
+      ],
       "files": [
         {
           "path": "registry/new-york/blocks/sidekick/index.tsx",

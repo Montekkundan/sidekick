@@ -1,68 +1,65 @@
-import * as React from "react"
-import Image from "next/image"
-import Link from "next/link"
-
-import { cn } from "@/lib/utils"
-import { Callout } from "@/components/callout"
-import { CodeBlockCommand } from "@/components/code-block-command"
-import { CodeCollapsibleWrapper } from "@/components/code-collapsible-wrapper"
-import { CodeTabs } from "@/components/code-tabs"
-import { ComponentPreview } from "@/components/component-preview"
-import { ComponentSource } from "@/components/component-source"
-import { CopyButton } from "@/components/copy-button"
-import { getIconForLanguageExtension } from "@/components/icons"
+import Image from "next/image";
+import Link from "next/link";
+import type * as React from "react";
+import { Callout } from "@/components/callout";
+import { CodeBlockCommand } from "@/components/code-block-command";
+import { CodeCollapsibleWrapper } from "@/components/code-collapsible-wrapper";
+import { CodeTabs } from "@/components/code-tabs";
+import { ComponentPreview } from "@/components/component-preview";
+import { ComponentSource } from "@/components/component-source";
+import { CopyButton } from "@/components/copy-button";
+import { getIconForLanguageExtension } from "@/components/icons";
+import { cn } from "@/lib/utils";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/registry/new-york/ui/accordion"
+} from "@/registry/new-york/ui/accordion";
 import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from "@/registry/new-york/ui/alert"
-import { AspectRatio } from "@/registry/new-york/ui/aspect-ratio"
-import { Button } from "@/registry/new-york/ui/button"
-import { Kbd } from "@/registry/new-york/ui/kbd"
+} from "@/registry/new-york/ui/alert";
+import { AspectRatio } from "@/registry/new-york/ui/aspect-ratio";
+import { Button } from "@/registry/new-york/ui/button";
+import { Kbd } from "@/registry/new-york/ui/kbd";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/registry/new-york/ui/tabs"
+} from "@/registry/new-york/ui/tabs";
 
 export const mdxComponents = {
   h1: ({ className, ...props }: React.ComponentProps<"h1">) => (
     <h1
       className={cn(
-        "font-heading mt-2 scroll-m-28 text-3xl font-bold tracking-tight",
+        "mt-2 scroll-m-28 font-bold font-heading text-3xl tracking-tight",
         className
       )}
       {...props}
     />
   ),
-  h2: ({ className, ...props }: React.ComponentProps<"h2">) => {
-    return (
-      <h2
-        id={props.children
-          ?.toString()
-          .replace(/ /g, "-")
-          .replace(/'/g, "")
-          .replace(/\?/g, "")
-          .toLowerCase()}
-        className={cn(
-          "font-heading [&+]*:[code]:text-xl mt-10 scroll-m-28 text-xl font-medium tracking-tight first:mt-0 lg:mt-16 [&+.steps]:!mt-0 [&+.steps>h3]:!mt-4 [&+h3]:!mt-6 [&+p]:!mt-4",
-          className
-        )}
-        {...props}
-      />
-    )
-  },
+  h2: ({ className, ...props }: React.ComponentProps<"h2">) => (
+    <h2
+      className={cn(
+        "[&+.steps]:!mt-0 [&+.steps>h3]:!mt-4 [&+h3]:!mt-6 [&+p]:!mt-4 mt-10 scroll-m-28 font-heading font-medium text-xl tracking-tight first:mt-0 lg:mt-16 [&+]*:[code]:text-xl",
+        className
+      )}
+      id={props.children
+        ?.toString()
+        .replace(/ /g, "-")
+        .replace(/'/g, "")
+        .replace(/\?/g, "")
+        .toLowerCase()}
+      {...props}
+    />
+  ),
   h3: ({ className, ...props }: React.ComponentProps<"h3">) => (
     <h3
       className={cn(
-        "font-heading mt-12 scroll-m-28 text-lg font-medium tracking-tight [&+p]:!mt-4 *:[code]:text-xl",
+        "[&+p]:!mt-4 mt-12 scroll-m-28 font-heading font-medium text-lg tracking-tight *:[code]:text-xl",
         className
       )}
       {...props}
@@ -71,7 +68,7 @@ export const mdxComponents = {
   h4: ({ className, ...props }: React.ComponentProps<"h4">) => (
     <h4
       className={cn(
-        "font-heading mt-8 scroll-m-28 text-base font-medium tracking-tight",
+        "mt-8 scroll-m-28 font-heading font-medium text-base tracking-tight",
         className
       )}
       {...props}
@@ -80,7 +77,7 @@ export const mdxComponents = {
   h5: ({ className, ...props }: React.ComponentProps<"h5">) => (
     <h5
       className={cn(
-        "mt-8 scroll-m-28 text-base font-medium tracking-tight",
+        "mt-8 scroll-m-28 font-medium text-base tracking-tight",
         className
       )}
       {...props}
@@ -89,7 +86,7 @@ export const mdxComponents = {
   h6: ({ className, ...props }: React.ComponentProps<"h6">) => (
     <h6
       className={cn(
-        "mt-8 scroll-m-28 text-base font-medium tracking-tight",
+        "mt-8 scroll-m-28 font-medium text-base tracking-tight",
         className
       )}
       {...props}
@@ -126,7 +123,7 @@ export const mdxComponents = {
     />
   ),
   img: ({ className, alt, ...props }: React.ComponentProps<"img">) => (
-    <img className={cn("rounded-md", className)} alt={alt} {...props} />
+    <img alt={alt} className={cn("rounded-md", className)} {...props} />
   ),
   hr: ({ ...props }: React.ComponentProps<"hr">) => (
     <hr className="my-4 md:my-8" {...props} />
@@ -157,28 +154,26 @@ export const mdxComponents = {
   td: ({ className, ...props }: React.ComponentProps<"td">) => (
     <td
       className={cn(
-        "px-4 py-2 text-left whitespace-nowrap [&[align=center]]:text-center [&[align=right]]:text-right",
+        "whitespace-nowrap px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right",
         className
       )}
       {...props}
     />
   ),
-  pre: ({ className, children, ...props }: React.ComponentProps<"pre">) => {
-    return (
-      <pre
-        className={cn(
-          "no-scrollbar min-w-0 overflow-x-auto px-4 py-3.5 outline-none has-[[data-highlighted-line]]:px-0 has-[[data-line-numbers]]:px-0 has-[[data-slot=tabs]]:p-0",
-          className
-        )}
-        {...props}
-      >
-        {children}
-      </pre>
-    )
-  },
-  figure: ({ className, ...props }: React.ComponentProps<"figure">) => {
-    return <figure className={cn(className)} {...props} />
-  },
+  pre: ({ className, children, ...props }: React.ComponentProps<"pre">) => (
+    <pre
+      className={cn(
+        "no-scrollbar min-w-0 overflow-x-auto px-4 py-3.5 outline-none has-[[data-slot=tabs]]:p-0 has-[[data-highlighted-line]]:px-0 has-[[data-line-numbers]]:px-0",
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </pre>
+  ),
+  figure: ({ className, ...props }: React.ComponentProps<"figure">) => (
+    <figure className={cn(className)} {...props} />
+  ),
   figcaption: ({
     className,
     children,
@@ -187,12 +182,12 @@ export const mdxComponents = {
     const iconExtension =
       "data-language" in props && typeof props["data-language"] === "string"
         ? getIconForLanguageExtension(props["data-language"])
-        : null
+        : null;
 
     return (
       <figcaption
         className={cn(
-          "text-code-foreground [&_svg]:text-code-foreground flex items-center gap-2 [&_svg]:size-4 [&_svg]:opacity-70",
+          "flex items-center gap-2 text-code-foreground [&_svg]:size-4 [&_svg]:text-code-foreground [&_svg]:opacity-70",
           className
         )}
         {...props}
@@ -200,7 +195,7 @@ export const mdxComponents = {
         {iconExtension}
         {children}
       </figcaption>
-    )
+    );
   },
   code: ({
     className,
@@ -212,51 +207,51 @@ export const mdxComponents = {
     __bun__,
     ...props
   }: React.ComponentProps<"code"> & {
-    __raw__?: string
-    __src__?: string
-    __npm__?: string
-    __yarn__?: string
-    __pnpm__?: string
-    __bun__?: string
+    __raw__?: string;
+    __src__?: string;
+    __npm__?: string;
+    __yarn__?: string;
+    __pnpm__?: string;
+    __bun__?: string;
   }) => {
     // Inline Code.
     if (typeof props.children === "string") {
       return (
         <code
           className={cn(
-            "bg-muted relative rounded-md px-[0.3rem] py-[0.2rem] font-mono text-[0.8rem] break-words outline-none",
+            "relative break-words rounded-md bg-muted px-[0.3rem] py-[0.2rem] font-mono text-[0.8rem] outline-none",
             className
           )}
           {...props}
         />
-      )
+      );
     }
 
     // npm command.
-    const isNpmCommand = __npm__ && __yarn__ && __pnpm__ && __bun__
+    const isNpmCommand = __npm__ && __yarn__ && __pnpm__ && __bun__;
     if (isNpmCommand) {
       return (
         <CodeBlockCommand
-          __npm__={__npm__}
-          __yarn__={__yarn__}
-          __pnpm__={__pnpm__}
           __bun__={__bun__}
+          __npm__={__npm__}
+          __pnpm__={__pnpm__}
+          __yarn__={__yarn__}
         />
-      )
+      );
     }
 
     // Default codeblock.
     return (
       <>
-        {__raw__ && <CopyButton value={__raw__} src={__src__} />}
+        {__raw__ && <CopyButton src={__src__} value={__raw__} />}
         <code {...props} />
       </>
-    )
+    );
   },
   Step: ({ className, ...props }: React.ComponentProps<"h3">) => (
     <h3
       className={cn(
-        "font-heading mt-8 scroll-m-32 text-xl font-medium tracking-tight",
+        "mt-8 scroll-m-32 font-heading font-medium text-xl tracking-tight",
         className
       )}
       {...props}
@@ -264,7 +259,7 @@ export const mdxComponents = {
   ),
   Steps: ({ ...props }) => (
     <div
-      className="[&>h3]:step steps mb-12 [counter-reset:step] *:[h3]:first:!mt-0"
+      className="[&>h3]:step steps *:[h3]:first:!mt-0 mb-12 [counter-reset:step]"
       {...props}
     />
   ),
@@ -277,17 +272,17 @@ export const mdxComponents = {
     ...props
   }: React.ComponentProps<"img">) => (
     <Image
+      alt={alt || ""}
       className={cn("mt-6 rounded-md border", className)}
+      height={Number(height)}
       src={(src as string) || ""}
       width={Number(width)}
-      height={Number(height)}
-      alt={alt || ""}
       {...props}
     />
   ),
-  Tabs: ({ className, ...props }: React.ComponentProps<typeof Tabs>) => {
-    return <Tabs className={cn("relative mt-6 w-full", className)} {...props} />
-  },
+  Tabs: ({ className, ...props }: React.ComponentProps<typeof Tabs>) => (
+    <Tabs className={cn("relative mt-6 w-full", className)} {...props} />
+  ),
   TabsList: ({
     className,
     ...props
@@ -306,7 +301,7 @@ export const mdxComponents = {
   }: React.ComponentProps<typeof TabsTrigger>) => (
     <TabsTrigger
       className={cn(
-        "text-muted-foreground data-[state=active]:text-foreground data-[state=active]:border-primary dark:data-[state=active]:border-primary hover:text-primary rounded-none border-0 border-b-2 border-transparent bg-transparent px-0 pb-3 text-base data-[state=active]:bg-transparent data-[state=active]:shadow-none dark:data-[state=active]:bg-transparent",
+        "rounded-none border-0 border-transparent border-b-2 bg-transparent px-0 pb-3 text-base text-muted-foreground hover:text-primary data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none dark:data-[state=active]:border-primary dark:data-[state=active]:bg-transparent",
         className
       )}
       {...props}
@@ -318,7 +313,7 @@ export const mdxComponents = {
   }: React.ComponentProps<typeof TabsContent>) => (
     <TabsContent
       className={cn(
-        "relative [&_h3.font-heading]:text-base [&_h3.font-heading]:font-medium *:[figure]:first:mt-0 [&>.steps]:mt-6",
+        "relative [&>.steps]:mt-6 [&_h3.font-heading]:font-medium [&_h3.font-heading]:text-base *:[figure]:first:mt-0",
         className
       )}
       {...props}
@@ -350,11 +345,11 @@ export const mdxComponents = {
   LinkedCard: ({ className, ...props }: React.ComponentProps<typeof Link>) => (
     <Link
       className={cn(
-        "bg-surface text-surface-foreground hover:bg-surface/80 flex w-full flex-col items-center rounded-xl p-6 transition-colors sm:p-10",
+        "flex w-full flex-col items-center rounded-xl bg-surface p-6 text-surface-foreground transition-colors hover:bg-surface/80 sm:p-10",
         className
       )}
       {...props}
     />
   ),
   Kbd,
-}
+};

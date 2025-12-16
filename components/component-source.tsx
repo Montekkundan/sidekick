@@ -1,13 +1,12 @@
-import fs from "node:fs/promises"
-import path from "node:path"
-import * as React from "react"
-
-import { highlightCode } from "@/lib/highlight-code"
-import { getRegistryItem } from "@/lib/registry"
-import { cn } from "@/lib/utils"
-import { CodeCollapsibleWrapper } from "@/components/code-collapsible-wrapper"
-import { CopyButton } from "@/components/copy-button"
-import { getIconForLanguageExtension } from "@/components/icons"
+import fs from "node:fs/promises";
+import path from "node:path";
+import type * as React from "react";
+import { CodeCollapsibleWrapper } from "@/components/code-collapsible-wrapper";
+import { CopyButton } from "@/components/copy-button";
+import { getIconForLanguageExtension } from "@/components/icons";
+import { highlightCode } from "@/lib/highlight-code";
+import { getRegistryItem } from "@/lib/registry";
+import { cn } from "@/lib/utils";
 
 export async function ComponentSource({
   name,
@@ -17,42 +16,42 @@ export async function ComponentSource({
   collapsible = true,
   className,
 }: React.ComponentProps<"div"> & {
-  name?: string
-  src?: string
-  title?: string
-  language?: string
-  collapsible?: boolean
+  name?: string;
+  src?: string;
+  title?: string;
+  language?: string;
+  collapsible?: boolean;
 }) {
-  if (!name && !src) {
-    return null
+  if (!(name || src)) {
+    return null;
   }
 
-  let code: string | undefined
+  let code: string | undefined;
 
   if (name) {
-    const item = await getRegistryItem(name)
-    code = item?.files?.[0]?.content
+    const item = await getRegistryItem(name);
+    code = item?.files?.[0]?.content;
   }
 
   if (src) {
-    const file = await fs.readFile(path.join(process.cwd(), src), "utf-8")
-    code = file
+    const file = await fs.readFile(path.join(process.cwd(), src), "utf-8");
+    code = file;
   }
 
   if (!code) {
-    return null
+    return null;
   }
 
   // Fix imports.
   // Replace @/registry/.../ with @/components/.
-  code = code.replaceAll(/@\/registry\/[\w-]+\//g, "@/")
+  code = code.replaceAll(/@\/registry\/[\w-]+\//g, "@/");
 
   // Replace export default with export.
-  code = code.replaceAll("export default", "export")
-  code = code.replaceAll("/* eslint-disable react/no-children-prop */\n", "")
+  code = code.replaceAll("export default", "export");
+  code = code.replaceAll("/* eslint-disable react/no-children-prop */\n", "");
 
-  const lang = language ?? title?.split(".").pop() ?? "tsx"
-  const highlightedCode = await highlightCode(code, lang)
+  const lang = language ?? title?.split(".").pop() ?? "tsx";
+  const highlightedCode = await highlightCode(code, lang);
 
   if (!collapsible) {
     return (
@@ -64,7 +63,7 @@ export async function ComponentSource({
           title={title}
         />
       </div>
-    )
+    );
   }
 
   return (
@@ -76,7 +75,7 @@ export async function ComponentSource({
         title={title}
       />
     </CodeCollapsibleWrapper>
-  )
+  );
 }
 
 function ComponentCode({
@@ -85,18 +84,18 @@ function ComponentCode({
   language,
   title,
 }: {
-  code: string
-  highlightedCode: string
-  language: string
-  title: string | undefined
+  code: string;
+  highlightedCode: string;
+  language: string;
+  title: string | undefined;
 }) {
   return (
-    <figure data-rehype-pretty-code-figure="" className="[&>pre]:max-h-96">
+    <figure className="[&>pre]:max-h-96" data-rehype-pretty-code-figure="">
       {title && (
         <figcaption
-          data-rehype-pretty-code-title=""
-          className="text-code-foreground [&_svg]:text-code-foreground flex items-center gap-2 [&_svg]:size-4 [&_svg]:opacity-70"
+          className="flex items-center gap-2 text-code-foreground [&_svg]:size-4 [&_svg]:text-code-foreground [&_svg]:opacity-70"
           data-language={language}
+          data-rehype-pretty-code-title=""
         >
           {getIconForLanguageExtension(language)}
           {title}
@@ -105,5 +104,5 @@ function ComponentCode({
       <CopyButton value={code} />
       <div dangerouslySetInnerHTML={{ __html: highlightedCode }} />
     </figure>
-  )
+  );
 }
