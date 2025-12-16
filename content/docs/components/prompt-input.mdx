@@ -1,0 +1,95 @@
+---
+title: Prompt Input
+description: An input component for entering prompts with model selection, file attachments, and speech recognition.
+component: true
+---
+
+<ComponentPreview name="prompt-input" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">CLI</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx shadcn@latest add prompt-input
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ComponentSource name="prompt-input" title="components/prompt-input.tsx" />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx
+import {
+  PromptInput,
+  PromptInputBody,
+  PromptInputTextarea,
+  PromptInputFooter,
+  PromptInputTools,
+  PromptInputSubmit,
+} from "@/components/prompt-input";
+```
+
+```tsx
+<PromptInput onSubmit={(message) => console.log(message)}>
+  <PromptInputBody>
+    <PromptInputTextarea />
+  </PromptInputBody>
+  <PromptInputFooter>
+    <PromptInputTools />
+    <PromptInputSubmit />
+  </PromptInputFooter>
+</PromptInput>
+```
+
+## Features
+
+- **File Attachments**: Drag and drop or paste files directly into the input
+- **Speech Recognition**: Built-in speech-to-text support
+- **Model Selection**: Dropdown for selecting AI models
+- **Status Indicators**: Shows loading, streaming, and error states
+- **Keyboard Shortcuts**: Submit with Enter, Shift+Enter for new line
+
+## API Reference
+
+### PromptInput
+
+The root component that handles form submission and file management.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `onSubmit` | `(message: PromptInputMessage) => void` | required | Called when the form is submitted |
+| `accept` | `string` | - | Accepted file types (e.g., "image/*") |
+| `multiple` | `boolean` | `false` | Allow multiple file uploads |
+| `globalDrop` | `boolean` | `false` | Accept drops anywhere on the document |
+| `maxFiles` | `number` | - | Maximum number of files allowed |
+| `maxFileSize` | `number` | - | Maximum file size in bytes |
+
+### PromptInputSubmit
+
+The submit button with status indicator.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `status` | `"ready" \| "submitted" \| "streaming" \| "error"` | `"ready"` | Current status of the submission |

@@ -1,0 +1,197 @@
+---
+title: Sidekick
+description: An AI chat sidebar component with conversation history, message bubbles, and integrated prompt input.
+component: true
+---
+
+<ComponentPreview
+  name="sidekick"
+  description="A sidebar that toggles open and closed."
+/>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">CLI</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx shadcn@latest add sidekick
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ComponentSource name="sidekick" title="components/sidekick.tsx" />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx
+import {
+  Sidekick,
+  SidekickContent,
+  SidekickFooter,
+  SidekickHeader,
+  SidekickInset,
+  SidekickProvider,
+  SidekickTrigger,
+  Conversation,
+  ConversationContent,
+  ConversationEmptyState,
+  Message,
+  MessageContent,
+} from "@/components/sidekick";
+```
+
+```tsx
+<SidekickProvider>
+  <SidekickInset>
+    {/* Your main content */}
+    <SidekickTrigger />
+  </SidekickInset>
+
+  <Sidekick>
+    <SidekickHeader>
+      <span>AI Assistant</span>
+      <SidekickTrigger />
+    </SidekickHeader>
+
+    <SidekickContent>
+      <Conversation>
+        <ConversationContent>
+          <Message from="user">
+            <MessageContent from="user">Hello!</MessageContent>
+          </Message>
+          <Message from="assistant">
+            <MessageContent from="assistant">Hi there!</MessageContent>
+          </Message>
+        </ConversationContent>
+      </Conversation>
+    </SidekickContent>
+
+    <SidekickFooter>{/* Add PromptInput here */}</SidekickFooter>
+  </Sidekick>
+</SidekickProvider>
+```
+
+## Features
+
+- **Collapsible Panel**: Toggle the sidebar with keyboard shortcut (`⌘K` / `Ctrl+K`)
+- **Mobile Support**: Full-screen sheet on mobile devices
+- **Conversation History**: Auto-scrolling message list with scroll-to-bottom button
+- **Message Bubbles**: Styled user and assistant messages with avatars
+- **Empty State**: Customizable empty state when no messages exist
+- **Keyboard Navigation**: Full keyboard accessibility
+
+## Components
+
+### SidekickProvider
+
+Wraps your app and provides the sidebar state context.
+
+| Prop           | Type                      | Default | Description                      |
+| -------------- | ------------------------- | ------- | -------------------------------- |
+| `defaultOpen`  | `boolean`                 | `true`  | Initial open state               |
+| `open`         | `boolean`                 | -       | Controlled open state            |
+| `onOpenChange` | `(open: boolean) => void` | -       | Callback when open state changes |
+
+### Sidekick
+
+The sidebar panel component.
+
+| Prop   | Type                | Default   | Description                     |
+| ------ | ------------------- | --------- | ------------------------------- |
+| `side` | `"left" \| "right"` | `"right"` | Which side the panel appears on |
+
+### SidekickTrigger
+
+A button to toggle the sidebar open/closed.
+
+### SidekickHeader
+
+The header section of the sidebar.
+
+### SidekickContent
+
+The main content area of the sidebar (typically contains `Conversation`).
+
+### SidekickFooter
+
+The footer section (typically contains `PromptInput`).
+
+### SidekickInset
+
+The main content area that sits beside the sidebar.
+
+### Conversation
+
+Container for the message list with auto-scroll functionality.
+
+### ConversationContent
+
+The scrollable content area inside `Conversation`.
+
+### ConversationEmptyState
+
+Displayed when there are no messages.
+
+| Prop          | Type        | Default             | Description      |
+| ------------- | ----------- | ------------------- | ---------------- |
+| `title`       | `string`    | `"No messages yet"` | Title text       |
+| `description` | `string`    | -                   | Description text |
+| `icon`        | `ReactNode` | -                   | Icon to display  |
+
+### Message
+
+Container for a single message.
+
+| Prop   | Type                    | Default       | Description          |
+| ------ | ----------------------- | ------------- | -------------------- |
+| `from` | `"user" \| "assistant"` | `"assistant"` | Who sent the message |
+
+### MessageContent
+
+The message bubble with text content.
+
+| Prop   | Type                    | Default       | Description                       |
+| ------ | ----------------------- | ------------- | --------------------------------- |
+| `from` | `"user" \| "assistant"` | `"assistant"` | Styles the bubble based on sender |
+
+### MessageAvatar
+
+Container for the sender's avatar.
+
+## Hooks
+
+### useSidekick
+
+Access the sidebar state and controls.
+
+```tsx
+const { state, open, setOpen, toggleSidekick } = useSidekick();
+```
+
+### useConversation
+
+Access conversation scroll controls.
+
+```tsx
+const { scrollToBottom, isAtBottom } = useConversation();
+```

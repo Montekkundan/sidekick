@@ -1,63 +1,43 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "name": "acme",
-  "homepage": "https://acme.com",
+  "name": "sidekick",
+  "homepage": "https://sidekick.dev",
   "items": [
-    {
-      "name": "example-form",
-      "type": "registry:component",
-      "title": "Example Form",
-      "description": "A contact form with Zod validation.",
-      "dependencies": ["zod"],
-      "registryDependencies": ["button", "input", "label", "textarea", "card"],
-      "files": [
-        {
-          "path": "registry/new-york/blocks/example-form/example-form.tsx",
-          "type": "registry:component"
-        }
-      ]
-    },
-    {
-      "name": "complex-component",
-      "type": "registry:component",
-      "title": "Complex Component",
-      "description": "A complex component showing hooks, libs and components.",
-      "registryDependencies": ["card"],
-      "files": [
-        {
-          "path": "registry/new-york/blocks/complex-component/page.tsx",
-          "type": "registry:page",
-          "target": "app/pokemon/page.tsx"
-        },
-        {
-          "path": "registry/new-york/blocks/complex-component/components/pokemon-card.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/new-york/blocks/complex-component/components/pokemon-image.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/new-york/blocks/complex-component/lib/pokemon.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "registry/new-york/blocks/complex-component/hooks/use-pokemon.ts",
-          "type": "registry:hook"
-        }
-      ]
-    },
     {
       "name": "prompt-input",
       "type": "registry:component",
       "title": "Prompt Input",
-      "description": "An input component for entering prompts with model selection and status indication.",
-      "registryDependencies": ["button", "input", "select", "spinner", "icon"],
+      "description": "An input component for entering prompts with file attachments, speech recognition, and status indication.",
+      "dependencies": ["nanoid", "ai"],
+      "registryDependencies": ["button", "input", "select", "dropdown-menu", "hover-card"],
       "files": [
+        {
+          "path": "registry/new-york/blocks/prompt-input/index.tsx",
+          "type": "registry:component"
+        },
         {
           "path": "registry/new-york/blocks/prompt-input/page.tsx",
           "type": "registry:page",
           "target": "app/components/prompt-input/page.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sidekick",
+      "type": "registry:component",
+      "title": "Sidekick",
+      "description": "An AI chat sidebar component with conversation history, message bubbles, and integrated prompt input.",
+      "dependencies": ["nanoid", "ai"],
+      "registryDependencies": ["button", "input", "separator", "sheet", "tooltip", "prompt-input"],
+      "files": [
+        {
+          "path": "registry/new-york/blocks/sidekick/index.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/new-york/blocks/sidekick/page.tsx",
+          "type": "registry:page",
+          "target": "app/components/sidekick/page.tsx"
         }
       ]
     }
