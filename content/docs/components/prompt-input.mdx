@@ -17,7 +17,7 @@ component: true
 <TabsContent value="cli">
 
 ```bash
-npx shadcn@latest add prompt-input
+npx shadcn@latest add https://sidekick.montek.dev/r/prompt-input.json
 ```
 
 </TabsContent>
@@ -28,7 +28,7 @@ npx shadcn@latest add prompt-input
 
 <Step>Copy and paste the following code into your project.</Step>
 
-<ComponentSource name="prompt-input" title="components/prompt-input.tsx" />
+<ComponentSource name="prompt-input" title="components/ui/prompt-input.tsx" />
 
 <Step>Update the import paths to match your project setup.</Step>
 
@@ -77,19 +77,19 @@ import {
 
 The root component that handles form submission and file management.
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `onSubmit` | `(message: PromptInputMessage) => void` | required | Called when the form is submitted |
-| `accept` | `string` | - | Accepted file types (e.g., "image/*") |
-| `multiple` | `boolean` | `false` | Allow multiple file uploads |
-| `globalDrop` | `boolean` | `false` | Accept drops anywhere on the document |
-| `maxFiles` | `number` | - | Maximum number of files allowed |
-| `maxFileSize` | `number` | - | Maximum file size in bytes |
+| Prop          | Type                                    | Default  | Description                            |
+| ------------- | --------------------------------------- | -------- | -------------------------------------- |
+| `onSubmit`    | `(message: PromptInputMessage) => void` | required | Called when the form is submitted      |
+| `accept`      | `string`                                | -        | Accepted file types (e.g., "image/\*") |
+| `multiple`    | `boolean`                               | `false`  | Allow multiple file uploads            |
+| `globalDrop`  | `boolean`                               | `false`  | Accept drops anywhere on the document  |
+| `maxFiles`    | `number`                                | -        | Maximum number of files allowed        |
+| `maxFileSize` | `number`                                | -        | Maximum file size in bytes             |
 
 ### PromptInputSubmit
 
 The submit button with status indicator.
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
+| Prop     | Type                                               | Default   | Description                      |
+| -------- | -------------------------------------------------- | --------- | -------------------------------- |
 | `status` | `"ready" \| "submitted" \| "streaming" \| "error"` | `"ready"` | Current status of the submission |

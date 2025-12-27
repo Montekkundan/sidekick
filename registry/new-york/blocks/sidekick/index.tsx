@@ -52,6 +52,11 @@ function useSidekick() {
   return context;
 }
 
+// Optional hook that returns null if no provider is present (for standalone mode)
+function useOptionalSidekick() {
+  return React.useContext(SidekickContext);
+}
+
 // ============================================================================
 // Hook: useIsMobile
 // ============================================================================
@@ -170,15 +175,44 @@ function SidekickProvider({
 
 type SidekickProps = React.ComponentProps<"aside"> & {
   side?: "left" | "right";
+  /** When true, renders as a standalone panel without toggle behavior */
+  standalone?: boolean;
 };
 
 function Sidekick({
   side = "right",
+  standalone = false,
   className,
   children,
   ...props
 }: SidekickProps) {
-  const { isMobile, state, openMobile, setOpenMobile } = useSidekick();
+  const context = useOptionalSidekick();
+
+  // Standalone mode: render as a simple panel without provider
+  if (standalone || !context) {
+    return (
+      <aside
+        className={cn(
+          "flex h-full flex-col border-l bg-background text-foreground",
+          side === "left" && "border-r border-l-0",
+          className
+        )}
+        data-side={side}
+        data-slot="sidekick"
+        data-standalone="true"
+        style={
+          {
+            "--sidekick-width": SIDEKICK_WIDTH,
+          } as React.CSSProperties
+        }
+        {...props}
+      >
+        <div className="flex h-full w-full flex-col">{children}</div>
+      </aside>
+    );
+  }
+
+  const { isMobile, state, openMobile, setOpenMobile } = context;
 
   if (isMobile) {
     return (
@@ -234,7 +268,14 @@ function SidekickTrigger({
   onClick,
   ...props
 }: React.ComponentProps<typeof Button>) {
-  const { toggleSidekick } = useSidekick();
+  const context = useOptionalSidekick();
+
+  // In standalone mode, trigger does nothing (or can be hidden)
+  if (!context) {
+    return null;
+  }
+
+  const { toggleSidekick } = context;
 
   return (
     <Button
@@ -536,6 +577,7 @@ function MessageContent({ className, from, ...props }: MessageContentProps) {
   return (
     <div
       className={cn(messageContentVariants({ from }), className)}
+      data-from={from}
       data-slot="message-content"
       {...props}
     />

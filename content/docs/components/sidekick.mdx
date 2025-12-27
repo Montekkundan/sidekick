@@ -20,7 +20,7 @@ component: true
 <TabsContent value="cli">
 
 ```bash
-npx shadcn@latest add sidekick
+npx shadcn@latest add https://sidekick.montek.dev/r/sidekick.json
 ```
 
 </TabsContent>
@@ -31,7 +31,7 @@ npx shadcn@latest add sidekick
 
 <Step>Copy and paste the following code into your project.</Step>
 
-<ComponentSource name="sidekick" title="components/sidekick.tsx" />
+<ComponentSource name="sidekick" title="components/ui/sidekick.tsx" />
 
 <Step>Update the import paths to match your project setup.</Step>
 
@@ -59,6 +59,37 @@ import {
   MessageContent,
 } from "@/components/sidekick";
 ```
+
+### Standalone Mode
+
+Use Sidekick as a standalone panel without toggle behavior:
+
+```tsx
+<Sidekick standalone>
+  <SidekickHeader>
+    <span>AI Assistant</span>
+  </SidekickHeader>
+
+  <SidekickContent>
+    <Conversation>
+      <ConversationContent>
+        <Message from="user">
+          <MessageContent from="user">Hello!</MessageContent>
+        </Message>
+        <Message from="assistant">
+          <MessageContent from="assistant">Hi there!</MessageContent>
+        </Message>
+      </ConversationContent>
+    </Conversation>
+  </SidekickContent>
+
+  <SidekickFooter>{/* Add PromptInput here */}</SidekickFooter>
+</Sidekick>
+```
+
+### With Provider (Toggleable)
+
+Use with `SidekickProvider` for collapsible sidebar behavior:
 
 ```tsx
 <SidekickProvider>
@@ -116,13 +147,14 @@ Wraps your app and provides the sidebar state context.
 
 The sidebar panel component.
 
-| Prop   | Type                | Default   | Description                     |
-| ------ | ------------------- | --------- | ------------------------------- |
-| `side` | `"left" \| "right"` | `"right"` | Which side the panel appears on |
+| Prop         | Type                | Default   | Description                                                 |
+| ------------ | ------------------- | --------- | ----------------------------------------------------------- |
+| `side`       | `"left" \| "right"` | `"right"` | Which side the panel appears on                             |
+| `standalone` | `boolean`           | `false`   | When true, renders as a fixed panel without toggle behavior |
 
 ### SidekickTrigger
 
-A button to toggle the sidebar open/closed.
+A button to toggle the sidebar open/closed. Returns `null` in standalone mode.
 
 ### SidekickHeader
 
@@ -194,4 +226,91 @@ Access conversation scroll controls.
 
 ```tsx
 const { scrollToBottom, isAtBottom } = useConversation();
+```
+
+## Theming
+
+Sidekick supports theming through CSS classes. Apply a theme by adding the theme class to your provider:
+
+### Cursor Theme
+
+A dark, minimal theme inspired by Cursor's chat interface.
+
+```bash
+npx shadcn@latest add https://sidekick.montek.dev/r/theme-cursor.json
+```
+
+```tsx
+import "@/styles/theme-cursor.css";
+
+<SidekickProvider className="theme-cursor">
+  {/* Your components will use the Cursor theme */}
+</SidekickProvider>;
+```
+
+### Custom Themes
+
+Create your own theme by targeting the data attributes:
+
+```css
+.my-theme [data-slot="sidekick"] {
+  background-color: #1a1a1a;
+}
+
+.my-theme [data-slot="message-content"][data-from="user"] {
+  background-color: #0078d4;
+}
+
+.my-theme [data-slot="message-content"][data-from="assistant"] {
+  background-color: #2d2d2d;
+}
+```
+
+## Examples
+
+### Standalone Panel
+
+Perfect for embedding a chat interface without toggle behavior:
+
+```tsx
+<div className="h-[600px] w-96 rounded-lg border">
+  <Sidekick standalone>
+    <SidekickHeader>
+      <span>AI Assistant</span>
+    </SidekickHeader>
+    <SidekickContent>
+      <Conversation>
+        <ConversationContent>
+          {messages.map((msg) => (
+            <Message key={msg.id} from={msg.from}>
+              <MessageContent from={msg.from}>{msg.content}</MessageContent>
+            </Message>
+          ))}
+        </ConversationContent>
+      </Conversation>
+    </SidekickContent>
+    <SidekickFooter>
+      <PromptInput onSubmit={handleSubmit}>...</PromptInput>
+    </SidekickFooter>
+  </Sidekick>
+</div>
+```
+
+### Left-sided Sidekick
+
+```tsx
+<SidekickProvider>
+  <Sidekick side="left">{/* Content */}</Sidekick>
+  <SidekickInset>{/* Main content */}</SidekickInset>
+</SidekickProvider>
+```
+
+### Controlled State
+
+```tsx
+const [open, setOpen] = useState(false);
+
+<SidekickProvider open={open} onOpenChange={setOpen}>
+  {/* ... */}
+</SidekickProvider>;
 ```

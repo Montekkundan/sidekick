@@ -1,23 +1,13 @@
-# registry-template
+<p align="center">
+  <img src="https://sidekick.montek.dev/og.png" />
+</p>
 
-You can use the `shadcn` CLI to run your own component registry. Running your own
-component registry allows you to distribute your custom components, hooks, pages, and
-other files to any React project.
+# Sidekick
 
-> [!IMPORTANT]  
-> This template uses Tailwind v4. For Tailwind v3, see [registry-template-v3](https://github.com/shadcn-ui/registry-template-v3).
+AI-powered components for building chat interfaces. Built with [shadcn/ui](https://ui.shadcn.com) principles.
 
-## Getting Started
+Sidekick provides composable, customizable React components for AI chat experiences. You render messages, it handles the UI — panels, conversations, prompts, and more. Sidekick supports a fully composable API, so you can wrap components or customize them as needed.
 
-This is a template for creating a custom registry using Next.js.
+## License
 
-- The template uses a `registry.json` file to define components and their files.
-- The `shadcn build` command is used to build the registry.
-- The registry items are served as static files under `public/r/[name].json`.
-- The template also includes a route handler for serving registry items.
-- Every registry item are compatible with the `shadcn` CLI.
-- We have also added v0 integration using the `Open in v0` api.
-
-## Documentation
-
-Visit the [shadcn documentation](https://ui.shadcn.com/docs/registry) to view the full documentation.
+MIT

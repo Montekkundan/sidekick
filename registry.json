@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "sidekick",
-  "homepage": "https://sidekick.dev",
+  "homepage": "https://sidekick.montek.dev",
   "items": [
     {
       "name": "prompt-input",
@@ -51,6 +51,26 @@
           "path": "registry/new-york/blocks/sidekick/page.tsx",
           "type": "registry:page",
           "target": "app/components/sidekick/page.tsx"
+        }
+      ]
+    },
+    {
+      "name": "theme-cursor",
+      "type": "registry:example",
+      "title": "Cursor Theme Example",
+      "description": "A Cursor-inspired chat UI composition. Shows how to compose base Sidekick and PromptInput components with custom buttons like model selector, web search toggle, and @ mentions.",
+      "dependencies": ["nanoid", "ai"],
+      "registryDependencies": [
+        "sidekick",
+        "prompt-input",
+        "dropdown-menu",
+        "tooltip"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/themes/cursor/page.tsx",
+          "type": "registry:page",
+          "target": "app/examples/cursor-theme/page.tsx"
         }
       ]
     }

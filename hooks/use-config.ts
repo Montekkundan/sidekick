@@ -4,13 +4,13 @@ import { atomWithStorage } from "jotai/utils";
 // TODO: simplify config structure
 type Config = {
   style: "new-york";
-  packageManager: "npm" | "yarn" | "pnpm" | "bun";
+  packageManager: "npm" | "yarn" | "bun";
   installationType: "cli" | "manual";
 };
 
 const configAtom = atomWithStorage<Config>("config", {
   style: "new-york",
-  packageManager: "pnpm",
+  packageManager: "bun",
   installationType: "cli",
 });
 

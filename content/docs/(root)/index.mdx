@@ -9,20 +9,64 @@ description: AI-powered components for building modern chat interfaces. Built wi
 
 - **Sidekick**: A collapsible AI chat sidebar with conversation history and message bubbles
 - **PromptInput**: An advanced input component with file attachments and speech support
+- **Themes**: Customizable themes like the Cursor-inspired dark theme
 
 ## Installation
 
 Pick the components you need and add them to your project using the CLI:
 
 ```bash
-npx shadcn@latest add https://sidekick.dev/r/sidekick.json
+npx shadcn@latest add https://sidekick.montek.dev/r/sidekick.json
 ```
 
 ```bash
-npx shadcn@latest add https://sidekick.dev/r/prompt-input.json
+npx shadcn@latest add https://sidekick.montek.dev/r/prompt-input.json
 ```
 
 Or copy and paste the code directly into your project.
+
+## Themes
+
+Sidekick supports theming. Apply themes by adding a class to your root element:
+
+```bash
+# Install the Cursor theme
+npx shadcn@latest add https://sidekick.montek.dev/r/theme-cursor.json
+```
+
+Then apply it:
+
+```tsx
+<SidekickProvider className="theme-cursor">
+  {/* Your components */}
+</SidekickProvider>
+```
+
+## Principles
+
+Built around the following principles from [shadcn/ui](https://ui.shadcn.com):
+
+- **Open Code**: The top layer of your component code is open for modification
+- **Composition**: Every component uses a common, composable interface
+- **Distribution**: A flat-file schema and CLI make it easy to distribute
+- **Beautiful Defaults**: Carefully chosen default styles out-of-the-box
+- **AI-Ready**: Open code for LLMs to read, understand, and improve
+
+## Customization
+
+All components are fully customizable:
+
+```tsx
+// Position the sidekick on the left
+<Sidekick side="left">
+  {/* ... */}
+</Sidekick>
+
+// Control the sidekick state
+<SidekickProvider defaultOpen={false} onOpenChange={(open) => console.log(open)}>
+  {/* ... */}
+</SidekickProvider>
+```
 
 ## Open Source
 
