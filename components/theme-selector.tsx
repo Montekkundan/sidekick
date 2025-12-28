@@ -1,6 +1,6 @@
 "use client"
 
-// import { THEMES } from "@/lib/themes"
+import { THEMES } from "@/lib/themes"
 import { cn } from "@/lib/utils"
 import { useThemeConfig } from "@/components/active-theme"
 import { Label } from "@/registry/new-york/ui/label"
@@ -16,14 +16,12 @@ import {
 export function ThemeSelector({ className }: React.ComponentProps<"div">) {
   const { activeTheme, setActiveTheme } = useThemeConfig()
 
-  const value = activeTheme === "default" ? "neutral" : activeTheme
-
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <Label htmlFor="theme-selector" className="sr-only">
         Theme
       </Label>
-      <Select value={value} onValueChange={setActiveTheme}>
+      <Select value={activeTheme} onValueChange={setActiveTheme}>
         <SelectTrigger
           id="theme-selector"
           size="sm"
@@ -32,7 +30,7 @@ export function ThemeSelector({ className }: React.ComponentProps<"div">) {
           <span className="font-medium">Theme:</span>
           <SelectValue placeholder="Select a theme" />
         </SelectTrigger>
-        {/* <SelectContent align="end">
+        <SelectContent align="end">
           {THEMES.map((theme) => (
             <SelectItem
               key={theme.name}
@@ -42,7 +40,7 @@ export function ThemeSelector({ className }: React.ComponentProps<"div">) {
               {theme.label}
             </SelectItem>
           ))}
-        </SelectContent> */}
+        </SelectContent>
       </Select>
     </div>
   )
