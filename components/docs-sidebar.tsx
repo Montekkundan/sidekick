@@ -16,7 +16,7 @@ import {
 } from "@/registry/new-york/ui/sidebar"
 import { TOP_LEVEL_SECTIONS } from "@/lib/config"
 
-const EXCLUDED_SECTIONS = ["installation", "dark-mode"]
+const EXCLUDED_SECTIONS = [""]
 const EXCLUDED_PAGES = ["/docs", "/docs/changelog"]
 
 export function DocsSidebar({

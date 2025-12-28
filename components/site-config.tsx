@@ -10,9 +10,6 @@ import { Button } from "@/registry/new-york/ui/button"
 export function SiteConfig({ className }: React.ComponentProps<typeof Button>) {
   const { layout, setLayout } = useLayout()
 
-  console.log("Current layout:", layout)
-  
-
   return (
     <Button
       variant="ghost"

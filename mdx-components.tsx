@@ -30,6 +30,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/registry/new-york/ui/tabs";
+import { ComponentsList } from "./components/component-list";
 
 export const mdxComponents = {
   h1: ({ className, ...props }: React.ComponentProps<"h1">) => (
@@ -335,6 +336,7 @@ export const mdxComponents = {
   CodeTabs,
   ComponentPreview,
   ComponentSource,
+  ComponentsList,
   CodeCollapsibleWrapper,
   Link: ({ className, ...props }: React.ComponentProps<typeof Link>) => (
     <Link
