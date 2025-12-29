@@ -34,7 +34,7 @@ export function CodeCollapsibleWrapper({
           >
             {isOpened ? "Collapse" : "Expand"}
           </Button>
-          <Separator className="!h-4 mx-1.5" orientation="vertical" />
+          <Separator orientation="vertical" />
         </div>
       </CollapsibleTrigger>
       <CollapsibleContent

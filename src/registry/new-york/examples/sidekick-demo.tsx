@@ -62,7 +62,7 @@ export default function SidekickDemo() {
             <div className="max-w-xs space-y-2">
               <h3 className="font-semibold text-lg">Main Content</h3>
               <p className="text-muted-foreground text-sm">
-                Use <kbd className="font-mono text-xs">⌘K</kbd> to toggle panel.
+                Use <kbd className="font-mono text-xs">⌘I</kbd> to toggle panel.
               </p>
             </div>
           </div>

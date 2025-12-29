@@ -19,7 +19,7 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"],
+      "@/*": ["./src/*"],
       "@/.source": ["./.source/server.ts"]
     },
     "strictNullChecks": true

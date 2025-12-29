@@ -6,3 +6,4 @@
 - cookbook page with book icons
 - cookbook for netflix search page, chatgpt home page, cursor editor page and help center page
 - fuma docs + mdx + basehub + AI chat docs
+- add devtools

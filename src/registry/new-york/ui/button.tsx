@@ -1,6 +1,6 @@
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-import type * as React from "react";
+import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -51,7 +51,7 @@ function Button({
     <Comp
       className={cn(buttonVariants({ variant, size, className }))}
       data-slot="button"
-      {...props}
+      {...(props as any)}
     />
   );
 }

@@ -26,7 +26,7 @@ const SIDEKICK_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEKICK_WIDTH = "24rem";
 const SIDEKICK_WIDTH_MOBILE = "100%";
 const SIDEKICK_WIDTH_COLLAPSED = "0rem";
-const SIDEKICK_KEYBOARD_SHORTCUT = "k";
+const SIDEKICK_KEYBOARD_SHORTCUT = "i";
 
 // ============================================================================
 // Sidekick Context

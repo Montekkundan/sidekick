@@ -12,7 +12,7 @@
       "registryDependencies": ["button", "avatar"],
       "files": [
         {
-          "path": "registry/new-york/blocks/ask-ai/index.tsx",
+          "path": "src/registry/new-york/blocks/ask-ai/index.tsx",
           "type": "registry:component"
         }
       ]
@@ -32,7 +32,7 @@
       ],
       "files": [
         {
-          "path": "registry/new-york/blocks/prompt-input/index.tsx",
+          "path": "src/registry/new-york/blocks/prompt-input/index.tsx",
           "type": "registry:component"
         }
       ]
@@ -53,7 +53,7 @@
       ],
       "files": [
         {
-          "path": "registry/new-york/blocks/sidekick/index.tsx",
+          "path": "src/registry/new-york/blocks/sidekick/index.tsx",
           "type": "registry:component"
         }
       ]
@@ -72,9 +72,9 @@
       ],
       "files": [
         {
-          "path": "registry/new-york/examples/cursor-theme-demo.tsx",
+          "path": "src/registry/new-york/examples/cursor-theme-demo.tsx",
           "type": "registry:example",
-          "target": "app/examples/cursor-theme/page.tsx"
+          "target": "src/app/examples/cursor-theme/page.tsx"
         }
       ]
     }

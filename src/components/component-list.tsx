@@ -15,8 +15,6 @@ export function ComponentsList() {
     (component) => component.type === "page"
   );
 
-  console.log("Components list:", list);
-
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-x-8 lg:gap-x-16 lg:gap-y-6 xl:gap-x-20">
       {list.map((component) => (

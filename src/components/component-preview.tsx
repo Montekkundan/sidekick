@@ -12,8 +12,7 @@ async function loadComponent(
     // Try to dynamically import based on common patterns
     const patterns = [
       () => import(`@/registry/new-york/examples/${name}-demo`),
-      () => import(`@/registry/new-york/blocks/${name}/index`),
-      () => import(`@/registry/new-york/blocks/${name}/${name}`),
+      () => import(`@/registry/new-york/blocks/${name}`),
     ];
 
     for (const pattern of patterns) {

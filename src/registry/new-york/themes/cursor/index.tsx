@@ -728,7 +728,7 @@ export function CompactPromptInput({
   onSubmit,
   className,
 }: {
-  onSubmit?: (message: any) => void;
+  onSubmit?: (message: any, event?: any) => void;
   className?: string;
 }) {
   return (
@@ -751,7 +751,7 @@ export function CompactPromptInput({
         <div className="h-4 w-px bg-zinc-800" />
         <PromptInput
           className="flex-1 border-none bg-transparent shadow-none"
-          onSubmit={onSubmit ? (m) => onSubmit(m) : undefined}
+          onSubmit={(m, e) => onSubmit?.(m, e)}
           size="sm"
           variant="ghost"
         >
@@ -762,7 +762,7 @@ export function CompactPromptInput({
             />
             <div className="flex items-center gap-1 pr-2">
               <span className="flex h-5 items-center rounded border border-zinc-800 bg-zinc-900 px-1.5 font-mono text-[10px] text-zinc-600">
-                ⌘K
+                ⌘I
               </span>
             </div>
           </PromptInputBody>

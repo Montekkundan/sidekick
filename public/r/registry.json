@@ -18,13 +18,13 @@
       ],
       "files": [
         {
-          "path": "registry/new-york/blocks/prompt-input/index.tsx",
+          "path": "src/registry/new-york/blocks/prompt-input/index.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/blocks/prompt-input/page.tsx",
+          "path": "src/registry/new-york/blocks/prompt-input/page.tsx",
           "type": "registry:page",
-          "target": "app/components/prompt-input/page.tsx"
+          "target": "src/app/components/prompt-input/page.tsx"
         }
       ]
     },
@@ -44,13 +44,13 @@
       ],
       "files": [
         {
-          "path": "registry/new-york/blocks/sidekick/index.tsx",
+          "path": "src/registry/new-york/blocks/sidekick/index.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/blocks/sidekick/page.tsx",
+          "path": "src/registry/new-york/blocks/sidekick/page.tsx",
           "type": "registry:page",
-          "target": "app/components/sidekick/page.tsx"
+          "target": "src/app/components/sidekick/page.tsx"
         }
       ]
     },
@@ -68,9 +68,9 @@
       ],
       "files": [
         {
-          "path": "registry/new-york/themes/cursor/page.tsx",
+          "path": "src/registry/new-york/themes/cursor/page.tsx",
           "type": "registry:page",
-          "target": "app/examples/cursor-theme/page.tsx"
+          "target": "src/app/examples/cursor-theme/page.tsx"
         }
       ]
     }
