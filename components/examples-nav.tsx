@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-import { cn } from "@/lib/utils"
-import { ScrollArea, ScrollBar } from "@/registry/new-york/ui/scroll-area"
+import { cn } from "@/lib/utils";
+import { ScrollArea, ScrollBar } from "@/registry/new-york/ui/scroll-area";
 
 const examples = [
   {
@@ -18,14 +18,14 @@ const examples = [
     href: "/examples/sidekick",
     code: "https://github.com/shadcn/ui/tree/main/apps/v4/app/(app)/examples/sidekick",
     hidden: false,
-  }
-]
+  },
+];
 
 export function ExamplesNav({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <div className={cn("flex items-center", className)} {...props}>
@@ -37,37 +37,37 @@ export function ExamplesNav({
           />
           {examples.map((example) => (
             <ExampleLink
-              key={example.href}
               example={example}
               isActive={pathname?.startsWith(example.href) ?? false}
+              key={example.href}
             />
           ))}
         </div>
-        <ScrollBar orientation="horizontal" className="invisible" />
+        <ScrollBar className="invisible" orientation="horizontal" />
       </ScrollArea>
     </div>
-  )
+  );
 }
 
 function ExampleLink({
   example,
   isActive,
 }: {
-  example: (typeof examples)[number]
-  isActive: boolean
+  example: (typeof examples)[number];
+  isActive: boolean;
 }) {
   if (example.hidden) {
-    return null
+    return null;
   }
 
   return (
     <Link
+      className="flex h-7 items-center justify-center px-4 text-center font-medium text-base text-muted-foreground transition-colors hover:text-primary data-[active=true]:text-primary"
+      data-active={isActive}
       href={example.href}
       key={example.href}
-      className="text-muted-foreground hover:text-primary data-[active=true]:text-primary flex h-7 items-center justify-center px-4 text-center text-base font-medium transition-colors"
-      data-active={isActive}
     >
       {example.name}
     </Link>
-  )
+  );
 }

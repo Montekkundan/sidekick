@@ -3,10 +3,7 @@
   "name": "theme-cursor",
   "title": "Cursor Theme Example",
   "description": "A Cursor-inspired chat UI composition. Shows how to compose base Sidekick and PromptInput components with custom buttons like model selector, web search toggle, and @ mentions.",
-  "dependencies": [
-    "nanoid",
-    "ai"
-  ],
+  "dependencies": ["nanoid", "ai"],
   "registryDependencies": [
     "sidekick",
     "prompt-input",

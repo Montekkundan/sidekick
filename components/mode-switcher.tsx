@@ -1,31 +1,31 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Script from "next/script"
-import { useTheme } from "next-themes"
+import Script from "next/script";
+import { useTheme } from "next-themes";
+import * as React from "react";
 
-import { useMetaColor } from "@/hooks/use-meta-color"
-import { Button } from "@/registry/new-york/ui/button"
-import { Kbd } from "@/registry/new-york/ui/kbd"
+import { useMetaColor } from "@/hooks/use-meta-color";
+import { Button } from "@/registry/new-york/ui/button";
+import { Kbd } from "@/registry/new-york/ui/kbd";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/registry/new-york/ui/tooltip"
+} from "@/registry/new-york/ui/tooltip";
 
-export const DARK_MODE_FORWARD_TYPE = "dark-mode-forward"
+export const DARK_MODE_FORWARD_TYPE = "dark-mode-forward";
 
 export function ModeSwitcher() {
-  const { setTheme, resolvedTheme } = useTheme()
-  const { setMetaColor, metaColor } = useMetaColor()
+  const { setTheme, resolvedTheme } = useTheme();
+  const { setMetaColor, metaColor } = useMetaColor();
 
   React.useEffect(() => {
-    setMetaColor(metaColor)
-  }, [metaColor, setMetaColor])
+    setMetaColor(metaColor);
+  }, [metaColor, setMetaColor]);
 
   const toggleTheme = React.useCallback(() => {
-    setTheme(resolvedTheme === "dark" ? "light" : "dark")
-  }, [resolvedTheme, setTheme])
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+  }, [resolvedTheme, setTheme]);
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -36,40 +36,40 @@ export function ModeSwitcher() {
           e.target instanceof HTMLTextAreaElement ||
           e.target instanceof HTMLSelectElement
         ) {
-          return
+          return;
         }
 
-        e.preventDefault()
-        toggleTheme()
+        e.preventDefault();
+        toggleTheme();
       }
-    }
+    };
 
-    document.addEventListener("keydown", down)
-    return () => document.removeEventListener("keydown", down)
-  }, [toggleTheme])
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, [toggleTheme]);
 
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <Button
-          variant="ghost"
-          size="icon"
           className="group/toggle extend-touch-target size-8"
           onClick={toggleTheme}
+          size="icon"
+          variant="ghost"
         >
           <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
+            className="size-4.5"
             fill="none"
+            height="24"
             stroke="currentColor"
-            strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="size-4.5"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M0 0h24v24H0z" fill="none" stroke="none" />
             <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
             <path d="M12 3l0 18" />
             <path d="M12 9l4.65 -4.65" />
@@ -83,14 +83,12 @@ export function ModeSwitcher() {
         Toggle Mode <Kbd>D</Kbd>
       </TooltipContent>
     </Tooltip>
-  )
+  );
 }
 
 export function DarkModeScript() {
   return (
     <Script
-      id="dark-mode-listener"
-      strategy="beforeInteractive"
       dangerouslySetInnerHTML={{
         __html: `
             (function() {
@@ -118,6 +116,8 @@ export function DarkModeScript() {
             })();
           `,
       }}
+      id="dark-mode-listener"
+      strategy="beforeInteractive"
     />
-  )
+  );
 }

@@ -1,16 +1,15 @@
-import type { Metadata } from "next"
+import type { Metadata } from "next";
+import { Toaster } from "sonner";
+import { ActiveThemeProvider } from "@/components/active-theme";
+import { Analytics } from "@/components/analytics";
+import { TailwindIndicator } from "@/components/tailwind-indicator";
+import { ThemeProvider } from "@/components/theme-provider";
+import { LayoutProvider } from "@/hooks/use-layout";
+import { META_THEME_COLORS, siteConfig } from "@/lib/config";
+import { fontVariables } from "@/lib/fonts";
+import { cn } from "@/lib/utils";
 
-import { META_THEME_COLORS, siteConfig } from "@/lib/config"
-import { fontVariables } from "@/lib/fonts"
-import { cn } from "@/lib/utils"
-import { LayoutProvider } from "@/hooks/use-layout"
-import { ActiveThemeProvider } from "@/components/active-theme"
-import { Analytics } from "@/components/analytics"
-import { TailwindIndicator } from "@/components/tailwind-indicator"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "sonner"
-
-import "@/app/globals.css"
+import "@/app/globals.css";
 
 export const metadata: Metadata = {
   title: {
@@ -56,15 +55,15 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: `${siteConfig.url}/site.webmanifest`,
-}
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={fontVariables}>
+    <html className={fontVariables} lang="en" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -80,7 +79,7 @@ export default function RootLayout({
             `,
           }}
         />
-        <meta name="theme-color" content={META_THEME_COLORS.light} />
+        <meta content={META_THEME_COLORS.light} name="theme-color" />
       </head>
       <body
         className={cn(
@@ -90,8 +89,8 @@ export default function RootLayout({
         <ThemeProvider>
           <LayoutProvider>
             <ActiveThemeProvider>
-                {children}
-                <Toaster position="top-center" />
+              {children}
+              <Toaster position="top-center" />
               <TailwindIndicator />
               <Analytics />
             </ActiveThemeProvider>
@@ -99,5 +98,5 @@ export default function RootLayout({
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }

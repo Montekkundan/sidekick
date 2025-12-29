@@ -1,5 +1,13 @@
-"use client"
+"use client";
 
+import {
+  PromptInput,
+  PromptInputBody,
+  PromptInputFooter,
+  PromptInputSubmit,
+  PromptInputTextarea,
+  PromptInputTools,
+} from "@/registry/new-york/blocks/prompt-input";
 import {
   Conversation,
   ConversationContent,
@@ -12,15 +20,7 @@ import {
   SidekickInset,
   SidekickProvider,
   SidekickTrigger,
-} from "@/registry/new-york/blocks/sidekick"
-import {
-  PromptInput,
-  PromptInputBody,
-  PromptInputFooter,
-  PromptInputSubmit,
-  PromptInputTextarea,
-  PromptInputTools,
-} from "@/registry/new-york/blocks/prompt-input"
+} from "@/registry/new-york/blocks/sidekick";
 
 function SidekickPage() {
   return (
@@ -97,7 +97,7 @@ function SidekickPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default SidekickPage
+export default SidekickPage;

@@ -16,9 +16,9 @@ export const siteConfig = {
     {
       href: "/blocks",
       label: "Blocks",
-    }
+    },
   ],
-}
+};
 
 export const TOP_LEVEL_SECTIONS = [
   { name: "Get Started", href: "/docs" },
@@ -30,9 +30,9 @@ export const TOP_LEVEL_SECTIONS = [
     name: "Changelog",
     href: "/docs/changelog",
   },
-]
+];
 
 export const META_THEME_COLORS = {
   light: "#ffffff",
   dark: "#09090b",
-}
+};

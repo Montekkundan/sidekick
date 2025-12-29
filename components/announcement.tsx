@@ -1,15 +1,15 @@
-import Link from "next/link"
-import { ArrowRightIcon } from "lucide-react"
+import { ArrowRightIcon } from "lucide-react";
+import Link from "next/link";
 
-import { Badge } from "@/registry/new-york/ui/badge"
+import { Badge } from "@/registry/new-york/ui/badge";
 
 export function Announcement() {
   return (
-    <Badge asChild variant="secondary" className="bg-transparent">
+    <Badge asChild className="bg-transparent" variant="secondary">
       <Link href="/docs/changelog">
         <span className="flex size-2 rounded-full bg-blue-500" title="New" />
         npx shadcn create <ArrowRightIcon />
       </Link>
     </Badge>
-  )
+  );
 }

@@ -508,7 +508,7 @@ function ConversationScrollButton({
   return (
     <Button
       className={cn(
-        "absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full",
+        "-translate-x-1/2 absolute bottom-4 left-1/2 rounded-full",
         className
       )}
       data-slot="conversation-scroll-button"

@@ -3,10 +3,7 @@
   "name": "sidekick",
   "title": "Sidekick",
   "description": "An AI chat sidebar component with conversation history, message bubbles, and integrated prompt input.",
-  "dependencies": [
-    "nanoid",
-    "ai"
-  ],
+  "dependencies": ["nanoid", "ai"],
   "registryDependencies": [
     "button",
     "input",

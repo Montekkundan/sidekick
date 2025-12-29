@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-
-import type { source } from "@/lib/source"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { TOP_LEVEL_SECTIONS } from "@/lib/config";
+import type { source } from "@/lib/source";
 import {
   Sidebar,
   SidebarContent,
@@ -13,17 +13,16 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/registry/new-york/ui/sidebar"
-import { TOP_LEVEL_SECTIONS } from "@/lib/config"
+} from "@/registry/new-york/ui/sidebar";
 
-const EXCLUDED_SECTIONS = [""]
-const EXCLUDED_PAGES = ["/docs", "/docs/changelog"]
+const EXCLUDED_SECTIONS = [""];
+const EXCLUDED_PAGES = ["/docs", "/docs/changelog"];
 
 export function DocsSidebar({
   tree,
   ...props
 }: React.ComponentProps<typeof Sidebar> & { tree: typeof source.pageTree }) {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <Sidebar
@@ -32,58 +31,56 @@ export function DocsSidebar({
       {...props}
     >
       <SidebarContent className="no-scrollbar overflow-x-hidden px-2">
-        <div className="from-background via-background/80 to-background/50 sticky -top-1 z-10 h-8 shrink-0 bg-gradient-to-b blur-xs" />
+        <div className="-top-1 sticky z-10 h-8 shrink-0 bg-gradient-to-b from-background via-background/80 to-background/50 blur-xs" />
         <SidebarGroup>
-          <SidebarGroupLabel className="text-muted-foreground font-medium">
+          <SidebarGroupLabel className="font-medium text-muted-foreground">
             Sections
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {TOP_LEVEL_SECTIONS.map(({ name, href }) => {
-                return (
-                  <SidebarMenuItem key={name}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={
-                        href === "/docs"
-                          ? pathname === href
-                          : pathname.startsWith(href)
-                      }
-                      className="data-[active=true]:bg-accent data-[active=true]:border-accent 3xl:fixed:w-full 3xl:fixed:max-w-48 relative h-[30px] w-fit overflow-visible border border-transparent text-[0.8rem] font-medium after:absolute after:inset-x-0 after:-inset-y-1 after:z-0 after:rounded-md"
-                    >
-                      <Link href={href}>
-                        <span className="absolute inset-0 flex w-(--sidebar-width) bg-transparent" />
-                        {name}
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                )
-              })}
+              {TOP_LEVEL_SECTIONS.map(({ name, href }) => (
+                <SidebarMenuItem key={name}>
+                  <SidebarMenuButton
+                    asChild
+                    className="after:-inset-y-1 relative h-[30px] 3xl:fixed:w-full w-fit 3xl:fixed:max-w-48 overflow-visible border border-transparent font-medium text-[0.8rem] after:absolute after:inset-x-0 after:z-0 after:rounded-md data-[active=true]:border-accent data-[active=true]:bg-accent"
+                    isActive={
+                      href === "/docs"
+                        ? pathname === href
+                        : pathname.startsWith(href)
+                    }
+                  >
+                    <Link href={href}>
+                      <span className="absolute inset-0 flex w-(--sidebar-width) bg-transparent" />
+                      {name}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
         {tree.children.map((item) => {
           if (EXCLUDED_SECTIONS.includes(item.$id ?? "")) {
-            return null
+            return null;
           }
 
           return (
             <SidebarGroup key={item.$id}>
-              <SidebarGroupLabel className="text-muted-foreground font-medium">
+              <SidebarGroupLabel className="font-medium text-muted-foreground">
                 {item.name}
               </SidebarGroupLabel>
               <SidebarGroupContent>
                 {item.type === "folder" && (
                   <SidebarMenu className="gap-0.5">
-                    {item.children.map((item) => {
-                      return (
+                    {item.children.map(
+                      (item) =>
                         item.type === "page" &&
                         !EXCLUDED_PAGES.includes(item.url) && (
                           <SidebarMenuItem key={item.url}>
                             <SidebarMenuButton
                               asChild
+                              className="after:-inset-y-1 relative h-[30px] 3xl:fixed:w-full w-fit 3xl:fixed:max-w-48 overflow-visible border border-transparent font-medium text-[0.8rem] after:absolute after:inset-x-0 after:z-0 after:rounded-md data-[active=true]:border-accent data-[active=true]:bg-accent"
                               isActive={item.url === pathname}
-                              className="data-[active=true]:bg-accent data-[active=true]:border-accent 3xl:fixed:w-full 3xl:fixed:max-w-48 relative h-[30px] w-fit overflow-visible border border-transparent text-[0.8rem] font-medium after:absolute after:inset-x-0 after:-inset-y-1 after:z-0 after:rounded-md"
                             >
                               <Link href={item.url}>
                                 <span className="absolute inset-0 flex w-(--sidebar-width) bg-transparent" />
@@ -92,16 +89,15 @@ export function DocsSidebar({
                             </SidebarMenuButton>
                           </SidebarMenuItem>
                         )
-                      )
-                    })}
+                    )}
                   </SidebarMenu>
                 )}
               </SidebarGroupContent>
             </SidebarGroup>
-          )
+          );
         })}
-        <div className="from-background via-background/80 to-background/50 sticky -bottom-1 z-10 h-16 shrink-0 bg-gradient-to-t blur-xs" />
+        <div className="-bottom-1 sticky z-10 h-16 shrink-0 bg-gradient-to-t from-background via-background/80 to-background/50 blur-xs" />
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }

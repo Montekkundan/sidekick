@@ -1,31 +1,30 @@
-"use client"
+"use client";
 
-import { THEMES } from "@/lib/themes"
-import { cn } from "@/lib/utils"
-import { useThemeConfig } from "@/components/active-theme"
-import { Label } from "@/registry/new-york/ui/label"
+import { useThemeConfig } from "@/components/active-theme";
+import { THEMES } from "@/lib/themes";
+import { cn } from "@/lib/utils";
+import { Label } from "@/registry/new-york/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/registry/new-york/ui/select"
-
+} from "@/registry/new-york/ui/select";
 
 export function ThemeSelector({ className }: React.ComponentProps<"div">) {
-  const { activeTheme, setActiveTheme } = useThemeConfig()
+  const { activeTheme, setActiveTheme } = useThemeConfig();
 
   return (
     <div className={cn("flex items-center gap-2", className)}>
-      <Label htmlFor="theme-selector" className="sr-only">
+      <Label className="sr-only" htmlFor="theme-selector">
         Theme
       </Label>
-      <Select value={activeTheme} onValueChange={setActiveTheme}>
+      <Select onValueChange={setActiveTheme} value={activeTheme}>
         <SelectTrigger
+          className="justify-start border-secondary bg-secondary text-secondary-foreground shadow-none *:data-[slot=select-value]:w-12"
           id="theme-selector"
           size="sm"
-          className="bg-secondary text-secondary-foreground border-secondary justify-start shadow-none *:data-[slot=select-value]:w-12"
         >
           <span className="font-medium">Theme:</span>
           <SelectValue placeholder="Select a theme" />
@@ -33,9 +32,9 @@ export function ThemeSelector({ className }: React.ComponentProps<"div">) {
         <SelectContent align="end">
           {THEMES.map((theme) => (
             <SelectItem
+              className="data-[state=checked]:opacity-50"
               key={theme.name}
               value={theme.name}
-              className="data-[state=checked]:opacity-50"
             >
               {theme.label}
             </SelectItem>
@@ -43,5 +42,5 @@ export function ThemeSelector({ className }: React.ComponentProps<"div">) {
         </SelectContent>
       </Select>
     </div>
-  )
+  );
 }

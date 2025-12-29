@@ -19,7 +19,7 @@ export function Callout({
   return (
     <Alert
       className={cn(
-        "mt-6 w-auto border bg-background text-foreground md:-mx-1",
+        "md:-mx-1 mt-6 w-auto border bg-background text-foreground",
         className
       )}
       data-variant={variant}

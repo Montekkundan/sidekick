@@ -10,37 +10,47 @@
  * Copy and modify this for your own themed chat UI!
  */
 
+import type { ChatStatus } from "ai";
 import {
-  Sidekick,
-  SidekickContent,
-  SidekickFooter,
-  SidekickHeader,
-  SidekickTrigger,
+  AtSignIcon,
+  BotIcon,
+  ChevronDownIcon,
+  GlobeIcon,
+  ImageIcon,
+  SparklesIcon,
+  UserIcon,
+} from "lucide-react";
+import { nanoid } from "nanoid";
+import { useRef, useState } from "react";
+import {
+  PromptInput,
+  PromptInputActionAddAttachments,
+  PromptInputActionMenu,
+  PromptInputActionMenuContent,
+  PromptInputActionMenuTrigger,
+  PromptInputAttachment,
+  PromptInputAttachments,
+  PromptInputBody,
+  PromptInputButton,
+  PromptInputFooter,
+  type PromptInputMessage,
+  PromptInputSubmit,
+  PromptInputTextarea,
+  PromptInputTools,
+} from "@/registry/new-york/blocks/prompt-input";
+import {
   Conversation,
   ConversationContent,
   ConversationEmptyState,
   Message,
   MessageAvatar,
   MessageContent,
+  Sidekick,
+  SidekickContent,
+  SidekickFooter,
+  SidekickHeader,
   useSidekick,
 } from "@/registry/new-york/blocks/sidekick";
-import {
-  PromptInput,
-  PromptInputBody,
-  PromptInputTextarea,
-  PromptInputFooter,
-  PromptInputTools,
-  PromptInputButton,
-  PromptInputSubmit,
-  PromptInputAttachments,
-  PromptInputAttachment,
-  PromptInputActionMenu,
-  PromptInputActionMenuTrigger,
-  PromptInputActionMenuContent,
-  PromptInputActionAddAttachments,
-  type PromptInputMessage,
-} from "@/registry/new-york/blocks/prompt-input";
-import { Button } from "@/registry/new-york/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,18 +63,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/registry/new-york/ui/tooltip";
-import { nanoid } from "nanoid";
-import { useRef, useState } from "react";
-import type { ChatStatus } from "ai";
-import {
-  AtSignIcon,
-  ChevronDownIcon,
-  SparklesIcon,
-  BotIcon,
-  UserIcon,
-  GlobeIcon,
-  ImageIcon,
-} from "lucide-react";
 
 // ============================================================================
 // Types
@@ -203,7 +201,7 @@ function CursorChatDemo() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSubmit = (message: PromptInputMessage) => {
-    if (!message.text.trim() && !message.files?.length) return;
+    if (!(message.text.trim() || message.files?.length)) return;
 
     const userMessage: MessageType = {
       id: nanoid(),
@@ -252,7 +250,7 @@ function CursorChatDemo() {
               </ConversationEmptyState>
             ) : (
               messages.map((msg) => (
-                <Message key={msg.id} from={msg.role}>
+                <Message from={msg.role} key={msg.id}>
                   <MessageAvatar>
                     {msg.role === "user" ? (
                       <UserIcon className="size-4" />

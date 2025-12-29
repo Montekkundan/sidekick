@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   PromptInput,
@@ -7,7 +7,7 @@ import {
   PromptInputSubmit,
   PromptInputTextarea,
   PromptInputTools,
-} from "@/registry/new-york/blocks/prompt-input"
+} from "@/registry/new-york/blocks/prompt-input";
 
 function PromptInputPage() {
   return (
@@ -68,7 +68,7 @@ function PromptInputPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default PromptInputPage
+export default PromptInputPage;
