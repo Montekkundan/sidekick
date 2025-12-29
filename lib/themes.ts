@@ -1,19 +1,22 @@
-import type { ComponentType } from "react"
+import type { ComponentType } from "react";
 
 export type ThemeConfig = {
-  name: string
-  label: string
-  description?: string
-}
+  name: string;
+  label: string;
+  description?: string;
+};
 
 export type ThemeComponents = {
-  ThemedPromptInput: ComponentType
-  ThemedSidekick: ComponentType
-}
+  ThemedPromptInput: ComponentType;
+  ThemedSidekick: ComponentType;
+  AskAIButton?: ComponentType;
+  AskAILabel?: ComponentType;
+  CompactPromptInput?: ComponentType;
+};
 
 export type Theme = ThemeConfig & {
-  components: () => Promise<ThemeComponents>
-}
+  components: () => Promise<ThemeComponents>;
+};
 
 export const THEMES: Theme[] = [
   {
@@ -28,14 +31,15 @@ export const THEMES: Theme[] = [
     description: "Cursor IDE-inspired chat with model selector and tools",
     components: () => import("@/registry/new-york/themes/cursor"),
   },
-]
+];
 
 export function getTheme(name: string): Theme | undefined {
-  return THEMES.find((theme) => theme.name === name)
+  return THEMES.find((theme) => theme.name === name);
 }
 
 export function getThemeConfig(name: string): ThemeConfig | undefined {
-  const theme = getTheme(name)
-  return theme ? { name: theme.name, label: theme.label, description: theme.description } : undefined
+  const theme = getTheme(name);
+  return theme
+    ? { name: theme.name, label: theme.label, description: theme.description }
+    : undefined;
 }
-

@@ -1,5 +1,17 @@
-"use client"
+"use client";
 
+export { CompactPromptInput } from "@/app/(app)/(root)/components/compact-prompt-input";
+// Default implementations of components
+export { AskAIButton, AskAILabel } from "@/registry/new-york/blocks/ask-ai";
+
+import {
+  PromptInput,
+  PromptInputBody,
+  PromptInputFooter,
+  PromptInputSubmit,
+  PromptInputTextarea,
+  PromptInputTools,
+} from "@/registry/new-york/blocks/prompt-input";
 import {
   Conversation,
   ConversationContent,
@@ -9,21 +21,13 @@ import {
   SidekickContent,
   SidekickFooter,
   SidekickHeader,
-} from "@/registry/new-york/blocks/sidekick"
-import {
-  PromptInput,
-  PromptInputBody,
-  PromptInputFooter,
-  PromptInputSubmit,
-  PromptInputTextarea,
-  PromptInputTools,
-} from "@/registry/new-york/blocks/prompt-input"
+} from "@/registry/new-york/blocks/sidekick";
 
 export const themeConfig = {
   name: "default",
   label: "Default",
   description: "Clean, minimal default theme",
-}
+};
 
 export function ThemedPromptInput() {
   return (
@@ -36,7 +40,7 @@ export function ThemedPromptInput() {
         <PromptInputSubmit />
       </PromptInputFooter>
     </PromptInput>
-  )
+  );
 }
 
 export function ThemedSidekick() {
@@ -75,5 +79,5 @@ export function ThemedSidekick() {
         </SidekickFooter>
       </Sidekick>
     </div>
-  )
+  );
 }

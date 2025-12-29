@@ -1,10 +1,16 @@
 ---
 title: Prompt Input
-description: An input component for entering prompts with model selection, file attachments, and speech recognition.
+description: The foundational input component for AI interfaces. 100% compatible with Shadcn UI, featuring compound component architecture, flexible variants, and seamless composition.
 component: true
 ---
 
 <ComponentPreview name="prompt-input" />
+
+## Overview
+
+The `PromptInput` is designed to be the logic and visual foundation for any AI interaction. Built on top of `radix-ui` primitives and 100% compatible with Shadcn UI's styling system, it acts as a robust `form` wrapper that handles state, attachments, and submissions while letting you compose the internal layout exactly how you want.
+
+It follows the **Compound Component** pattern, allowing granular control over every part of the input, from the textarea to the toolbars and actions.
 
 ## Installation
 
@@ -38,58 +44,119 @@ npx shadcn@latest add https://sidekick.montek.dev/r/prompt-input.json
 
 </CodeTabs>
 
+## Core Concepts
+
+### Foundation & Compatibility
+
+`PromptInput` uses `InputGroup` (a flexible flexbox container) internally to align elements. It is fully compatible with Shadcn UI Form schemas and themes. 
+
+### Compound Composition
+
+You can use the dot-notation exports (e.g., `PromptInput.Textarea`) or named imports to build your interface. This decoupled architecture allows you to place buttons, menus, and text areas anywhere within the root provider.
+
 ## Usage
 
-```tsx
-import {
-  PromptInput,
-  PromptInputBody,
-  PromptInputTextarea,
-  PromptInputFooter,
-  PromptInputTools,
-  PromptInputSubmit,
-} from "@/components/prompt-input";
-```
+### Basic
 
 ```tsx
-<PromptInput onSubmit={(message) => console.log(message)}>
-  <PromptInputBody>
-    <PromptInputTextarea />
-  </PromptInputBody>
-  <PromptInputFooter>
-    <PromptInputTools />
-    <PromptInputSubmit />
-  </PromptInputFooter>
+import { PromptInput } from "@/components/ui/prompt-input"
+
+export function ChatInput() {
+  return (
+    <PromptInput onSubmit={(message) => console.log(message)}>
+      <PromptInput.Body>
+        <PromptInput.Textarea />
+      </PromptInput.Body>
+      <PromptInput.Footer>
+        <PromptInput.Tools />
+        <PromptInput.Submit />
+      </PromptInput.Footer>
+    </PromptInput>
+  )
+}
+```
+
+### Advanced Layout (Small / Compact)
+
+Since `PromptInput` logic is separated from its layout, you can hoist the state using `PromptInputProvider` to place external triggers (like an "Add" button) next to the input while sharing the same context. This is perfect for "Pill" or "Compact" designs.
+
+```tsx
+import { PlusIcon } from "lucide-react"
+import { PromptInput, PromptInputProvider } from "@/components/ui/prompt-input"
+
+export function CompactChatInput() {
+  return (
+    <PromptInputProvider>
+      <div className="flex items-center gap-2 rounded-full border p-1 pl-3 shadow-sm">
+        {/* External Trigger accessing PromptInput context */}
+        <button className="text-muted-foreground hover:text-foreground">
+          <PlusIcon className="size-5" />
+        </button>
+        
+        {/* The Input Component */}
+        <PromptInput 
+          variant="ghost" 
+          size="sm" 
+          className="flex-1 border-none shadow-none"
+          onSubmit={...}
+        >
+          <PromptInput.Body>
+            <PromptInput.Textarea placeholder="Send a message..." />
+            <PromptInput.Button size="sm">
+              <MicIcon />
+            </PromptInput.Button>
+          </PromptInput.Body>
+        </PromptInput>
+      </div>
+    </PromptInputProvider>
+  )
+}
+```
+
+### Large Variant
+
+For standard detailed inputs with tools and attachments:
+
+```tsx
+<PromptInput variant="default" size="lg" onSubmit={...}>
+  <PromptInput.Body>
+    <PromptInput.Textarea minRows={3} />
+  </PromptInput.Body>
+  <PromptInput.Footer>
+    <PromptInput.Tools>
+      <PromptInput.Attachment />
+      <PromptInput.ActionMenu />
+    </PromptInput.Tools>
+    <PromptInput.Submit />
+  </PromptInput.Footer>
 </PromptInput>
 ```
 
-## Features
-
-- **File Attachments**: Drag and drop or paste files directly into the input
-- **Speech Recognition**: Built-in speech-to-text support
-- **Model Selection**: Dropdown for selecting AI models
-- **Status Indicators**: Shows loading, streaming, and error states
-- **Keyboard Shortcuts**: Submit with Enter, Shift+Enter for new line
-
 ## API Reference
 
-### PromptInput
+### Root: PromptInput
 
-The root component that handles form submission and file management.
+The main container. Accepts `className`, `variant`, `size`, and standard form props.
 
-| Prop          | Type                                    | Default  | Description                            |
-| ------------- | --------------------------------------- | -------- | -------------------------------------- |
-| `onSubmit`    | `(message: PromptInputMessage) => void` | required | Called when the form is submitted      |
-| `accept`      | `string`                                | -        | Accepted file types (e.g., "image/\*") |
-| `multiple`    | `boolean`                               | `false`  | Allow multiple file uploads            |
-| `globalDrop`  | `boolean`                               | `false`  | Accept drops anywhere on the document  |
-| `maxFiles`    | `number`                                | -        | Maximum number of files allowed        |
-| `maxFileSize` | `number`                                | -        | Maximum file size in bytes             |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `variant` | `default` \| `pill` \| `ghost` \| `outline` | Controls the visual border and background style. |
+| `size` | `default` \| `sm` \| `lg` | Controls height, padding, and text size. `sm` is compact/single-line optimized. |
 
-### PromptInputSubmit
+### Logic: PromptInputProvider
 
-The submit button with status indicator.
+Optional context provider. Use this when you need to control the input state (files, text) from *outside* the main `PromptInput` component (e.g., a sibling button).
 
-| Prop     | Type                                               | Default   | Description                      |
-| -------- | -------------------------------------------------- | --------- | -------------------------------- |
-| `status` | `"ready" \| "submitted" \| "streaming" \| "error"` | `"ready"` | Current status of the submission |
+```tsx
+<PromptInputProvider>
+  <ExternalButton />
+  <PromptInput />
+</PromptInputProvider>
+```
+
+### Subcomponents
+
+- **PromptInput.Textarea**: Auto-resizing textarea.
+- **PromptInput.Footer**: Bottom toolbar container.
+- **PromptInput.Submit**: Intelligent submit button with loading/streaming states.
+- **PromptInput.Attachments**: File attachment preview area.

@@ -1,0 +1,8 @@
+- make size variant workable
+- add logo
+- changelog page
+- add gateway docs
+- components/blocks with full drizzle and prisma gateway setup
+- cookbook page with book icons
+- cookbook for netflix search page, chatgpt home page, cursor editor page and help center page
+- fuma docs + mdx + basehub + AI chat docs

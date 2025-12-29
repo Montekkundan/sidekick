@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 
 export function ComponentPreviewTabs({
   className,
+  previewClassName,
   align = "center",
   hideCode = false,
   chromeLessOnMobile = false,
@@ -16,6 +17,7 @@ export function ComponentPreviewTabs({
   align?: "center" | "start" | "end";
   hideCode?: boolean;
   chromeLessOnMobile?: boolean;
+  previewClassName?: string;
   component: React.ReactNode;
   source: React.ReactNode;
 }) {
@@ -31,7 +33,8 @@ export function ComponentPreviewTabs({
         <div
           className={cn(
             "preview flex w-full justify-center data-[align=start]:items-start data-[align=end]:items-end data-[align=center]:items-center",
-            chromeLessOnMobile ? "sm:p-10" : "h-[450px] p-10"
+            chromeLessOnMobile ? "sm:p-10" : "h-[450px]",
+            previewClassName
           )}
           data-align={align}
         >

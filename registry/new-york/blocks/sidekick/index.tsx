@@ -652,3 +652,16 @@ export {
   MessageContent,
   MessageTimestamp,
 };
+
+// ============================================================================
+// Compound Component Exports
+// ============================================================================
+
+Sidekick.Header = SidekickHeader;
+Sidekick.Content = SidekickContent;
+Sidekick.Footer = SidekickFooter;
+Sidekick.Inset = SidekickInset;
+Sidekick.Input = SidekickInput;
+Sidekick.Separator = SidekickSeparator;
+Sidekick.Trigger = SidekickTrigger;
+Sidekick.Provider = SidekickProvider;

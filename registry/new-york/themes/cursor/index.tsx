@@ -38,6 +38,7 @@ import {
   PromptInputAttachments,
   PromptInputBody,
   PromptInputFooter,
+  PromptInputProvider,
   PromptInputSubmit,
   PromptInputTextarea,
   PromptInputTools,
@@ -681,5 +682,92 @@ export function ThemedSidekick() {
         </SidekickFooter>
       </Sidekick>
     </div>
+  );
+}
+
+export function AskAIButton({ className }: { className?: string }) {
+  return (
+    <Button
+      className={cn(
+        "h-8 gap-2 rounded-full border-zinc-700/50 bg-zinc-900/50 font-normal text-xs text-zinc-400 backdrop-blur-sm hover:bg-zinc-800/50 hover:text-zinc-300",
+        className
+      )}
+      variant="outline"
+    >
+      <img
+        alt="Cursor"
+        className="size-3 opacity-70 grayscale"
+        src="https://cursor.sh/brand/icon.svg"
+      />
+      Ask Cursor AI
+    </Button>
+  );
+}
+
+export function AskAILabel({
+  label = "Ask AI about this page",
+  className,
+}: {
+  label?: string;
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn(
+        "flex items-center gap-2 font-mono text-xs text-zinc-500",
+        className
+      )}
+    >
+      <BotIcon className="size-3.5" />
+      {label}
+    </span>
+  );
+}
+
+export function CompactPromptInput({
+  onSubmit,
+  className,
+}: {
+  onSubmit?: (message: any) => void;
+  className?: string;
+}) {
+  return (
+    <PromptInputProvider>
+      <div
+        className={cn(
+          "group flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-950/50 p-1 pl-3 shadow-2xl backdrop-blur-xl transition-all focus-within:border-zinc-600 hover:border-zinc-700",
+          className
+        )}
+      >
+        <div className="flex shrink-0 items-center gap-1.5 text-zinc-500">
+          <Button
+            className="size-6 rounded-full hover:bg-zinc-800 hover:text-zinc-300"
+            size="icon"
+            variant="ghost"
+          >
+            <PlusIcon className="size-3.5" />
+          </Button>
+        </div>
+        <div className="h-4 w-px bg-zinc-800" />
+        <PromptInput
+          className="flex-1 border-none bg-transparent shadow-none"
+          onSubmit={onSubmit ? (m) => onSubmit(m) : undefined}
+          size="sm"
+          variant="ghost"
+        >
+          <PromptInputBody>
+            <PromptInputTextarea
+              className="min-h-[20px] py-1.5 text-xs placeholder:text-zinc-600 focus-visible:ring-0"
+              placeholder="Generate code..."
+            />
+            <div className="flex items-center gap-1 pr-2">
+              <span className="flex h-5 items-center rounded border border-zinc-800 bg-zinc-900 px-1.5 font-mono text-[10px] text-zinc-600">
+                ⌘K
+              </span>
+            </div>
+          </PromptInputBody>
+        </PromptInput>
+      </div>
+    </PromptInputProvider>
   );
 }

@@ -1,6 +1,8 @@
 "use client";
 
-import { Button } from "@/registry/new-york/ui/button"
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/registry/new-york/lib/utils";
+import { Button } from "@/registry/new-york/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,7 +27,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/registry/new-york/ui/select";
-import { cn } from "@/registry/new-york/lib/utils";
+
+// ============================================================================
+// Prompt Input Variants
+// ============================================================================
+
+export const promptInputVariants = cva("", {
+  variants: {
+    variant: {
+      default: "",
+      pill: "**:data-[slot=input-group]:rounded-full **:data-[slot=input-group]:border-zinc-200 dark:**:data-[slot=input-group]:border-zinc-700",
+      ghost:
+        "**:data-[slot=input-group]:border-transparent **:data-[slot=input-group]:bg-transparent **:data-[slot=input-group]:shadow-none dark:**:data-[slot=input-group]:bg-transparent",
+      outline:
+        "**:data-[slot=input-group]:border-2 **:data-[slot=input-group]:bg-transparent dark:**:data-[slot=input-group]:bg-transparent",
+    },
+    size: {
+      sm: "**:data-[slot=input-group]:!h-10 **:data-[slot=input-group]:!flex-row **:data-[slot=input-group]:!items-center **:data-[slot=input-group-control]:!min-h-0 **:data-[slot=input-group-control]:!min-w-0 **:data-[slot=input-group-control]:!max-h-10 **:data-[slot=input-group-control]:!resize-none **:data-[slot=input-group-control]:!overflow-hidden **:data-[slot=input-group-control]:!py-2.5 **:data-[slot=input-group-control]:!text-sm [&_[data-slot=input-group-addon][data-align=block-end]]:!w-auto [&_[data-slot=input-group-addon][data-align=block-end]]:!p-0 [&_[data-slot=input-group-addon][data-align=block-end]]:!m-0 [&_[data-slot=input-group-addon][data-align=block-end]]:!pr-2 [&_[data-slot=input-group-addon][data-align=block-end]]:!justify-end",
+      default: "",
+      lg: "**:data-[slot=input-group-control]:min-h-20 **:data-[slot=input-group]:min-h-20 **:data-[slot=input-group-control]:py-4 **:data-[slot=input-group-control]:text-base",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+    size: "default",
+  },
+});
+
 import type { ChatStatus, FileUIPart } from "ai";
 import {
   CornerDownLeftIcon,
@@ -192,15 +220,16 @@ export function PromptInputProvider({
   attachmentsRef.current = attachmentFiles;
 
   // Cleanup blob URLs on unmount to prevent memory leaks
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       for (const f of attachmentsRef.current) {
         if (f.url) {
           URL.revokeObjectURL(f.url);
         }
       }
-    };
-  }, []);
+    },
+    []
+  );
 
   const openFileDialog = useCallback(() => {
     openRef.current?.();
@@ -383,7 +412,7 @@ export function PromptInputAttachments({
 
   return (
     <div
-      className={cn("flex flex-wrap items-center gap-2 p-3 w-full", className)}
+      className={cn("flex w-full flex-wrap items-center gap-2 p-3", className)}
       {...props}
     >
       {attachments.files.map((file) => (
@@ -426,28 +455,31 @@ export type PromptInputMessage = {
 export type PromptInputProps = Omit<
   HTMLAttributes<HTMLFormElement>,
   "onSubmit" | "onError"
-> & {
-  accept?: string; // e.g., "image/*" or leave undefined for any
-  multiple?: boolean;
-  // When true, accepts drops anywhere on document. Default false (opt-in).
-  globalDrop?: boolean;
-  // Render a hidden input with given name and keep it in sync for native form posts. Default false.
-  syncHiddenInput?: boolean;
-  // Minimal constraints
-  maxFiles?: number;
-  maxFileSize?: number; // bytes
-  onError?: (err: {
-    code: "max_files" | "max_file_size" | "accept";
-    message: string;
-  }) => void;
-  onSubmit: (
-    message: PromptInputMessage,
-    event: FormEvent<HTMLFormElement>
-  ) => void | Promise<void>;
-};
+> &
+  VariantProps<typeof promptInputVariants> & {
+    accept?: string; // e.g., "image/*" or leave undefined for any
+    multiple?: boolean;
+    // When true, accepts drops anywhere on document. Default false (opt-in).
+    globalDrop?: boolean;
+    // Render a hidden input with given name and keep it in sync for native form posts. Default false.
+    syncHiddenInput?: boolean;
+    // Minimal constraints
+    maxFiles?: number;
+    maxFileSize?: number; // bytes
+    onError?: (err: {
+      code: "max_files" | "max_file_size" | "accept";
+      message: string;
+    }) => void;
+    onSubmit: (
+      message: PromptInputMessage,
+      event: FormEvent<HTMLFormElement>
+    ) => void | Promise<void>;
+  };
 
 export const PromptInput = ({
   className,
+  variant,
+  size,
   accept,
   multiple,
   globalDrop,
@@ -602,7 +634,7 @@ export const PromptInput = ({
   useEffect(() => {
     const form = formRef.current;
     if (!form) return;
-    if (globalDrop) return // when global drop is on, let the document-level handler own drops
+    if (globalDrop) return; // when global drop is on, let the document-level handler own drops
 
     const onDragOver = (e: DragEvent) => {
       if (e.dataTransfer?.types?.includes("Files")) {
@@ -775,7 +807,11 @@ export const PromptInput = ({
         type="file"
       />
       <form
-        className={cn("w-full", className)}
+        className={cn(
+          "w-full",
+          promptInputVariants({ variant, size }),
+          className
+        )}
         onSubmit={handleSubmit}
         ref={formRef}
         {...props}
@@ -1339,3 +1375,37 @@ export const PromptInputTabItem = ({
     {...props}
   />
 );
+
+// ============================================================================
+// Compound Component Exports
+// ============================================================================
+
+PromptInput.Provider = PromptInputProvider;
+PromptInput.Body = PromptInputBody;
+PromptInput.Textarea = PromptInputTextarea;
+PromptInput.Header = PromptInputHeader;
+PromptInput.Footer = PromptInputFooter;
+PromptInput.Submit = PromptInputSubmit;
+PromptInput.Tools = PromptInputTools;
+PromptInput.Button = PromptInputButton;
+PromptInput.SpeechButton = PromptInputSpeechButton;
+PromptInput.Attachments = PromptInputAttachments;
+PromptInput.Attachment = PromptInputAttachment;
+PromptInput.ActionMenu = PromptInputActionMenu;
+PromptInput.ActionMenuTrigger = PromptInputActionMenuTrigger;
+PromptInput.ActionMenuContent = PromptInputActionMenuContent;
+PromptInput.ActionMenuItem = PromptInputActionMenuItem;
+PromptInput.ActionAddAttachments = PromptInputActionAddAttachments;
+PromptInput.Select = PromptInputSelect;
+PromptInput.SelectTrigger = PromptInputSelectTrigger;
+PromptInput.SelectContent = PromptInputSelectContent;
+PromptInput.SelectItem = PromptInputSelectItem;
+PromptInput.SelectValue = PromptInputSelectValue;
+PromptInput.HoverCard = PromptInputHoverCard;
+PromptInput.HoverCardTrigger = PromptInputHoverCardTrigger;
+PromptInput.HoverCardContent = PromptInputHoverCardContent;
+PromptInput.TabsList = PromptInputTabsList;
+PromptInput.Tab = PromptInputTab;
+PromptInput.TabLabel = PromptInputTabLabel;
+PromptInput.TabBody = PromptInputTabBody;
+PromptInput.TabItem = PromptInputTabItem;

@@ -4,6 +4,20 @@
   "homepage": "https://sidekick.montek.dev",
   "items": [
     {
+      "name": "ask-ai",
+      "type": "registry:component",
+      "title": "Ask AI Button",
+      "description": "A component set for triggering AI interactions and displaying labels.",
+      "dependencies": [],
+      "registryDependencies": ["button", "avatar"],
+      "files": [
+        {
+          "path": "registry/new-york/blocks/ask-ai/index.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "prompt-input",
       "type": "registry:component",
       "title": "Prompt Input",
@@ -20,11 +34,6 @@
         {
           "path": "registry/new-york/blocks/prompt-input/index.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "registry/new-york/blocks/prompt-input/page.tsx",
-          "type": "registry:page",
-          "target": "app/components/prompt-input/page.tsx"
         }
       ]
     },
@@ -46,11 +55,6 @@
         {
           "path": "registry/new-york/blocks/sidekick/index.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "registry/new-york/blocks/sidekick/page.tsx",
-          "type": "registry:page",
-          "target": "app/components/sidekick/page.tsx"
         }
       ]
     },
@@ -68,8 +72,8 @@
       ],
       "files": [
         {
-          "path": "registry/new-york/themes/cursor/page.tsx",
-          "type": "registry:page",
+          "path": "registry/new-york/examples/cursor-theme-demo.tsx",
+          "type": "registry:example",
           "target": "app/examples/cursor-theme/page.tsx"
         }
       ]
