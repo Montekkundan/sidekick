@@ -15,6 +15,11 @@ export type RegistryItem = {
     type?: string;
     target?: string;
   }>;
+  meta?: {
+    iframeHeight?: number;
+    containerClassName?: string;
+    mobile?: string;
+  };
 };
 
 export async function getRegistryItem(

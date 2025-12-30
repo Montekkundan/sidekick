@@ -1,4 +1,12 @@
 {
   "title": "Get Started",
-  "pages": ["index", "drizzle", "prisma"]
+  "pages": [
+    "index", 
+    "drizzle", 
+    "prisma", 
+    "tools",
+    "gateway", 
+    "blocks",
+     "[llms.txt](/llms.txt)"
+  ]
 }

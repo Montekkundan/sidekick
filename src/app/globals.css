@@ -101,6 +101,13 @@
   --code-number: oklch(0.56 0 0);
   --selection: oklch(0.145 0 0);
   --selection-foreground: oklch(1 0 0);
+  
+  /* Book component variables */
+  --ds-background-200: oklch(0.97 0 0);
+  --ds-gray-1000: oklch(0.145 0 0);
+  --ds-amber-600: oklch(0.704 0.15 76.91);
+  --ds-book-bind: linear-gradient(90deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0));
+  --ds-gray-alpha-400: oklch(0.5 0 0 / 0.4);
 }
 
 .dark {
@@ -144,6 +151,10 @@
   --code-number: oklch(0.72 0 0);
   --selection: oklch(0.922 0 0);
   --selection-foreground: oklch(0.205 0 0);
+  
+  /* Book component variables - dark mode */
+  --ds-background-200: oklch(0.25 0 0);
+  --ds-gray-1000: oklch(0.985 0 0);
 }
 
 @layer base {
@@ -354,4 +365,46 @@
   .dialog-ring {
     @apply rounded-xl border-none bg-clip-padding shadow-2xl ring-4 ring-neutral-200/80 dark:bg-neutral-900 dark:ring-neutral-800;
   }
+  
+  /* Book component styles */
+  .book-rotate {
+    transition: transform 250ms ease-out;
+  }
+  
+  .book-rotate:hover {
+    transform: rotate3d(0, 1, 0, -25deg);
+  }
+  
+  .shadow-book {
+    box-shadow: 
+      0 1px 2px rgba(0, 0, 0, 0.1),
+      0 2px 4px rgba(0, 0, 0, 0.1),
+      0 4px 8px rgba(0, 0, 0, 0.1),
+      0 8px 16px rgba(0, 0, 0, 0.1),
+      0 20px 40px -12px rgba(0, 0, 0, 0.3),
+      0 0 80px -20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .shadow-book-border {
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .bg-book-gradient {
+    background: linear-gradient(180deg, 
+      color-mix(in oklab, var(--ds-amber-600) 85%, white) 0%, 
+      var(--ds-amber-600) 100%);
+  }
+  
+  .bg-book-text-section {
+    background: var(--ds-background-200);
+  }
 }
+
+@utility border-gray-alpha-400 {
+  border-color: var(--ds-gray-alpha-400);
+}
+
+@utility bg-background-200 {
+  background-color: var(--ds-background-200);
+}
+

@@ -1,9 +1,13 @@
-- make size variant workable
 - add logo
 - changelog page
 - add gateway docs
 - components/blocks with full drizzle and prisma gateway setup
-- cookbook page with book icons
 - cookbook for netflix search page, chatgpt home page, cursor editor page and help center page
 - fuma docs + mdx + basehub + AI chat docs
 - add devtools
+- tools rendering page
+- tools rendering with widgets https://widgets.chatkit.studio/, https://platform.openai.com/docs/guides/chatkit-widgets
+- playground view https://chatkit.studio/playground
+- https://developers.openai.com/blog/what-makes-a-great-chatgpt-app
+- https://developers.googleblog.com/introducing-a2ui-an-open-project-for-agent-driven-interfaces/
+- remove legacy style and new york folder struct

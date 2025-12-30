@@ -17,6 +17,10 @@ export const siteConfig = {
       href: "/blocks",
       label: "Blocks",
     },
+    {
+      href: "/docs/cookbook",
+      label: "Cookbook",
+    }
   ],
 };
 

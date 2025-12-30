@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ask-ai",
+  "title": "Ask AI Button",
+  "description": "A component set for triggering AI interactions and displaying labels.",
+  "dependencies": [],
+  "registryDependencies": [
+    "button",
+    "avatar"
+  ],
+  "files": [
+    {
+      "path": "src/registry/new-york/blocks/ask-ai/index.tsx",
+      "content": "\"use client\";\n\nimport { MessageCircle } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\nimport {\n  Avatar,\n  AvatarFallback,\n  AvatarImage,\n} from \"@/registry/new-york/ui/avatar\";\nimport { Button } from \"@/registry/new-york/ui/button\";\n\nexport type AskAIButtonProps = {\n  avatarSrc?: string;\n  avatarFallback?: string;\n  className?: string;\n  onClick?: () => void;\n};\n\nexport function AskAIButton({\n  avatarSrc = \"https://github.com/montekkundan.png\",\n  avatarFallback = \"MK\",\n  className,\n  onClick,\n}: AskAIButtonProps) {\n  return (\n    <div\n      className={cn(\n        \"flex items-center justify-between rounded-lg bg-zinc-900 p-2\",\n        className\n      )}\n    >\n      <Button\n        className=\"border-zinc-700 bg-transparent text-white hover:bg-zinc-800\"\n        onClick={onClick}\n        variant=\"outline\"\n      >\n        Ask AI\n      </Button>\n      <Avatar>\n        <AvatarImage alt=\"User\" src={avatarSrc} />\n        <AvatarFallback>{avatarFallback}</AvatarFallback>\n      </Avatar>\n    </div>\n  );\n}\n\nexport type AskAILabelProps = {\n  label?: string;\n  className?: string;\n};\n\nexport function AskAILabel({\n  label = \"Ask AI about this page\",\n  className,\n}: AskAILabelProps) {\n  return (\n    <span className={cn(\"flex items-center gap-3 text-zinc-400\", className)}>\n      <MessageCircle className=\"size-5\" />\n      {label}\n    </span>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "type": "registry:component"
+}

@@ -2,7 +2,7 @@ import va from "@vercel/analytics";
 import { z } from "zod";
 
 const eventSchema = z.object({
-  name: z.enum(["copy_code", "copy_npm_command"]),
+  name: z.enum(["copy_code", "copy_npm_command", "copy_block_code"]),
   properties: z
     .record(
       z.string(),
