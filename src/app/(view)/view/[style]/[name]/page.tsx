@@ -14,6 +14,7 @@ import { getStyle, legacyStyles, type Style } from "@/registry/_legacy-styles"
 // Dynamic component imports
 const componentMap: Record<string, () => Promise<{ default: React.ComponentType }>> = {
   "dashboard-01": () => import("@/registry/new-york/blocks/dashboard-01/page"),
+  "sidekick-01": () => import("@/registry/new-york/blocks/sidekick-01/page"),
 }
 
 async function getRegistryComponent(name: string) {

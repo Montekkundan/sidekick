@@ -1,8 +1,10 @@
 import { FileIcon } from "lucide-react";
-
+import { HugeiconsIcon } from '@hugeicons/react'
 type IconProps = React.HTMLAttributes<SVGElement>;
+import { Robot02Icon } from '@hugeicons/core-free-icons'
 
 export const Icons = {
+  logo: (props: IconProps) => <HugeiconsIcon icon={Robot02Icon} {...props} />,
   twitter: (props: IconProps) => (
     <svg
       {...props}

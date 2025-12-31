@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sidekick-01",
+  "title": "Sidekick Standalone Chat",
+  "description": "A standalone AI chat interface with gateway integration and streaming responses. Demonstrates how to build a complete chat experience with the Sidekick component and AI Gateway.",
+  "dependencies": [
+    "nanoid",
+    "ai"
+  ],
+  "registryDependencies": [
+    "sidekick",
+    "prompt-input",
+    "button",
+    "gateway"
+  ],
+  "files": [
+    {
+      "path": "src/registry/new-york/blocks/sidekick-01/page.tsx",
+      "content": "import { SidekickStandalone } from \"@/registry/new-york/blocks/sidekick-01/components/sidekick-standalone\"\n\nexport default function Page() {\n  return (\n    <div className=\"flex min-h-svh w-full items-center justify-center p-6 md:p-10\">\n      <div className=\"w-full max-w-sm\">\n        <SidekickStandalone />\n      </div>\n    </div>\n  )\n}\n",
+      "type": "registry:page",
+      "target": "app/sidekick/page.tsx"
+    },
+    {
+      "path": "src/registry/new-york/blocks/sidekick-01/components/sidekick-standalone.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { nanoid } from \"nanoid\";\nimport {\n\tPromptInput,\n\tPromptInputBody,\n\tPromptInputFooter,\n\tPromptInputSubmit,\n\tPromptInputTextarea,\n\tPromptInputTools,\n} from \"@/registry/new-york/blocks/prompt-input\";\nimport {\n\tConversation,\n\tConversationContent,\n\tMessage,\n\tMessageContent,\n\tSidekick,\n\tSidekickContent,\n\tSidekickFooter,\n\tSidekickHeader,\n} from \"@/registry/new-york/blocks/sidekick\";\nimport { createGatewayModel } from \"@/registry/new-york/lib/gateway\";\nimport { streamText } from \"ai\";\n\ninterface ChatMessage {\n\tid: string;\n\tfrom: \"user\" | \"assistant\";\n\tcontent: string;\n}\n\nexport function SidekickStandalone() {\n\tconst [messages, setMessages] = React.useState<ChatMessage[]>([\n\t\t{\n\t\t\tid: nanoid(),\n\t\t\tfrom: \"user\",\n\t\t\tcontent: \"Hello!\",\n\t\t},\n\t\t{\n\t\t\tid: nanoid(),\n\t\t\tfrom: \"assistant\",\n\t\t\tcontent: \"Hi there! How can I help you today?\",\n\t\t},\n\t]);\n\tconst [isLoading, setIsLoading] = React.useState(false);\n\n\tconst handleSubmit = async (message: { text: string }) => {\n\t\tif (!message.text.trim()) return;\n\n\t\t// Add user message\n\t\tconst userMessage: ChatMessage = {\n\t\t\tid: nanoid(),\n\t\t\tfrom: \"user\",\n\t\t\tcontent: message.text,\n\t\t};\n\t\tsetMessages((prev) => [...prev, userMessage]);\n\t\tsetIsLoading(true);\n\n\t\ttry {\n\t\t\t// Create AI model using gateway\n\t\t\tconst model = createGatewayModel({\n\t\t\t\tmodelId: \"openai/gpt-4o-mini\",\n\t\t\t});\n\n\t\t\t// Create assistant message placeholder\n\t\t\tconst assistantMessageId = nanoid();\n\t\t\tsetMessages((prev) => [\n\t\t\t\t...prev,\n\t\t\t\t{\n\t\t\t\t\tid: assistantMessageId,\n\t\t\t\t\tfrom: \"assistant\",\n\t\t\t\t\tcontent: \"\",\n\t\t\t\t},\n\t\t\t]);\n\n\t\t\t// Stream the response\n\t\t\tconst result = streamText({\n\t\t\t\tmodel,\n\t\t\t\tmessages: [\n\t\t\t\t\t...messages.map((msg) => ({\n\t\t\t\t\t\trole: msg.from === \"user\" ? (\"user\" as const) : (\"assistant\" as const),\n\t\t\t\t\t\tcontent: msg.content,\n\t\t\t\t\t})),\n\t\t\t\t\t{\n\t\t\t\t\t\trole: \"user\" as const,\n\t\t\t\t\t\tcontent: message.text,\n\t\t\t\t\t},\n\t\t\t\t],\n\t\t\t});\n\n\t\t\t// Handle streaming\n\t\t\tlet fullText = \"\";\n\t\t\tfor await (const chunk of result.textStream) {\n\t\t\t\tfullText += chunk;\n\t\t\t\tsetMessages((prev) =>\n\t\t\t\t\tprev.map((msg) =>\n\t\t\t\t\t\tmsg.id === assistantMessageId\n\t\t\t\t\t\t\t? { ...msg, content: fullText }\n\t\t\t\t\t\t\t: msg,\n\t\t\t\t\t),\n\t\t\t\t);\n\t\t\t}\n\t\t} catch (error) {\n\t\t\tconsole.error(\"Chat error:\", error);\n\t\t\t// Add error message\n\t\t\tsetMessages((prev) => [\n\t\t\t\t...prev,\n\t\t\t\t{\n\t\t\t\t\tid: nanoid(),\n\t\t\t\t\tfrom: \"assistant\",\n\t\t\t\t\tcontent: \"Sorry, I encountered an error. Please try again.\",\n\t\t\t\t},\n\t\t\t]);\n\t\t} finally {\n\t\t\tsetIsLoading(false);\n\t\t}\n\t};\n\n\treturn (\n\t\t<div className=\"h-[600px] w-full max-w-md overflow-hidden rounded-lg border\">\n\t\t\t<Sidekick standalone>\n\t\t\t\t<SidekickHeader>\n\t\t\t\t\t<span className=\"font-semibold\">AI Assistant</span>\n\t\t\t\t</SidekickHeader>\n\n\t\t\t\t<SidekickContent>\n\t\t\t\t\t<Conversation>\n\t\t\t\t\t\t<ConversationContent>\n\t\t\t\t\t\t\t{messages.map((msg) => (\n\t\t\t\t\t\t\t\t<Message from={msg.from} key={msg.id}>\n\t\t\t\t\t\t\t\t\t<MessageContent from={msg.from}>{msg.content}</MessageContent>\n\t\t\t\t\t\t\t\t</Message>\n\t\t\t\t\t\t\t))}\n\t\t\t\t\t\t</ConversationContent>\n\t\t\t\t\t</Conversation>\n\t\t\t\t</SidekickContent>\n\n\t\t\t\t<SidekickFooter>\n\t\t\t\t\t<PromptInput disabled={isLoading} onSubmit={handleSubmit}>\n\t\t\t\t\t\t<PromptInputBody>\n\t\t\t\t\t\t\t<PromptInputTextarea placeholder=\"Ask me anything...\" />\n\t\t\t\t\t\t</PromptInputBody>\n\t\t\t\t\t\t<PromptInputFooter>\n\t\t\t\t\t\t\t<PromptInputTools />\n\t\t\t\t\t\t\t<PromptInputSubmit />\n\t\t\t\t\t\t</PromptInputFooter>\n\t\t\t\t\t</PromptInput>\n\t\t\t\t</SidekickFooter>\n\t\t\t</Sidekick>\n\t\t</div>\n\t);\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "meta": {
+    "iframeHeight": "800px"
+  },
+  "categories": [
+    "sidekick"
+  ],
+  "type": "registry:block"
+}

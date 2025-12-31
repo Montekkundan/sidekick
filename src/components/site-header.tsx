@@ -9,6 +9,7 @@ import { source } from "@/lib/source";
 // import blocks from "@/registry/__blocks__.json"
 import { Button } from "@/registry/new-york/ui/button";
 import { Separator } from "@/registry/new-york/ui/separator";
+import { Icons } from "./icons";
 
 export function SiteHeader() {
   const pageTree = source.pageTree;
@@ -29,8 +30,7 @@ export function SiteHeader() {
             variant="ghost"
           >
             <Link href="/">
-              {/* TODO add logo  */}
-              {/* <Icons.logo className="size-5" /> */}
+              <Icons.logo className="size-5" />
               <span className="sr-only">{siteConfig.name}</span>
             </Link>
           </Button>

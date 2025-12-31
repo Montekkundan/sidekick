@@ -8,7 +8,7 @@ export function Announcement() {
     <Badge asChild className="bg-transparent" variant="secondary">
       <Link href="/docs/changelog">
         <span className="flex size-2 rounded-full bg-blue-500" title="New" />
-        npx shadcn create <ArrowRightIcon />
+        Builder to create widgets <ArrowRightIcon />
       </Link>
     </Badge>
   );

@@ -1,3 +1,5 @@
+import { SquarePlus, Grid2x2, Box, PencilRuler } from 'lucide-react';
+
 export const siteConfig = {
   name: "Sidekick",
   url: "https://sidekick.montek.dev",
@@ -20,6 +22,32 @@ export const siteConfig = {
     {
       href: "/docs/cookbook",
       label: "Cookbook",
+    },
+    {
+      href: "/widget-builder",
+      label: "Widget Builder",
+    }
+  ],
+  widgetNavItems: [
+    {
+      href: "/widget-builder",
+      label: "New Widget",
+      icon: SquarePlus,
+    },
+    {
+      href: "/widget-builder/gallery",
+      label: "Gallery",
+      icon: Grid2x2,
+    },
+    {
+      href: "/widget-builder/components",
+      label: "Components",
+      icon: Box,
+    },
+    {
+      href: "/widget-builder/icons",
+      label: "Icons",
+      icon: PencilRuler,
     }
   ],
 };

@@ -59,6 +59,24 @@
       ]
     },
     {
+      "name": "gateway",
+      "type": "registry:lib",
+      "title": "AI Gateway",
+      "description": "AI Gateway library for managing multiple AI providers (Vercel AI Gateway, LLM Gateway, OpenRouter) with automatic fallbacks and error handling. Integrates seamlessly with AI SDK v6.",
+      "dependencies": ["ai", "@llmgateway/ai-sdk-provider", "@openrouter/ai-sdk-provider"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "src/registry/new-york/lib/gateway.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/registry/new-york/hooks/use-gateway-chat.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
       "name": "theme-cursor",
       "type": "registry:example",
       "title": "Cursor Theme Example",
@@ -79,9 +97,38 @@
       ]
     },
     {
+      "name": "sidekick-01",
+      "type": "registry:block",
+      "title": "Sidekick Standalone Chat",
+      "description": "A standalone AI chat interface with gateway integration and streaming responses. Demonstrates how to build a complete chat experience with the Sidekick component and AI Gateway.",
+      "dependencies": ["nanoid", "ai"],
+      "registryDependencies": [
+        "sidekick",
+        "prompt-input",
+        "button",
+        "gateway"
+      ],
+      "files": [
+        {
+          "path": "src/registry/new-york/blocks/sidekick-01/page.tsx",
+          "type": "registry:page",
+          "target": "app/sidekick/page.tsx"
+        },
+        {
+          "path": "src/registry/new-york/blocks/sidekick-01/components/sidekick-standalone.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "meta": {
+        "iframeHeight": "800px"
+      },
+      "categories": ["sidekick"]
+    },
+    {
       "name": "dashboard-01",
       "type": "registry:block",
-      "description": "A dashboard with sidebar, charts and data table.",
+      "title": "Dashboard with Sidebar",
+      "description": "A full-featured dashboard block with sidebar navigation,",
       "dependencies": [
         "@dnd-kit/core",
         "@dnd-kit/modifiers",

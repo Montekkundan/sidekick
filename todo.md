@@ -1,6 +1,3 @@
-- add logo
-- changelog page
-- add gateway docs
 - components/blocks with full drizzle and prisma gateway setup
 - cookbook for netflix search page, chatgpt home page, cursor editor page and help center page
 - fuma docs + mdx + basehub + AI chat docs
@@ -11,3 +8,12 @@
 - https://developers.openai.com/blog/what-makes-a-great-chatgpt-app
 - https://developers.googleblog.com/introducing-a2ui-an-open-project-for-agent-driven-interfaces/
 - remove legacy style and new york folder struct
+- ask ai about this page
+- edit page on github
+- open page in t3 skira chatgpt etc
+- vercel login in widget builder with drizzle schema
+- add i18n for entire website
+- per user level access for app with access code ( new app )
+- block for RAG + supermemory
+- Block for message popup standalone + sidebar
+- remove themes and go with just normal blocks

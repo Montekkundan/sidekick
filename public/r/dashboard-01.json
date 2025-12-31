@@ -1,7 +1,8 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "dashboard-01",
-  "description": "A dashboard with sidebar, charts and data table.",
+  "title": "Dashboard with Sidebar",
+  "description": "A full-featured dashboard block with sidebar navigation,",
   "dependencies": [
     "@dnd-kit/core",
     "@dnd-kit/modifiers",
