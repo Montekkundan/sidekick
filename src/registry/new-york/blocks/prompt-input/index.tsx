@@ -32,27 +32,31 @@ import {
 // Prompt Input Variants
 // ============================================================================
 
-export const promptInputVariants = cva("", {
-  variants: {
-    variant: {
-      default: "",
-      pill: "**:data-[slot=input-group]:rounded-full **:data-[slot=input-group]:border-zinc-200 dark:**:data-[slot=input-group]:border-zinc-700",
-      ghost:
-        "**:data-[slot=input-group]:border-transparent **:data-[slot=input-group]:bg-transparent **:data-[slot=input-group]:shadow-none dark:**:data-[slot=input-group]:bg-transparent",
-      outline:
-        "**:data-[slot=input-group]:border-2 **:data-[slot=input-group]:bg-transparent dark:**:data-[slot=input-group]:bg-transparent",
+export const promptInputVariants = cva(
+  "**:data-[slot=input-group]:transition-[background-color,border-color,box-shadow]",
+  {
+    variants: {
+      variant: {
+        default:
+          "**:data-[slot=input-group]:border-border **:data-[slot=input-group]:bg-card **:data-[slot=input-group]:shadow-sm dark:**:data-[slot=input-group]:bg-card/30",
+        pill: "**:data-[slot=input-group]:rounded-full **:data-[slot=input-group]:border-transparent **:data-[slot=input-group]:bg-muted/70 **:data-[slot=input-group]:px-2 dark:**:data-[slot=input-group]:bg-muted/40",
+        ghost:
+          "**:data-[slot=input-group]:border-transparent **:data-[slot=input-group]:bg-transparent **:data-[slot=input-group]:shadow-none **:data-[slot=input-group]:hover:bg-muted/30 dark:**:data-[slot=input-group]:hover:bg-muted/10",
+        outline:
+          "**:data-[slot=input-group]:border-2 **:data-[slot=input-group]:border-foreground/20 **:data-[slot=input-group]:bg-background **:data-[slot=input-group]:shadow-none dark:**:data-[slot=input-group]:border-foreground/40",
+      },
+      size: {
+        sm: "**:data-[slot=input-group]:!h-10 **:data-[slot=input-group]:!flex-row **:data-[slot=input-group]:!items-center **:data-[slot=input-group-control]:!min-h-0 **:data-[slot=input-group-control]:!min-w-0 **:data-[slot=input-group-control]:!max-h-10 **:data-[slot=input-group-control]:!resize-none **:data-[slot=input-group-control]:!overflow-hidden **:data-[slot=input-group-control]:!py-2.5 **:data-[slot=input-group-control]:!text-sm [&_[data-slot=input-group-addon][data-align=block-end]]:!w-auto [&_[data-slot=input-group-addon][data-align=block-end]]:!p-0 [&_[data-slot=input-group-addon][data-align=block-end]]:!m-0 [&_[data-slot=input-group-addon][data-align=block-end]]:!pr-2 [&_[data-slot=input-group-addon][data-align=block-end]]:!justify-end",
+        default: "",
+        lg: "**:data-[slot=input-group-control]:min-h-20 **:data-[slot=input-group]:min-h-20 **:data-[slot=input-group-control]:py-4 **:data-[slot=input-group-control]:text-base",
+      },
     },
-    size: {
-      sm: "**:data-[slot=input-group]:!h-10 **:data-[slot=input-group]:!flex-row **:data-[slot=input-group]:!items-center **:data-[slot=input-group-control]:!min-h-0 **:data-[slot=input-group-control]:!min-w-0 **:data-[slot=input-group-control]:!max-h-10 **:data-[slot=input-group-control]:!resize-none **:data-[slot=input-group-control]:!overflow-hidden **:data-[slot=input-group-control]:!py-2.5 **:data-[slot=input-group-control]:!text-sm [&_[data-slot=input-group-addon][data-align=block-end]]:!w-auto [&_[data-slot=input-group-addon][data-align=block-end]]:!p-0 [&_[data-slot=input-group-addon][data-align=block-end]]:!m-0 [&_[data-slot=input-group-addon][data-align=block-end]]:!pr-2 [&_[data-slot=input-group-addon][data-align=block-end]]:!justify-end",
-      default: "",
-      lg: "**:data-[slot=input-group-control]:min-h-20 **:data-[slot=input-group]:min-h-20 **:data-[slot=input-group-control]:py-4 **:data-[slot=input-group-control]:text-base",
+    defaultVariants: {
+      variant: "default",
+      size: "default",
     },
-  },
-  defaultVariants: {
-    variant: "default",
-    size: "default",
-  },
-});
+  }
+);
 
 import type { ChatStatus, FileUIPart } from "ai";
 import {
@@ -75,6 +79,7 @@ import {
   createContext,
   type FormEvent,
   type FormEventHandler,
+  forwardRef,
   Fragment,
   type HTMLAttributes,
   type KeyboardEventHandler,
@@ -457,6 +462,7 @@ export type PromptInputProps = Omit<
   "onSubmit" | "onError"
 > &
   VariantProps<typeof promptInputVariants> & {
+    focusRing?: boolean;
     accept?: string; // e.g., "image/*" or leave undefined for any
     multiple?: boolean;
     // When true, accepts drops anywhere on document. Default false (opt-in).
@@ -480,6 +486,7 @@ export const PromptInput = ({
   className,
   variant,
   size,
+  focusRing = true,
   accept,
   multiple,
   globalDrop,
@@ -816,7 +823,16 @@ export const PromptInput = ({
         ref={formRef}
         {...props}
       >
-        <InputGroup className="overflow-hidden">{children}</InputGroup>
+        <InputGroup
+          className={cn(
+            "overflow-hidden",
+            focusRing
+              ? null
+              : "has-[[data-slot=input-group-control]:focus-visible]:border-transparent has-[[data-slot=input-group-control]:focus-visible]:ring-0 has-[[data-slot=input-group-control]:focus-visible]:ring-transparent"
+          )}
+        >
+          {children}
+        </InputGroup>
       </form>
     </>
   );
@@ -841,14 +857,23 @@ export const PromptInputBody = ({
 
 export type PromptInputTextareaProps = ComponentProps<
   typeof InputGroupTextarea
->;
+> & {
+  minRows?: number;
+};
 
-export const PromptInputTextarea = ({
-  onChange,
-  className,
-  placeholder = "What would you like to know?",
-  ...props
-}: PromptInputTextareaProps) => {
+export const PromptInputTextarea = forwardRef<
+  HTMLTextAreaElement,
+  PromptInputTextareaProps
+>(function PromptInputTextarea(
+  {
+    minRows,
+    onChange,
+    className,
+    placeholder = "What would you like to know?",
+    ...props
+  },
+  ref
+) {
   const controller = useOptionalPromptInputController();
   const attachments = usePromptInputAttachments();
   const [isComposing, setIsComposing] = useState(false);
@@ -934,40 +959,46 @@ export const PromptInputTextarea = ({
       onKeyDown={handleKeyDown}
       onPaste={handlePaste}
       placeholder={placeholder}
+      ref={ref}
+      rows={minRows}
       {...props}
       {...controlledProps}
     />
   );
-};
+});
 
-export type PromptInputHeaderProps = Omit<
-  ComponentProps<typeof InputGroupAddon>,
-  "align"
->;
+export type PromptInputHeaderProps = ComponentProps<typeof InputGroupAddon>;
 
 export const PromptInputHeader = ({
   className,
+  align = "block-end",
   ...props
 }: PromptInputHeaderProps) => (
   <InputGroupAddon
-    align="block-end"
-    className={cn("order-first flex-wrap gap-1", className)}
+    align={align}
+    className={cn(
+      "flex-wrap gap-1",
+      (align === "block-end" || align === "block-start") && "order-first",
+      className
+    )}
     {...props}
   />
 );
 
-export type PromptInputFooterProps = Omit<
-  ComponentProps<typeof InputGroupAddon>,
-  "align"
->;
+export type PromptInputFooterProps = ComponentProps<typeof InputGroupAddon>;
 
 export const PromptInputFooter = ({
   className,
+  align = "block-end",
   ...props
 }: PromptInputFooterProps) => (
   <InputGroupAddon
-    align="block-end"
-    className={cn("justify-between gap-1", className)}
+    align={align}
+    className={cn(
+      "justify-between gap-1",
+      (align === "inline-start" || align === "inline-end") && "w-auto",
+      className
+    )}
     {...props}
   />
 );
@@ -1047,6 +1078,7 @@ export const PromptInputActionMenuItem = ({
 
 export type PromptInputSubmitProps = ComponentProps<typeof InputGroupButton> & {
   status?: ChatStatus;
+  emptyIcon?: ReactNode;
 };
 
 export const PromptInputSubmit = ({
@@ -1054,10 +1086,13 @@ export const PromptInputSubmit = ({
   variant = "default",
   size = "icon-sm",
   status,
+  emptyIcon,
   children,
   ...props
 }: PromptInputSubmitProps) => {
-  let Icon = <CornerDownLeftIcon className="size-4" />;
+  const controller = useOptionalPromptInputController();
+  const hasText = controller ? controller.textInput.value.trim().length > 0 : false;
+  let Icon: ReactNode = <CornerDownLeftIcon className="size-4" />;
 
   if (status === "submitted") {
     Icon = <Loader2Icon className="size-4 animate-spin" />;
@@ -1065,6 +1100,8 @@ export const PromptInputSubmit = ({
     Icon = <SquareIcon className="size-4" />;
   } else if (status === "error") {
     Icon = <XIcon className="size-4" />;
+  } else if (emptyIcon && !hasText) {
+    Icon = emptyIcon;
   }
 
   return (

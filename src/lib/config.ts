@@ -24,28 +24,28 @@ export const siteConfig = {
       label: "Cookbook",
     },
     {
-      href: "/widget-builder",
-      label: "Widget Builder",
+      href: "/builder",
+      label: "Builder",
     }
   ],
   widgetNavItems: [
     {
-      href: "/widget-builder",
+      href: "/builder",
       label: "New Widget",
       icon: SquarePlus,
     },
     {
-      href: "/widget-builder/gallery",
+      href: "/builder/gallery",
       label: "Gallery",
       icon: Grid2x2,
     },
     {
-      href: "/widget-builder/components",
+      href: "/builder/components",
       label: "Components",
       icon: Box,
     },
     {
-      href: "/widget-builder/icons",
+      href: "/builder/icons",
       label: "Icons",
       icon: PencilRuler,
     }

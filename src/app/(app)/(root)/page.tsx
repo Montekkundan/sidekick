@@ -11,7 +11,6 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header";
 import { PageNav } from "@/components/page-nav";
-import { ThemeSelector } from "@/components/theme-selector";
 import { Button } from "@/registry/new-york/ui/button";
 import { RootComponents, CookbookBooks } from "./components";
 
@@ -89,7 +88,6 @@ export default function IndexPage() {
       </PageHeader>
       <PageNav className="hidden md:flex">
         <ExamplesNav className="flex-1 overflow-hidden [&>a:first-child]:text-primary" />
-        <ThemeSelector className="mr-4 hidden md:flex" />
       </PageNav>
       <div className="container-wrapper section-soft flex-1 pb-6">
         <div className="container overflow-hidden">

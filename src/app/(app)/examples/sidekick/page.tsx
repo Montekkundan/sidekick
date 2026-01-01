@@ -24,16 +24,6 @@ import {
 
 function SidekickPage() {
   return (
-    <div className="container py-8">
-      <div className="mx-auto max-w-4xl space-y-8">
-        <div>
-          <h1 className="mb-2 font-bold text-3xl">Sidekick Component</h1>
-          <p className="text-muted-foreground">
-            A collapsible AI assistant panel with conversation support.
-          </p>
-        </div>
-
-        <div className="h-[600px] rounded-lg border">
           <SidekickProvider>
             <SidekickInset>
               <div className="flex h-full items-center justify-center">
@@ -94,9 +84,6 @@ function SidekickPage() {
               </SidekickFooter>
             </Sidekick>
           </SidekickProvider>
-        </div>
-      </div>
-    </div>
   );
 }
 

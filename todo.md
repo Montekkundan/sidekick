@@ -17,3 +17,5 @@
 - block for RAG + supermemory
 - Block for message popup standalone + sidebar
 - remove themes and go with just normal blocks
+- floating and full screen sidekick
+- universal search component https://threadreaderapp.com/thread/1937259475599261713.html

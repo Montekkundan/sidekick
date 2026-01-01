@@ -77,26 +77,6 @@
       ]
     },
     {
-      "name": "theme-cursor",
-      "type": "registry:example",
-      "title": "Cursor Theme Example",
-      "description": "A Cursor-inspired chat UI composition. Shows how to compose base Sidekick and PromptInput components with custom buttons like model selector, web search toggle, and @ mentions.",
-      "dependencies": ["nanoid", "ai"],
-      "registryDependencies": [
-        "sidekick",
-        "prompt-input",
-        "dropdown-menu",
-        "tooltip"
-      ],
-      "files": [
-        {
-          "path": "src/registry/new-york/examples/cursor-theme-demo.tsx",
-          "type": "registry:example",
-          "target": "src/app/examples/cursor-theme/page.tsx"
-        }
-      ]
-    },
-    {
       "name": "sidekick-01",
       "type": "registry:block",
       "title": "Sidekick Standalone Chat",
@@ -123,6 +103,129 @@
         "iframeHeight": "800px"
       },
       "categories": ["sidekick"]
+    },
+    {
+      "name": "sidekick-02",
+      "type": "registry:block",
+      "title": "Sidekick Floating Chatbot",
+      "description": "A floating chatbot button that opens a standalone Sidekick panel with a preview toast.",
+      "dependencies": [],
+      "registryDependencies": [
+        "sidekick",
+        "prompt-input",
+        "button"
+      ],
+      "files": [
+        {
+          "path": "src/registry/new-york/blocks/sidekick-02/page.tsx",
+          "type": "registry:page",
+          "target": "app/sidekick-02/page.tsx"
+        },
+        {
+          "path": "src/registry/new-york/blocks/sidekick-02/components/sidekick-chatbot.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "meta": {
+        "iframeHeight": "800px"
+      },
+      "categories": ["sidekick"]
+    },
+    {
+      "name": "sidekick-03",
+      "type": "registry:block",
+      "title": "Sidekick Floating Panel",
+      "description": "A floating card that uses SidekickProvider with an inset area and a full chat panel.",
+      "dependencies": [],
+      "registryDependencies": [
+        "sidekick",
+        "prompt-input",
+        "button"
+      ],
+      "files": [
+        {
+          "path": "src/registry/new-york/blocks/sidekick-03/page.tsx",
+          "type": "registry:page",
+          "target": "app/sidekick-03/page.tsx"
+        },
+        {
+          "path": "src/registry/new-york/blocks/sidekick-03/components/sidekick-floating.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "meta": {
+        "iframeHeight": "800px"
+      },
+      "categories": ["sidekick"]
+    },
+    {
+      "name": "prompt-input-01",
+      "type": "registry:block",
+      "title": "Prompt Input Agent Mode",
+      "description": "A prompt input with an action menu that expands into agent mode and reveals footer controls.",
+      "dependencies": [],
+      "registryDependencies": ["prompt-input"],
+      "files": [
+        {
+          "path": "src/registry/new-york/blocks/prompt-input-01/page.tsx",
+          "type": "registry:page",
+          "target": "app/prompt-input-01/page.tsx"
+        },
+        {
+          "path": "src/registry/new-york/blocks/prompt-input-01/components/agent-prompt-input.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "meta": {
+        "iframeHeight": "800px"
+      },
+      "categories": ["prompt-input"]
+    },
+    {
+      "name": "prompt-input-02",
+      "type": "registry:block",
+      "title": "Prompt Input Compact Cursor Style",
+      "description": "A compact prompt input with minimal chrome and tiny action icons inspired by Cursor.",
+      "dependencies": [],
+      "registryDependencies": ["prompt-input"],
+      "files": [
+        {
+          "path": "src/registry/new-york/blocks/prompt-input-02/page.tsx",
+          "type": "registry:page",
+          "target": "app/prompt-input-02/page.tsx"
+        },
+        {
+          "path": "src/registry/new-york/blocks/prompt-input-02/components/cursor-prompt-input.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "meta": {
+        "iframeHeight": "800px"
+      },
+      "categories": ["prompt-input"]
+    },
+    {
+      "name": "prompt-input-03",
+      "type": "registry:block",
+      "title": "Prompt Input Claude Upgrade Banner",
+      "description": "A prompt input with a secondary upgrade banner below the composer.",
+      "dependencies": [],
+      "registryDependencies": ["prompt-input"],
+      "files": [
+        {
+          "path": "src/registry/new-york/blocks/prompt-input-03/page.tsx",
+          "type": "registry:page",
+          "target": "app/prompt-input-03/page.tsx"
+        },
+        {
+          "path": "src/registry/new-york/blocks/prompt-input-03/components/claude-prompt-input.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "meta": {
+        "iframeHeight": "800px"
+      },
+      "categories": ["prompt-input"]
     },
     {
       "name": "dashboard-01",

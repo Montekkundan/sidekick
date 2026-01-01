@@ -27,19 +27,18 @@ Or copy and paste the code directly into your project.
 
 ## Themes
 
-Sidekick supports theming. Apply themes by adding a class to your root element:
-
-```bash
-# Install the Cursor theme
-npx shadcn@latest add https://sidekick.montek.dev/r/theme-cursor.json
-```
-
-Then apply it:
+Sidekick supports theming. Apply a theme by adding a class to your root element:
 
 ```tsx
-<SidekickProvider className="theme-cursor">
+<SidekickProvider className="my-theme">
   {/* Your components */}
 </SidekickProvider>
+```
+
+```css
+.my-theme [data-slot="sidekick"] {
+  background-color: #0f0f0f;
+}
 ```
 
 ## Principles

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sidekick-02",
+  "title": "Sidekick Floating Chatbot",
+  "description": "A floating chatbot button that opens a standalone Sidekick panel with a preview toast.",
+  "dependencies": [],
+  "registryDependencies": [
+    "sidekick",
+    "prompt-input",
+    "button"
+  ],
+  "files": [
+    {
+      "path": "src/registry/new-york/blocks/sidekick-02/page.tsx",
+      "content": "import { SidekickChatbot } from \"@/registry/new-york/blocks/sidekick-02/components/sidekick-chatbot\";\n\nexport default function Page() {\n  return (\n    <div className=\"relative min-h-svh\">\n      <SidekickChatbot />\n    </div>\n  );\n}\n",
+      "type": "registry:page",
+      "target": "app/sidekick-02/page.tsx"
+    },
+    {
+      "path": "src/registry/new-york/blocks/sidekick-02/components/sidekick-chatbot.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { MessageCircleIcon, XIcon } from \"lucide-react\";\nimport { Button } from \"@/registry/new-york/ui/button\";\nimport {\n  PromptInput,\n  PromptInputBody,\n  PromptInputFooter,\n  PromptInputSubmit,\n  PromptInputTextarea,\n  PromptInputTools,\n} from \"@/registry/new-york/blocks/prompt-input\";\nimport {\n  Conversation,\n  ConversationContent,\n  Message,\n  MessageContent,\n  Sidekick,\n  SidekickContent,\n  SidekickFooter,\n  SidekickHeader,\n} from \"@/registry/new-york/blocks/sidekick\";\n\ntype ChatMessage = {\n  id: string;\n  from: \"user\" | \"assistant\";\n  content: string;\n};\n\nexport function SidekickChatbot() {\n  const [open, setOpen] = React.useState(false);\n  const [showPreview, setShowPreview] = React.useState(true);\n  const [messages, setMessages] = React.useState<ChatMessage[]>([\n    {\n      id: \"1\",\n      from: \"assistant\",\n      content: \"Hi! How can I help you today?\",\n    },\n  ]);\n\n  const handleSubmit = (message: { text: string }) => {\n    if (!message.text.trim()) return;\n    const userMessage: ChatMessage = {\n      id: String(Date.now()),\n      from: \"user\",\n      content: message.text,\n    };\n    setMessages((prev) => [...prev, userMessage]);\n    setTimeout(() => {\n      setMessages((prev) => [\n        ...prev,\n        {\n          id: String(Date.now() + 1),\n          from: \"assistant\",\n          content: \"Thanks! I’m looking into that now.\",\n        },\n      ]);\n    }, 600);\n  };\n\n  return (\n    <div className=\"fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3\">\n      {!open && showPreview && (\n        <div className=\"flex w-80 items-center gap-4 rounded-full border bg-background px-4 py-3 shadow-lg\">\n          <div className=\"flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground\">\n            <MessageCircleIcon className=\"size-5\" />\n          </div>\n          <div className=\"min-w-0 flex-1\">\n            <p className=\"truncate text-sm font-medium\">\n              Hi, how can I help you today? 👋\n            </p>\n            <p className=\"text-muted-foreground text-xs\">Just now</p>\n          </div>\n          <button\n            aria-label=\"Dismiss preview\"\n            className=\"text-muted-foreground transition hover:text-foreground\"\n            onClick={() => setShowPreview(false)}\n            type=\"button\"\n          >\n            <XIcon className=\"size-4\" />\n          </button>\n        </div>\n      )}\n\n      {open && (\n        <div className=\"h-[560px] w-[360px] overflow-hidden rounded-2xl border bg-background shadow-2xl\">\n          <Sidekick standalone>\n            <SidekickHeader>\n              <span className=\"font-semibold\">AI Assistant</span>\n            </SidekickHeader>\n\n            <SidekickContent>\n              <Conversation>\n                <ConversationContent>\n                  {messages.map((msg) => (\n                    <Message from={msg.from} key={msg.id}>\n                      <MessageContent from={msg.from}>{msg.content}</MessageContent>\n                    </Message>\n                  ))}\n                </ConversationContent>\n              </Conversation>\n            </SidekickContent>\n\n            <SidekickFooter>\n              <PromptInput onSubmit={handleSubmit}>\n                <PromptInputBody>\n                  <PromptInputTextarea placeholder=\"Type a message...\" />\n                </PromptInputBody>\n                <PromptInputFooter>\n                  <PromptInputTools />\n                  <PromptInputSubmit />\n                </PromptInputFooter>\n              </PromptInput>\n            </SidekickFooter>\n          </Sidekick>\n        </div>\n      )}\n\n      <Button\n        className=\"size-12 rounded-full shadow-lg\"\n        onClick={() => setOpen((prev) => !prev)}\n        size=\"icon\"\n      >\n        {open ? <XIcon className=\"size-5\" /> : <MessageCircleIcon className=\"size-5\" />}\n      </Button>\n    </div>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "meta": {
+    "iframeHeight": "800px"
+  },
+  "categories": [
+    "sidekick"
+  ],
+  "type": "registry:block"
+}

@@ -5,9 +5,9 @@ import { cn } from "@/lib/utils";
 import {
   PromptInput,
   PromptInputBody,
-  PromptInputButton,
   type PromptInputMessage,
   PromptInputProvider,
+  PromptInputSubmit,
   PromptInputTextarea,
   usePromptInputAttachments,
 } from "@/registry/new-york/blocks/prompt-input";
@@ -53,9 +53,12 @@ export function CompactPromptInput({
               className="flex-1"
               placeholder="Send a message..."
             />
-            <PromptInputButton className="mr-3 ml-auto shrink-0 text-zinc-500 hover:text-white">
-              <AudioLines className="size-5" />
-            </PromptInputButton>
+            <PromptInputSubmit
+              className="mr-3 ml-auto shrink-0 bg-transparent text-zinc-500 hover:bg-transparent hover:text-white"
+              emptyIcon={<AudioLines className="size-5" />}
+              size="icon-sm"
+              variant="ghost"
+            />
           </PromptInputBody>
         </PromptInput>
       </div>

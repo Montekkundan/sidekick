@@ -119,9 +119,74 @@ Use with `SidekickProvider` for collapsible sidebar behavior:
     </SidekickContent>
 
     <SidekickFooter>{/* Add PromptInput here */}</SidekickFooter>
-  </Sidekick>
+</Sidekick>
 </SidekickProvider>
 ```
+
+## Composition Patterns
+
+### Prompt Input Toolbars
+
+Compose any `PromptInput` layout inside `SidekickFooter`—stack headers, chips, and inline buttons.
+
+```tsx
+<SidekickFooter>
+  <PromptInput variant="outline" size="lg" onSubmit={handleSubmit}>
+    <PromptInput.Header>
+      <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+        <span className="whitespace-nowrap">Tone: Confident</span>
+        <span className="whitespace-nowrap">Audience: Execs</span>
+      </div>
+    </PromptInput.Header>
+    <PromptInput.Body>
+      <PromptInput.Textarea minRows={4} placeholder="Draft the launch recap..." />
+      <PromptInput.Button>
+        <MicIcon className="size-4" />
+      </PromptInput.Button>
+    </PromptInput.Body>
+    <PromptInput.Footer className="flex-col gap-3">
+      <PromptInput.Tools className="gap-2">
+        <PromptInput.Button className="gap-1 px-3">
+          <SparklesIcon className="size-4" />
+          <span>Rewrite</span>
+        </PromptInput.Button>
+        <PromptInput.Button className="gap-1 px-3">
+          <GlobeIcon className="size-4" />
+          <span>Search Docs</span>
+        </PromptInput.Button>
+      </PromptInput.Tools>
+      <PromptInput.Submit status={status} />
+    </PromptInput.Footer>
+  </PromptInput>
+</SidekickFooter>
+```
+
+Add `PromptInputProvider` around `Sidekick` when presets, external buttons, or docking menus need the same input state.
+
+### Persisting Conversations
+
+`Conversation` renders whatever list you feed it. Store messages with Drizzle/Prisma and hydrate them when the sidebar mounts.
+
+```tsx
+const messages = await db.query.messages.findMany({
+  where: eq(messages.threadId, params.threadId),
+  orderBy: asc(messages.createdAt),
+})
+
+return (
+  <Conversation>
+    <ConversationContent>
+      {messages.map((msg) => (
+        <Message from={msg.from} key={msg.id}>
+          <MessageContent from={msg.from}>{msg.body}</MessageContent>
+        </Message>
+      ))}
+    </ConversationContent>
+  </Conversation>
+)
+```
+
+We're preparing additional docs that walk through saving Sidekick chats + PromptInput attachments with Drizzle/Prisma end-to-end.
 
 ## Features
 
@@ -232,22 +297,6 @@ const { scrollToBottom, isAtBottom } = useConversation();
 ## Theming
 
 Sidekick supports theming through CSS classes. Apply a theme by adding the theme class to your provider:
-
-### Cursor Theme
-
-A dark, minimal theme inspired by Cursor's chat interface.
-
-```bash
-npx shadcn@latest add https://sidekick.montek.dev/r/theme-cursor.json
-```
-
-```tsx
-import "@/styles/theme-cursor.css";
-
-<SidekickProvider className="theme-cursor">
-  {/* Your components will use the Cursor theme */}
-</SidekickProvider>;
-```
 
 ### Custom Themes
 

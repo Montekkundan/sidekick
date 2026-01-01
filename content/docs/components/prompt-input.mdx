@@ -128,8 +128,110 @@ For standard detailed inputs with tools and attachments:
       <PromptInput.ActionMenu />
     </PromptInput.Tools>
     <PromptInput.Submit />
+</PromptInput.Footer>
+</PromptInput>
+```
+
+### Custom Layouts & Toolbars
+
+Leverage `PromptInput.Header`, `PromptInput.Footer`, and `PromptInput.Button` to build stacked layouts. Chip styling is intentionally minimal so teams can theme it.
+
+```tsx
+<PromptInput variant="outline" size="lg" onSubmit={...}>
+  <PromptInput.Header align="block-start" className="gap-2">
+    <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+      {["Campaign", "Brand voice"].map((chip) => (
+        <span key={chip} className="whitespace-nowrap">
+          {chip}
+        </span>
+      ))}
+    </div>
+  </PromptInput.Header>
+
+  <PromptInput.Body>
+    <PromptInput.Textarea minRows={4} placeholder="Detail the hero message..." />
+    <PromptInput.Button>
+      <MicIcon className="size-4" />
+    </PromptInput.Button>
+  </PromptInput.Body>
+
+  <PromptInput.Footer className="flex-col gap-3">
+    <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+      <span className="whitespace-nowrap">Tone: Playful</span>
+      <span className="whitespace-nowrap">Audience: Growth</span>
+    </div>
+    <div className="flex w-full items-center justify-between gap-2">
+      <PromptInput.Tools className="gap-2">
+        <PromptInput.Button className="gap-1 px-3">
+          <SparklesIcon className="size-4" />
+          <span>Magic Fill</span>
+        </PromptInput.Button>
+        <PromptInput.Button className="gap-1 px-3">
+          <GlobeIcon className="size-4" />
+          <span>Search Docs</span>
+        </PromptInput.Button>
+      </PromptInput.Tools>
+      <PromptInput.Submit />
+    </div>
   </PromptInput.Footer>
 </PromptInput>
+```
+
+Use the optional `align` prop on `PromptInput.Header`/`PromptInput.Footer` to switch between inline or stacked placement.
+
+### Provider Controlled State
+
+`PromptInputProvider` lets external controls manipulate the textarea or attachments. Useful for presets, context menus, or floating mic buttons.
+
+```tsx
+function Presets() {
+  const controller = usePromptInputController()
+  return (
+    <div className="flex flex-wrap gap-2">
+      <button
+        className="rounded-full border px-3 py-1 text-xs"
+        onClick={() =>
+          controller.textInput.setInput("Summarize the research call...")
+        }
+      >
+        Research recap
+      </button>
+      <button
+        className="rounded-full border px-3 py-1 text-xs"
+        onClick={() =>
+          controller.textInput.setInput("Draft a beta onboarding email.")
+        }
+      >
+        Email draft
+      </button>
+    </div>
+  )
+}
+
+export function ProviderExample() {
+  return (
+    <PromptInputProvider initialInput="Give me a quick standup summary.">
+      <Presets />
+      <PromptInput variant="pill" size="sm" onSubmit={...}>
+        <PromptInput.Body>
+          <PromptInput.Textarea ref={textareaRef} />
+          <PromptInput.Button size="icon-sm">
+            <MicIcon className="size-4" />
+          </PromptInput.Button>
+        </PromptInput.Body>
+        <PromptInput.Footer align="inline-end">
+          <PromptInput.Tools>
+            <PromptInput.Button className="gap-1 px-3">
+              <SparklesIcon className="size-4" />
+              <span>Rewrite</span>
+            </PromptInput.Button>
+          </PromptInput.Tools>
+          <PromptInput.Submit />
+        </PromptInput.Footer>
+      </PromptInput>
+    </PromptInputProvider>
+  )
+}
 ```
 
 ## API Reference
@@ -156,7 +258,9 @@ Optional context provider. Use this when you need to control the input state (fi
 
 ### Subcomponents
 
-- **PromptInput.Textarea**: Auto-resizing textarea.
-- **PromptInput.Footer**: Bottom toolbar container.
-- **PromptInput.Submit**: Intelligent submit button with loading/streaming states.
-- **PromptInput.Attachments**: File attachment preview area.
+- **PromptInput.Textarea**: Auto-resizing textarea with `ref` support for speech or focus controls.
+- **PromptInput.Header / PromptInput.Footer**: Toolbar containers. Pass `align` to toggle inline or stacked placement.
+- **PromptInput.Tools**: Wrapper for grouped buttons or chip lists.
+- **PromptInput.Button / PromptInput.Submit / PromptInput.SpeechButton**: Composable buttons built on top of `InputGroupButton`.
+- **PromptInput.Attachments / PromptInput.Attachment**: File preview list plus individual attachment chips.
+- **PromptInput.ActionMenu**: Pre-wired dropdown menu for custom actions or file uploads.

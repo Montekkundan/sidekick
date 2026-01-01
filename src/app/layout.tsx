@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
-import { ActiveThemeProvider } from "@/components/active-theme";
 import { Analytics } from "@/components/analytics";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -88,12 +87,10 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <LayoutProvider>
-            <ActiveThemeProvider>
-              {children}
-              <Toaster position="top-center" />
-              <TailwindIndicator />
-              <Analytics />
-            </ActiveThemeProvider>
+            {children}
+            <Toaster position="top-center" />
+            <TailwindIndicator />
+            <Analytics />
           </LayoutProvider>
         </ThemeProvider>
       </body>

@@ -10,7 +10,6 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header";
 import { PageNav } from "@/components/page-nav";
-import { ThemeSelector } from "@/components/theme-selector";
 import { Button } from "@/registry/new-york/ui/button";
 
 export const dynamic = "force-static";
@@ -66,7 +65,6 @@ export default function ExamplesLayout({
       </PageHeader>
       <PageNav className="hidden md:flex" id="examples">
         <ExamplesNav className="flex-1 overflow-hidden [&>a:first-child]:text-primary" />
-        <ThemeSelector className="mr-4 hidden md:flex" />
       </PageNav>
       <div className="container-wrapper section-soft flex flex-1 flex-col pb-6">
         <div className="theme-container container flex flex-1 scroll-mt-20 flex-col">

@@ -15,6 +15,11 @@ import { getStyle, legacyStyles, type Style } from "@/registry/_legacy-styles"
 const componentMap: Record<string, () => Promise<{ default: React.ComponentType }>> = {
   "dashboard-01": () => import("@/registry/new-york/blocks/dashboard-01/page"),
   "sidekick-01": () => import("@/registry/new-york/blocks/sidekick-01/page"),
+  "sidekick-02": () => import("@/registry/new-york/blocks/sidekick-02/page"),
+  "sidekick-03": () => import("@/registry/new-york/blocks/sidekick-03/page"),
+  "prompt-input-01": () => import("@/registry/new-york/blocks/prompt-input-01/page"),
+  "prompt-input-02": () => import("@/registry/new-york/blocks/prompt-input-02/page"),
+  "prompt-input-03": () => import("@/registry/new-york/blocks/prompt-input-03/page"),
 }
 
 async function getRegistryComponent(name: string) {

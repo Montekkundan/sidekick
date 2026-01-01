@@ -80,12 +80,14 @@ function useIsMobile() {
 
 type SidekickProviderProps = React.ComponentProps<"div"> & {
   defaultOpen?: boolean;
+  defaultOpenMobile?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 };
 
 function SidekickProvider({
   defaultOpen = true,
+  defaultOpenMobile = false,
   open: openProp,
   onOpenChange: setOpenProp,
   className,
@@ -94,7 +96,7 @@ function SidekickProvider({
   ...props
 }: SidekickProviderProps) {
   const isMobile = useIsMobile();
-  const [openMobile, setOpenMobile] = React.useState(false);
+  const [openMobile, setOpenMobile] = React.useState(defaultOpenMobile);
 
   const [_open, _setOpen] = React.useState(defaultOpen);
   const open = openProp ?? _open;
@@ -175,12 +177,14 @@ function SidekickProvider({
 
 type SidekickProps = React.ComponentProps<"aside"> & {
   side?: "left" | "right";
+  mobileBehavior?: "sheet" | "inline" | "floating";
   /** When true, renders as a standalone panel without toggle behavior */
   standalone?: boolean;
 };
 
 function Sidekick({
   side = "right",
+  mobileBehavior = "sheet",
   standalone = false,
   className,
   children,
@@ -214,7 +218,7 @@ function Sidekick({
 
   const { isMobile, state, openMobile, setOpenMobile } = context;
 
-  if (isMobile) {
+  if (isMobile && mobileBehavior === "sheet") {
     return (
       <Sheet onOpenChange={setOpenMobile} open={openMobile}>
         <SheetContent
@@ -236,6 +240,42 @@ function Sidekick({
           <div className="flex h-full w-full flex-col">{children}</div>
         </SheetContent>
       </Sheet>
+    );
+  }
+
+  if (isMobile && mobileBehavior === "inline") {
+    return (
+      <aside
+        className={cn(
+          "flex w-full flex-col border-t bg-background text-foreground transition-[max-height,opacity] duration-200",
+          openMobile ? "max-h-[75vh] opacity-100" : "max-h-0 overflow-hidden opacity-0",
+          className
+        )}
+        data-side={side}
+        data-slot="sidekick"
+        data-state={openMobile ? "expanded" : "collapsed"}
+        {...props}
+      >
+        <div className="flex w-full flex-col">{children}</div>
+      </aside>
+    );
+  }
+
+  if (isMobile && mobileBehavior === "floating") {
+    return (
+      <aside
+        className={cn(
+          "absolute inset-y-0 right-0 flex w-full flex-col border-l bg-background text-foreground transition-transform duration-200",
+          openMobile ? "translate-x-0" : "translate-x-full",
+          className
+        )}
+        data-side={side}
+        data-slot="sidekick"
+        data-state={openMobile ? "expanded" : "collapsed"}
+        {...props}
+      >
+        <div className="flex h-full w-full flex-col">{children}</div>
+      </aside>
     );
   }
 
