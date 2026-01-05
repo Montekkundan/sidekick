@@ -39,11 +39,15 @@ export const promptInputVariants = cva(
       variant: {
         default:
           "**:data-[slot=input-group]:border-border **:data-[slot=input-group]:bg-card **:data-[slot=input-group]:shadow-sm dark:**:data-[slot=input-group]:bg-card/30",
-        pill: "**:data-[slot=input-group]:rounded-full **:data-[slot=input-group]:border-transparent **:data-[slot=input-group]:bg-muted/70 **:data-[slot=input-group]:px-2 dark:**:data-[slot=input-group]:bg-muted/40",
         ghost:
-          "**:data-[slot=input-group]:border-transparent **:data-[slot=input-group]:bg-transparent **:data-[slot=input-group]:shadow-none **:data-[slot=input-group]:hover:bg-muted/30 dark:**:data-[slot=input-group]:hover:bg-muted/10",
+          "**:data-[slot=input-group]:border-transparent **:data-[slot=input-group]:bg-transparent **:data-[slot=input-group]:shadow-none **:data-[slot=input-group]:hover:bg-muted/30 dark:**:data-[slot=input-group]:bg-transparent dark:**:data-[slot=input-group]:hover:bg-muted/10",
         outline:
           "**:data-[slot=input-group]:border-2 **:data-[slot=input-group]:border-foreground/20 **:data-[slot=input-group]:bg-background **:data-[slot=input-group]:shadow-none dark:**:data-[slot=input-group]:border-foreground/40",
+        none: "**:data-[slot=input-group]:border-transparent **:data-[slot=input-group]:bg-transparent **:data-[slot=input-group]:shadow-none dark:**:data-[slot=input-group]:bg-transparent",
+      },
+      shape: {
+        default: "",
+        pill: "**:data-[slot=input-group]:rounded-full **:data-[slot=input-group]:px-2",
       },
       size: {
         sm: "**:data-[slot=input-group]:!h-10 **:data-[slot=input-group]:!flex-row **:data-[slot=input-group]:!items-center **:data-[slot=input-group-control]:!min-h-0 **:data-[slot=input-group-control]:!min-w-0 **:data-[slot=input-group-control]:!max-h-10 **:data-[slot=input-group-control]:!resize-none **:data-[slot=input-group-control]:!overflow-hidden **:data-[slot=input-group-control]:!py-2.5 **:data-[slot=input-group-control]:!text-sm [&_[data-slot=input-group-addon][data-align=block-end]]:!w-auto [&_[data-slot=input-group-addon][data-align=block-end]]:!p-0 [&_[data-slot=input-group-addon][data-align=block-end]]:!m-0 [&_[data-slot=input-group-addon][data-align=block-end]]:!pr-2 [&_[data-slot=input-group-addon][data-align=block-end]]:!justify-end",
@@ -53,6 +57,7 @@ export const promptInputVariants = cva(
     },
     defaultVariants: {
       variant: "default",
+      shape: "default",
       size: "default",
     },
   }
@@ -485,6 +490,7 @@ export type PromptInputProps = Omit<
 export const PromptInput = ({
   className,
   variant,
+  shape,
   size,
   focusRing = true,
   accept,
@@ -816,7 +822,7 @@ export const PromptInput = ({
       <form
         className={cn(
           "w-full",
-          promptInputVariants({ variant, size }),
+          promptInputVariants({ variant, shape, size }),
           className
         )}
         onSubmit={handleSubmit}
@@ -846,13 +852,58 @@ export const PromptInput = ({
   );
 };
 
+// ============================================================================
+// Prompt Input Card
+// ============================================================================
+
+export const promptInputCardVariants = cva(
+  "border shadow-lg transition-[border-radius,background-color] duration-300 ease-out",
+  {
+    variants: {
+      shape: {
+        default: "rounded-2xl",
+        pill: "rounded-[56px]",
+      },
+      variant: {
+        default: "bg-muted/40 dark:bg-muted/30",
+        muted: "bg-muted/50 dark:bg-muted/30",
+      },
+    },
+    defaultVariants: {
+      shape: "default",
+      variant: "default",
+    },
+  }
+);
+
+export type PromptInputCardProps = HTMLAttributes<HTMLDivElement> &
+  VariantProps<typeof promptInputCardVariants>;
+
+export const PromptInputCard = ({
+  className,
+  shape,
+  variant,
+  ...props
+}: PromptInputCardProps) => (
+  <div
+    className={cn(promptInputCardVariants({ shape, variant }), className)}
+    {...props}
+  />
+);
+
 export type PromptInputBodyProps = HTMLAttributes<HTMLDivElement>;
 
 export const PromptInputBody = ({
   className,
   ...props
 }: PromptInputBodyProps) => (
-  <div className={cn("contents", className)} {...props} />
+  <div
+    className={cn(
+      "flex w-full flex-1 items-center gap-1 px-3",
+      className
+    )}
+    {...props}
+  />
 );
 
 export type PromptInputTextareaProps = ComponentProps<
@@ -1417,6 +1468,7 @@ export const PromptInputTabItem = ({
 // Compound Component Exports
 // ============================================================================
 
+PromptInput.Card = PromptInputCard;
 PromptInput.Provider = PromptInputProvider;
 PromptInput.Body = PromptInputBody;
 PromptInput.Textarea = PromptInputTextarea;

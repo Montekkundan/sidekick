@@ -17,12 +17,14 @@ import {
 } from "@/registry/new-york/blocks/prompt-input";
 
 type PromptVariant = ComponentProps<typeof PromptInput>["variant"];
+type PromptShape = ComponentProps<typeof PromptInput>["shape"];
 type PromptSize = ComponentProps<typeof PromptInput>["size"];
 
 const variantExamples: Array<{
   title: string;
   description: string;
   variant: PromptVariant;
+  shape?: PromptShape;
   size?: PromptSize;
   placeholder: string;
 }> = [
@@ -45,9 +47,10 @@ const variantExamples: Array<{
     placeholder: "Ask anything...",
   },
   {
-    title: "Pill",
-    description: "Fully rounded pill for floating or docked composers.",
-    variant: "pill",
+    title: "Pill (Shape)",
+    description: "Fully rounded pill for floating or docked composers. Uses shape prop.",
+    variant: "default",
+    shape: "pill" as const,
     size: "sm",
     placeholder: "Drop a quick command...",
   },
@@ -157,7 +160,7 @@ function ProviderPresetExample() {
       <div className="space-y-3">
         <PresetButtons />
         <PromptInput
-          variant="pill"
+          shape="pill"
           size="sm"
           onSubmit={(message) => console.log("provider-example", message)}
         >
@@ -235,9 +238,9 @@ function PromptInputPage() {
 
         <section className="space-y-4">
           <div>
-            <h2 className="font-semibold text-xl">Variants</h2>
+            <h2 className="font-semibold text-xl">Variants & Shape</h2>
             <p className="text-muted-foreground">
-              Every variant mirrors the documentation: default, outline, ghost, and pill.
+              Variants control styling (default, outline, ghost, none). Shape controls border-radius (default, pill).
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-2">
@@ -251,6 +254,7 @@ function PromptInputPage() {
                 </div>
                 <PromptInput
                   variant={example.variant}
+                  shape={example.shape}
                   size={example.size ?? "default"}
                   onSubmit={(message) =>
                     console.log(`${example.variant} variant:`, message)

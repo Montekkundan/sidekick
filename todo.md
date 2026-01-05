@@ -19,3 +19,4 @@
 - remove themes and go with just normal blocks
 - floating and full screen sidekick
 - universal search component https://threadreaderapp.com/thread/1937259475599261713.html
+- fix prompt input 01, 02, 03 blocks

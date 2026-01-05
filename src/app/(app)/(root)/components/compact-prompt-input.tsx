@@ -45,8 +45,8 @@ export function CompactPromptInput({
         <PromptInput
           className="flex-1"
           onSubmit={(message) => onSubmit?.(message)}
+          shape="pill"
           size="sm"
-          variant="pill"
         >
           <PromptInputBody>
             <PromptInputTextarea
