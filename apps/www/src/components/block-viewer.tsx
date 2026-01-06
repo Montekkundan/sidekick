@@ -115,7 +115,7 @@ function BlockViewerProvider({
   const [view, setView] = React.useState<BlockViewerContext["view"]>("preview")
   const [activeFile, setActiveFile] = React.useState<
     BlockViewerContext["activeFile"]
-  >(highlightedFiles?.[0].target ?? null)
+  >(highlightedFiles?.[0]?.target ?? null)
   const resizablePanelRef = React.useRef<ImperativePanelHandle>(null)
   const [iframeKey, setIframeKey] = React.useState(0)
 

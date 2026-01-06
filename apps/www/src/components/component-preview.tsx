@@ -18,7 +18,9 @@ async function loadComponent(
     for (const pattern of patterns) {
       try {
         const mod = await pattern();
-        return mod.default || mod[Object.keys(mod)[0]];
+        const keys = Object.keys(mod);
+        const firstKey = keys[0];
+        return mod.default || (firstKey ? mod[firstKey] : null);
       } catch {}
     }
     return null;

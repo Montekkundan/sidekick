@@ -307,7 +307,7 @@ function parseJsx(source: string): JsxParseResult {
     const value = parseJsxNode(root, errors);
     return {
       value,
-      error: errors.length ? errors[0] : null,
+      error: errors.length > 0 ? (errors[0] ?? null) : null,
     };
   } catch (error) {
     return {
@@ -587,12 +587,14 @@ function BuilderChatContent({ chatid }: { chatid: string }) {
       const nextStates =
         currentSession?.states.filter((state) => state.id !== stateId) ?? [];
       if (nextStates.length === 0) return;
+      const firstNextState = nextStates[0];
+      if (!firstNextState) return;
       let nextActiveId = activeStateId;
       if (stateId === activeStateId) {
-        nextActiveId = nextStates[0].id;
+        nextActiveId = firstNextState.id;
         setActiveStateId(nextActiveId);
         setActiveTab((prev) => (prev === "schema" ? prev : nextActiveId));
-        setDataText(nextStates[0].data);
+        setDataText(firstNextState.data);
       }
       updateSession(chatid, {
         states: nextStates,

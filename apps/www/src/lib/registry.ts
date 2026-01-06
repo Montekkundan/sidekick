@@ -90,6 +90,7 @@ export function createFileTreeForRegistryItemFiles(
 
     for (let i = 0; i < parts.length; i++) {
       const part = parts[i];
+      if (!part) continue;
       const isFile = i === parts.length - 1;
       const existingNode = currentLevel.find((node) => node.name === part);
 
