@@ -153,7 +153,7 @@ function SidekickProvider({
     <SidekickContext.Provider value={contextValue}>
       <TooltipProvider delayDuration={0}>
         <div
-          className={cn("flex h-full min-h-svh w-full", className)}
+          className={cn("flex h-full min-h-svh w-full min-w-0", className)}
           data-slot="sidekick-wrapper"
           style={
             {
@@ -376,7 +376,7 @@ function SidekickContent({ className, ...props }: React.ComponentProps<"div">) {
 function SidekickInset({ className, ...props }: React.ComponentProps<"main">) {
   return (
     <main
-      className={cn("relative flex w-full flex-1 flex-col", className)}
+      className={cn("relative flex min-w-0 flex-1 flex-col", className)}
       data-slot="sidekick-inset"
       {...props}
     />

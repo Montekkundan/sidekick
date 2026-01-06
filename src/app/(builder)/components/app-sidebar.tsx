@@ -1,19 +1,49 @@
+"use client"
+
 import * as React from "react"
-import { GalleryVerticalEnd } from "lucide-react"
+import { GalleryVerticalEnd, PlusIcon, Trash2 } from "lucide-react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
+  SidebarGroupAction,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
 } from "@/registry/new-york/ui/sidebar"
 import { siteConfig } from "@/lib/config"
+import { useBuilder } from "./builder-provider"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const {
+    sessions,
+    activeSessionId,
+    isReady,
+    createSession,
+    deleteSession,
+  } = useBuilder()
+  const router = useRouter()
+
+  const handleCreateSession = () => {
+    const session = createSession()
+    router.push(`/builder/${session.id}`)
+  }
+
+  const handleDeleteSession = (sessionId: string) => {
+    const wasActive = sessionId === activeSessionId
+    const nextSession = deleteSession(sessionId)
+    if (wasActive && nextSession) {
+      router.push(`/builder/${nextSession.id}`)
+    }
+  }
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -34,6 +64,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
+          <SidebarGroupLabel>Builder</SidebarGroupLabel>
           <SidebarMenu>
             {siteConfig.widgetNavItems.map((item) => {
               const Icon = item.icon
@@ -48,6 +79,43 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenuItem>
               )
             })}
+          </SidebarMenu>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Chats</SidebarGroupLabel>
+          <SidebarGroupAction
+            onClick={handleCreateSession}
+            aria-label="Create new chat"
+            title="Create new chat"
+          >
+            <PlusIcon className="size-4" />
+          </SidebarGroupAction>
+          <SidebarMenu>
+            {!isReady && (
+              <SidebarMenuItem>
+                <SidebarMenuButton disabled>Loading chats...</SidebarMenuButton>
+              </SidebarMenuItem>
+            )}
+            {sessions.map((session) => (
+              <SidebarMenuItem key={session.id}>
+                <SidebarMenuButton
+                  asChild
+                  isActive={session.id === activeSessionId}
+                >
+                  <Link href={`/builder/${session.id}`}>
+                    <span className="truncate">{session.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+                <SidebarMenuAction
+                  aria-label="Delete chat"
+                  onClick={() => handleDeleteSession(session.id)}
+                  showOnHover
+                  title="Delete chat"
+                >
+                  <Trash2 />
+                </SidebarMenuAction>
+              </SidebarMenuItem>
+            ))}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>

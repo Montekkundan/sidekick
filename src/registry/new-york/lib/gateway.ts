@@ -3,8 +3,8 @@
  * Supports Vercel AI Gateway, LLM Gateway, and OpenRouter
  */
 
-import type { LanguageModelV3 } from "ai";
-import { gateway } from "ai";
+import type { LanguageModel } from "ai";
+import { createGateway } from "ai";
 import { llmgateway } from "@llmgateway/ai-sdk-provider";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 
@@ -31,23 +31,23 @@ export class GatewayError extends Error {
  * Vercel AI Gateway Configuration
  * Uses the global gateway() function from AI SDK v6
  */
-function createVercelGateway(
-	modelId: string,
-	apiKey?: string,
-): LanguageModelV3 {
-	const gatewayApiKey = apiKey || process.env.VERCEL_AI_GATEWAY_API_KEY;
+function createVercelGateway(modelId: string, apiKey?: string): LanguageModel {
+	const gatewayApiKey =
+		apiKey ||
+		process.env.VERCEL_AI_GATEWAY_API_KEY ||
+		process.env.AI_GATEWAY_API_KEY;
 
 	if (!gatewayApiKey) {
 		throw new GatewayError(
-			"Vercel AI Gateway requires VERCEL_AI_GATEWAY_API_KEY environment variable",
+			"Vercel AI Gateway requires VERCEL_AI_GATEWAY_API_KEY or AI_GATEWAY_API_KEY environment variable",
 			"vercel",
 		);
 	}
 
 	try {
-		// AI SDK v6 uses the gateway() function for Vercel AI Gateway
-		// Example: 'anthropic/claude-sonnet-4', 'openai/gpt-4', etc.
-		return gateway(modelId, { apiKey: gatewayApiKey });
+		// AI SDK v6 uses createGateway() for API key-based auth.
+		const provider = createGateway({ apiKey: gatewayApiKey });
+		return provider(modelId);
 	} catch (error) {
 		throw new GatewayError(
 			"Failed to initialize Vercel AI Gateway",
@@ -61,7 +61,7 @@ function createVercelGateway(
  * LLM Gateway Configuration
  * Uses @llmgateway/ai-sdk-provider package
  */
-function createLLMGateway(modelId: string, apiKey?: string): LanguageModelV3 {
+function createLLMGateway(modelId: string, apiKey?: string): LanguageModel {
 	const gatewayApiKey = apiKey || process.env.LLM_GATEWAY_API_KEY;
 
 	if (!gatewayApiKey) {
@@ -74,7 +74,8 @@ function createLLMGateway(modelId: string, apiKey?: string): LanguageModelV3 {
 	try {
 		// LLM Gateway uses the llmgateway() provider function
 		// It automatically uses LLM_GATEWAY_API_KEY from environment
-		return llmgateway(modelId);
+		const typedModelId = modelId as Parameters<typeof llmgateway>[0];
+		return llmgateway(typedModelId);
 	} catch (error) {
 		throw new GatewayError(
 			"Failed to initialize LLM Gateway",
@@ -91,7 +92,7 @@ function createLLMGateway(modelId: string, apiKey?: string): LanguageModelV3 {
 function createOpenRouterGateway(
 	modelId: string,
 	apiKey?: string,
-): LanguageModelV3 {
+): LanguageModel {
 	const gatewayApiKey = apiKey || process.env.OPENROUTER_API_KEY;
 
 	if (!gatewayApiKey) {
@@ -138,7 +139,11 @@ function createOpenRouterGateway(
  * Auto-detect available gateway provider
  */
 function detectAvailableProvider(): GatewayProvider | null {
-	if (process.env.VERCEL_AI_GATEWAY_API_KEY) return "vercel";
+	if (
+		process.env.VERCEL_AI_GATEWAY_API_KEY ||
+		process.env.AI_GATEWAY_API_KEY
+	)
+		return "vercel";
 	if (process.env.LLM_GATEWAY_API_KEY) return "llmgateway";
 	if (process.env.OPENROUTER_API_KEY) return "openrouter";
 	return null;
@@ -173,7 +178,7 @@ function detectAvailableProvider(): GatewayProvider | null {
  * });
  * ```
  */
-export function createGatewayModel(config: GatewayConfig): LanguageModelV3 {
+export function createGatewayModel(config: GatewayConfig): LanguageModel {
 	const { provider: specifiedProvider, modelId, apiKey } = config;
 
 	// Auto-detect provider if not specified
@@ -204,8 +209,11 @@ export function createGatewayModel(config: GatewayConfig): LanguageModelV3 {
 export function getGatewayEnvironment() {
 	return {
 		vercel: {
-			hasKey: Boolean(process.env.VERCEL_AI_GATEWAY_API_KEY),
-			keyName: "VERCEL_AI_GATEWAY_API_KEY",
+			hasKey: Boolean(
+				process.env.VERCEL_AI_GATEWAY_API_KEY ||
+					process.env.AI_GATEWAY_API_KEY,
+			),
+			keyName: "VERCEL_AI_GATEWAY_API_KEY | AI_GATEWAY_API_KEY",
 		},
 		llmgateway: {
 			hasKey: Boolean(process.env.LLM_GATEWAY_API_KEY),

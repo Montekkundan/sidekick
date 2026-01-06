@@ -136,15 +136,18 @@ export function SidekickStandalone() {
 				</SidekickContent>
 
 				<SidekickFooter>
-					<PromptInput disabled={isLoading} onSubmit={handleSubmit}>
-						<PromptInputBody>
-							<PromptInputTextarea placeholder="Ask me anything..." />
-						</PromptInputBody>
-						<PromptInputFooter>
-							<PromptInputTools />
-							<PromptInputSubmit />
-						</PromptInputFooter>
-					</PromptInput>
+				<PromptInput onSubmit={handleSubmit}>
+					<PromptInputBody>
+						<PromptInputTextarea
+							disabled={isLoading}
+							placeholder="Ask me anything..."
+						/>
+					</PromptInputBody>
+					<PromptInputFooter>
+						<PromptInputTools />
+						<PromptInputSubmit disabled={isLoading} />
+					</PromptInputFooter>
+				</PromptInput>
 				</SidekickFooter>
 			</Sidekick>
 		</div>

@@ -1,6 +1,107 @@
 ---
 title: Drizzle ORM
-description: Get started with Drizzle ORM in your project.
+description: Store Sidekick chats and messages with Drizzle.
 ---
 
-Guide to using Drizzle ORM with your project.
+Use Drizzle ORM to persist Sidekick conversations. This guide uses Postgres, but the schema translates easily to MySQL or SQLite.
+
+## 1. Install Drizzle
+
+```bash
+bun add drizzle-orm pg
+bun add -D drizzle-kit
+```
+
+## 2. Define a chat schema
+
+```ts
+import {
+  pgTable,
+  pgEnum,
+  text,
+  uuid,
+  timestamp,
+  jsonb,
+  index,
+} from "drizzle-orm/pg-core";
+
+export const messageRole = pgEnum("message_role", ["user", "assistant"]);
+
+export const chatThreads = pgTable("chat_threads", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  title: text("title"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+export const chatMessages = pgTable(
+  "chat_messages",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    threadId: uuid("thread_id")
+      .notNull()
+      .references(() => chatThreads.id, { onDelete: "cascade" }),
+    role: messageRole("role").notNull(),
+    content: text("content").notNull(),
+    attachments: jsonb("attachments"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => ({
+    threadIndex: index("chat_messages_thread_idx").on(
+      table.threadId,
+      table.createdAt
+    ),
+  })
+);
+```
+
+Store `PromptInput` attachments in `attachments` (JSON) or keep only metadata and upload the files to object storage.
+
+## 3. Read messages for Sidekick
+
+```tsx
+import { db } from "@/lib/db";
+import { chatMessages } from "@/lib/schema";
+import { asc, eq } from "drizzle-orm";
+
+const messages = await db
+  .select()
+  .from(chatMessages)
+  .where(eq(chatMessages.threadId, threadId))
+  .orderBy(asc(chatMessages.createdAt));
+
+return (
+  <Conversation>
+    <ConversationContent>
+      {messages.map((msg) => (
+        <Message key={msg.id} from={msg.role}>
+          <MessageContent from={msg.role}>{msg.content}</MessageContent>
+        </Message>
+      ))}
+    </ConversationContent>
+  </Conversation>
+);
+```
+
+## 4. Save a new message
+
+```ts
+import type { PromptInputMessage } from "@/components/ui/prompt-input";
+
+async function saveMessage(threadId: string, message: PromptInputMessage) {
+  if (!message.text.trim()) return;
+  await db.insert(chatMessages).values({
+    threadId,
+    role: "user",
+    content: message.text,
+    attachments: message.files,
+  });
+}
+```
+
+## 5. Stream assistant replies
+
+When you stream the assistant response, update the assistant row as tokens arrive so Sidekick can reload the latest content on refresh.

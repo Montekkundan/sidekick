@@ -10,6 +10,10 @@ component: true
   description="A sidebar that toggles open and closed."
 />
 
+## Overview
+
+Sidekick is a composable chat layout system. It ships as a sidebar with optional toggle behavior, a conversation container with auto-scroll, and a set of message primitives you can style or extend. Use it standalone or wrap it in `SidekickProvider` for keyboard shortcuts, responsive behavior, and an inset layout area.
+
 ## Installation
 
 <CodeTabs>
@@ -56,19 +60,54 @@ import {
   Conversation,
   ConversationContent,
   ConversationEmptyState,
+  ConversationScrollButton,
   Message,
+  MessageActions,
+  MessageAvatar,
   MessageContent,
+  MessageTimestamp,
 } from "@/components/sidekick";
+```
+
+### Provider + Toggleable Panel
+
+Use `SidekickProvider` to enable toggling, keyboard shortcuts (`⌘I` / `Ctrl+I`), and responsive layouts.
+
+```tsx
+<SidekickProvider defaultOpen>
+  <SidekickInset>
+    {/* Main content */}
+    <SidekickTrigger />
+  </SidekickInset>
+
+  <Sidekick>
+    <SidekickHeader className="justify-between">
+      <span className="font-semibold">AI Assistant</span>
+      <SidekickTrigger />
+    </SidekickHeader>
+
+    <SidekickContent>
+      <Conversation>
+        <ConversationContent>
+          <ConversationEmptyState />
+        </ConversationContent>
+        <ConversationScrollButton />
+      </Conversation>
+    </SidekickContent>
+
+    <SidekickFooter>{/* Add PromptInput here */}</SidekickFooter>
+  </Sidekick>
+</SidekickProvider>
 ```
 
 ### Standalone Mode
 
-Use Sidekick as a standalone panel without toggle behavior:
+Use Sidekick as a fixed panel (no provider, no toggle behavior):
 
 ```tsx
 <Sidekick standalone>
   <SidekickHeader>
-    <span>AI Assistant</span>
+    <span className="font-semibold">AI Assistant</span>
   </SidekickHeader>
 
   <SidekickContent>
@@ -88,38 +127,17 @@ Use Sidekick as a standalone panel without toggle behavior:
 </Sidekick>
 ```
 
-### With Provider (Toggleable)
+### Mobile Behavior
 
-Use with `SidekickProvider` for collapsible sidebar behavior:
+Sidekick supports three mobile behaviors:
+
+- `sheet` (default): full-screen sheet on mobile
+- `inline`: collapsible section within the layout
+- `floating`: off-canvas panel that slides in
 
 ```tsx
-<SidekickProvider>
-  <SidekickInset>
-    {/* Your main content */}
-    <SidekickTrigger />
-  </SidekickInset>
-
-  <Sidekick>
-    <SidekickHeader>
-      <span>AI Assistant</span>
-      <SidekickTrigger />
-    </SidekickHeader>
-
-    <SidekickContent>
-      <Conversation>
-        <ConversationContent>
-          <Message from="user">
-            <MessageContent from="user">Hello!</MessageContent>
-          </Message>
-          <Message from="assistant">
-            <MessageContent from="assistant">Hi there!</MessageContent>
-          </Message>
-        </ConversationContent>
-      </Conversation>
-    </SidekickContent>
-
-    <SidekickFooter>{/* Add PromptInput here */}</SidekickFooter>
-</Sidekick>
+<SidekickProvider defaultOpenMobile>
+  <Sidekick mobileBehavior="floating">...</Sidekick>
 </SidekickProvider>
 ```
 
@@ -177,8 +195,17 @@ return (
   <Conversation>
     <ConversationContent>
       {messages.map((msg) => (
-        <Message from={msg.from} key={msg.id}>
-          <MessageContent from={msg.from}>{msg.body}</MessageContent>
+        <Message className="group" from={msg.from} key={msg.id}>
+          <MessageAvatar />
+          <div className="space-y-1">
+            <MessageContent from={msg.from}>{msg.body}</MessageContent>
+            <div className="flex items-center gap-2">
+              <MessageTimestamp>{formatTime(msg.createdAt)}</MessageTimestamp>
+              <MessageActions>
+                {/* Copy / react / pin */}
+              </MessageActions>
+            </div>
+          </div>
         </Message>
       ))}
     </ConversationContent>
@@ -186,14 +213,12 @@ return (
 )
 ```
 
-We're preparing additional docs that walk through saving Sidekick chats + PromptInput attachments with Drizzle/Prisma end-to-end.
-
 ## Features
 
 - **Collapsible Panel**: Toggle the sidebar with keyboard shortcut (`⌘I` / `Ctrl+I`)
-- **Mobile Support**: Full-screen sheet on mobile devices
+- **Mobile Modes**: `sheet`, `inline`, or `floating`
 - **Conversation History**: Auto-scrolling message list with scroll-to-bottom button
-- **Message Bubbles**: Styled user and assistant messages with avatars
+- **Message Bubbles**: Styled user/assistant bubbles with optional avatars
 - **Empty State**: Customizable empty state when no messages exist
 - **Keyboard Navigation**: Full keyboard accessibility
 
@@ -203,20 +228,22 @@ We're preparing additional docs that walk through saving Sidekick chats + Prompt
 
 Wraps your app and provides the sidebar state context.
 
-| Prop           | Type                      | Default | Description                      |
-| -------------- | ------------------------- | ------- | -------------------------------- |
-| `defaultOpen`  | `boolean`                 | `true`  | Initial open state               |
-| `open`         | `boolean`                 | -       | Controlled open state            |
-| `onOpenChange` | `(open: boolean) => void` | -       | Callback when open state changes |
+| Prop                | Type                      | Default | Description                      |
+| ------------------- | ------------------------- | ------- | -------------------------------- |
+| `defaultOpen`       | `boolean`                 | `true`  | Initial open state               |
+| `defaultOpenMobile` | `boolean`                 | `false` | Initial mobile open state        |
+| `open`              | `boolean`                 | -       | Controlled open state            |
+| `onOpenChange`      | `(open: boolean) => void` | -       | Callback when open state changes |
 
 ### Sidekick
 
 The sidebar panel component.
 
-| Prop         | Type                | Default   | Description                                                 |
-| ------------ | ------------------- | --------- | ----------------------------------------------------------- |
-| `side`       | `"left" \| "right"` | `"right"` | Which side the panel appears on                             |
-| `standalone` | `boolean`           | `false`   | When true, renders as a fixed panel without toggle behavior |
+| Prop             | Type                                   | Default   | Description                                                 |
+| ---------------- | -------------------------------------- | --------- | ----------------------------------------------------------- |
+| `side`           | `"left" \| "right"`                  | `"right"` | Which side the panel appears on                             |
+| `mobileBehavior` | `"sheet" \| "inline" \| "floating"` | `"sheet"` | Mobile rendering mode                                       |
+| `standalone`     | `boolean`                              | `false`   | When true, renders as a fixed panel without toggle behavior |
 
 ### SidekickTrigger
 
@@ -238,6 +265,14 @@ The footer section (typically contains `PromptInput`).
 
 The main content area that sits beside the sidebar.
 
+### SidekickSeparator
+
+A styled separator for toolbars and lists.
+
+### SidekickInput
+
+A compact input field for filters or search inside the sidebar.
+
 ### Conversation
 
 Container for the message list with auto-scroll functionality.
@@ -245,6 +280,10 @@ Container for the message list with auto-scroll functionality.
 ### ConversationContent
 
 The scrollable content area inside `Conversation`.
+
+### ConversationScrollButton
+
+A floating scroll-to-bottom button that appears when the user is not at the end.
 
 ### ConversationEmptyState
 
@@ -275,6 +314,14 @@ The message bubble with text content.
 ### MessageAvatar
 
 Container for the sender's avatar.
+
+### MessageTimestamp
+
+Text-only timestamp styling.
+
+### MessageActions
+
+An actions row that fades in on hover. Add `className="group"` to the parent `Message` to enable hover behavior.
 
 ## Hooks
 
@@ -314,53 +361,4 @@ Create your own theme by targeting the data attributes:
 .my-theme [data-slot="message-content"][data-from="assistant"] {
   background-color: #2d2d2d;
 }
-```
-
-## Examples
-
-### Standalone Panel
-
-Perfect for embedding a chat interface without toggle behavior:
-
-```tsx
-<div className="h-[600px] w-96 rounded-lg border">
-  <Sidekick standalone>
-    <SidekickHeader>
-      <span>AI Assistant</span>
-    </SidekickHeader>
-    <SidekickContent>
-      <Conversation>
-        <ConversationContent>
-          {messages.map((msg) => (
-            <Message key={msg.id} from={msg.from}>
-              <MessageContent from={msg.from}>{msg.content}</MessageContent>
-            </Message>
-          ))}
-        </ConversationContent>
-      </Conversation>
-    </SidekickContent>
-    <SidekickFooter>
-      <PromptInput onSubmit={handleSubmit}>...</PromptInput>
-    </SidekickFooter>
-  </Sidekick>
-</div>
-```
-
-### Left-sided Sidekick
-
-```tsx
-<SidekickProvider>
-  <Sidekick side="left">{/* Content */}</Sidekick>
-  <SidekickInset>{/* Main content */}</SidekickInset>
-</SidekickProvider>
-```
-
-### Controlled State
-
-```tsx
-const [open, setOpen] = useState(false);
-
-<SidekickProvider open={open} onOpenChange={setOpen}>
-  {/* ... */}
-</SidekickProvider>;
 ```

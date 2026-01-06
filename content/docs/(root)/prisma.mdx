@@ -1,6 +1,99 @@
 ---
 title: Prisma
-description: Get started with Prisma in your project.
+description: Store Sidekick chats and messages with Prisma.
 ---
 
-Guide to using Prisma with your project.
+Use Prisma to persist Sidekick conversations. This guide covers a minimal schema plus read/write examples you can drop into a Next.js project.
+
+## 1. Install Prisma
+
+```bash
+bun add prisma @prisma/client
+bunx prisma init
+```
+
+## 2. Define a chat schema
+
+Add a basic thread + message schema to `prisma/schema.prisma`:
+
+```prisma
+enum MessageRole {
+  user
+  assistant
+}
+
+model ChatThread {
+  id        String        @id @default(cuid())
+  title     String?
+  createdAt DateTime      @default(now())
+  messages  ChatMessage[]
+}
+
+model ChatMessage {
+  id          String      @id @default(cuid())
+  threadId    String
+  role        MessageRole
+  content     String
+  attachments Json?
+  createdAt   DateTime    @default(now())
+
+  thread      ChatThread  @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  @@index([threadId, createdAt])
+}
+```
+
+If you need file metadata from `PromptInput`, store the `files` array in `attachments` (JSON) or move large payloads to object storage.
+
+## 3. Run a migration
+
+```bash
+bunx prisma migrate dev -n add_chat_models
+```
+
+## 4. Read messages for Sidekick
+
+```tsx
+import { prisma } from "@/lib/prisma";
+
+const thread = await prisma.chatThread.findUnique({
+  where: { id: threadId },
+  include: {
+    messages: { orderBy: { createdAt: "asc" } },
+  },
+});
+
+return (
+  <Conversation>
+    <ConversationContent>
+      {thread?.messages.map((msg) => (
+        <Message key={msg.id} from={msg.role}>
+          <MessageContent from={msg.role}>{msg.content}</MessageContent>
+        </Message>
+      ))}
+    </ConversationContent>
+  </Conversation>
+);
+```
+
+## 5. Save a new message
+
+```tsx
+import type { PromptInputMessage } from "@/components/ui/prompt-input";
+
+async function saveMessage(threadId: string, message: PromptInputMessage) {
+  if (!message.text.trim()) return;
+  await prisma.chatMessage.create({
+    data: {
+      threadId,
+      role: "user",
+      content: message.text,
+      attachments: message.files,
+    },
+  });
+}
+```
+
+## 6. Stream assistant replies
+
+When your API route streams AI output, insert/update the assistant message as tokens arrive so Sidekick can rehydrate the conversation on page load.

@@ -3,15 +3,15 @@ title: AI Gateway
 description: A unified interface for managing multiple AI gateway providers with AI SDK v6.
 ---
 
-A unified interface for managing multiple AI gateway providers with the AI SDK v6. Switch between Vercel AI Gateway, LLM Gateway, and OpenRouter with a simple configuration change.
+AI Gateway wraps AI SDK v6 providers into a single model factory. Switch between Vercel AI Gateway, LLM Gateway, and OpenRouter without rewriting your chat logic.
 
 ## Features
 
 - **Three Gateway Providers**: Vercel AI Gateway, LLM Gateway, and OpenRouter
-- **Unified API**: Same interface for all providers
-- **Type-Safe**: Full TypeScript support with LanguageModelV1
+- **Unified API**: One `createGatewayModel` call for every provider
+- **Type-Safe**: Works with AI SDK `LanguageModel`
 - **Flexible Authentication**: Environment variables or runtime API keys
-- **Zero Configuration**: Works with AI SDK v6 out of the box
+- **Streaming Ready**: Pairs with `useGatewayChat` for text streaming
 - **Error Handling**: Gateway-specific error classes
 
 ## Installation
@@ -20,15 +20,20 @@ A unified interface for managing multiple AI gateway providers with the AI SDK v
 npx shadcn@latest add https://sidekick.montek.dev/r/gateway.json
 ```
 
+This installs:
+
+- `lib/gateway.ts` (model factory + helpers)
+- `hooks/use-gateway-chat.ts` (AI SDK chat hook wrapper)
+
 ## Quick Start
 
-### 1. Set Environment Variables
-
-Choose your gateway and set the appropriate environment variable:
+### 1. Set environment variables
 
 ```env
 # Vercel AI Gateway
 VERCEL_AI_GATEWAY_API_KEY=your_key_here
+# or
+AI_GATEWAY_API_KEY=your_key_here
 
 # LLM Gateway
 LLM_GATEWAY_API_KEY=llmgtwy_xxxxx
@@ -39,263 +44,17 @@ OPENROUTER_SITE_URL=https://your-site.com  # Optional
 OPENROUTER_SITE_NAME=Your Site Name        # Optional
 ```
 
-### 2. Use the Gateway
+### 2. Create an API route
 
-```typescript
-import { generateText } from "ai";
-import { createGatewayModel } from "@/lib/gateway";
+`useGatewayChat` expects a text stream response.
 
-// Auto-detect provider from environment
-const model = createGatewayModel({
-  modelId: "openai/gpt-4o",
-});
-
-const result = await generateText({
-  model,
-  prompt: "Hello, world!",
-});
-```
-
-### 3. Create API Route
-
-```typescript
-// app/api/chat/route.ts
-import { streamText } from "ai";
-import { createGatewayModel } from "@/lib/gateway";
-
-export async function POST(req: Request) {
-  const { messages, gateway } = await req.json();
-  const model = createGatewayModel(gateway);
-
-  const result = streamText({
-    model,
-    messages,
-  });
-
-  return result.toDataStreamResponse();
-}
-```
-
-### 4. Use with Chat Hook
-
-```typescript
-import { useGatewayChat } from "@/hooks/use-gateway-chat";
-
-export default function Chat() {
-  const { messages, handleSubmit } = useGatewayChat({
-    gateway: {
-      modelId: "openai/gpt-4o",
-    },
-  });
-
-  return (
-    <PromptInput onSubmit={handleSubmit}>{/* Your chat UI */}</PromptInput>
-  );
-}
-```
-
-## Gateway Providers
-
-All providers are optional. The gateway will auto-detect which provider to use based on available environment variables. You can also explicitly specify a provider.
-
-### Vercel AI Gateway
-
-Uses the standard OpenAI-compatible interface with provider-prefixed model names.
-
-```typescript
-const model = createGatewayModel({
-  provider: "vercel",
-  modelId: "anthropic/claude-sonnet-4",
-});
-
-const { text } = await generateText({
-  model,
-  prompt: "Your prompt here",
-});
-```
-
-**Model Format**: `provider/model-name`
-
-- `anthropic/claude-sonnet-4`
-- `openai/gpt-4`
-- `google/gemini-pro`
-
-### LLM Gateway
-
-Uses `@llmgateway/ai-sdk-provider` package.
-
-```typescript
-const model = createGatewayModel({
-  provider: "llmgateway",
-  modelId: "openai/gpt-4o",
-});
-
-const { text } = await generateText({
-  model,
-  prompt: "Your prompt here",
-});
-```
-
-**Model Format**: `provider/model-name`
-
-- `openai/gpt-4o`
-- `anthropic/claude-3-opus`
-
-### OpenRouter
-
-Uses `@openrouter/ai-sdk-provider` package.
-
-```typescript
-const model = createGatewayModel({
-  provider: "openrouter",
-  modelId: "openai/gpt-4o",
-});
-
-const result = streamText({
-  model,
-  prompt: "Your prompt here",
-});
-```
-
-**Model Format**: `provider/model-name`
-
-- `openai/gpt-4o`
-- `anthropic/claude-3-opus`
-- `google/gemini-pro`
-
-## Advanced Usage
-
-### Auto-Detect Provider
-
-The gateway automatically detects which provider to use based on available environment variables:
-
-```typescript
-// No provider specified - auto-detects from environment
-const model = createGatewayModel({
-  modelId: "openai/gpt-4o",
-});
-```
-
-Priority order:
-
-1. Vercel AI Gateway (`VERCEL_AI_GATEWAY_API_KEY`)
-2. LLM Gateway (`LLM_GATEWAY_API_KEY`)
-3. OpenRouter (`OPENROUTER_API_KEY`)
-
-### Custom API Keys
-
-Pass API keys at runtime instead of using environment variables:
-
-```typescript
-const model = createGatewayModel({
-  provider: "openrouter",
-  modelId: "anthropic/claude-3-opus",
-  apiKey: "sk-or-v1-your-key-here",
-});
-```
-
-### Integration with useChat Hook
-
-Use the `useGatewayChat` hook for seamless integration with chat components:
-
-```typescript
-import { useGatewayChat } from "@/hooks/use-gateway-chat";
-
-export default function ChatComponent() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading } =
-    useGatewayChat({
-      gateway: {
-        modelId: "openai/gpt-4o",
-        provider: "vercel", // Optional
-      },
-      initialMessages: [{ id: "1", role: "user", content: "Hello!" }],
-    });
-
-  return (
-    <form onSubmit={handleSubmit}>
-      {messages.map((msg) => (
-        <div key={msg.id}>{msg.content}</div>
-      ))}
-      <input value={input} onChange={handleInputChange} />
-      <button type="submit" disabled={isLoading}>
-        Send
-      </button>
-    </form>
-  );
-}
-```
-
-### Without Gateway (Custom Logic)
-
-You can also use PromptInput and Sidekick without the gateway:
-
-```typescript
-const handleCustomSubmit = (message: { text: string }) => {
-  // Your custom logic here
-  fetch("/api/my-custom-endpoint", {
-    method: "POST",
-    body: JSON.stringify({ message: message.text }),
-  });
-};
-
-return <PromptInput onSubmit={handleCustomSubmit}>{/* Your UI */}</PromptInput>;
-```
-
-### Error Handling
-
-```typescript
-import { createGatewayModel, GatewayError } from "@/lib/gateway";
-
-try {
-  const model = createGatewayModel({
-    modelId: "openai/gpt-4o",
-  });
-
-  const result = await generateText({
-    model,
-    prompt: "Hello",
-  });
-} catch (error) {
-  if (error instanceof GatewayError) {
-    console.error(`Gateway Error [${error.provider}]:`, error.message);
-    console.error("Original error:", error.originalError);
-  }
-}
-```
-
-### Debug Environment
-
-Check which gateway configurations are available:
-
-```typescript
-import { getGatewayEnvironment } from "@/lib/gateway";
-
-const env = getGatewayEnvironment();
-
-console.log(
-  "Vercel AI Gateway:",
-  env.vercel.hasKey ? "configured" : "not configured"
-);
-console.log(
-  "LLM Gateway:",
-  env.llmgateway.hasKey ? "configured" : "not configured"
-);
-console.log(
-  "OpenRouter:",
-  env.openrouter.hasKey ? "configured" : "not configured"
-);
-```
-
-### Next.js API Route Example
-
-```typescript
+```ts
 // app/api/chat/route.ts
 import { streamText } from "ai";
 import { createGatewayModel } from "@/lib/gateway";
 
 export async function POST(request: Request) {
   const { messages, gateway } = await request.json();
-
   const model = createGatewayModel(gateway);
 
   const result = streamText({
@@ -303,21 +62,152 @@ export async function POST(request: Request) {
     messages,
   });
 
-  return result.toDataStreamResponse();
+  return result.toTextStreamResponse();
 }
 ```
 
-## Environment Variables Reference
+### 3. Use with Sidekick
 
-| Variable                    | Provider    | Required   | Description                                 |
-| --------------------------- | ----------- | ---------- | ------------------------------------------- |
-| `VERCEL_AI_GATEWAY_API_KEY` | Vercel      | Optional\* | Vercel AI Gateway API key                   |
-| `LLM_GATEWAY_API_KEY`       | LLM Gateway | Optional\* | LLM Gateway API key (format: `llmgtwy_xxx`) |
-| `OPENROUTER_API_KEY`        | OpenRouter  | Optional\* | OpenRouter API key (format: `sk-or-v1-xxx`) |
-| `OPENROUTER_SITE_URL`       | OpenRouter  | No         | Your site URL for OpenRouter rankings       |
-| `OPENROUTER_SITE_NAME`      | OpenRouter  | No         | Your site name for OpenRouter rankings      |
+`useGatewayChat` exposes `sendMessage` and streaming status you can wire into `PromptInput`.
 
-\* At least one gateway provider key is required
+```tsx
+import {
+  Conversation,
+  ConversationContent,
+  Message,
+  MessageContent,
+  Sidekick,
+  SidekickContent,
+  SidekickFooter,
+  SidekickHeader,
+} from "@/components/sidekick";
+import {
+  PromptInput,
+  PromptInputBody,
+  PromptInputFooter,
+  PromptInputSubmit,
+  PromptInputTextarea,
+  PromptInputTools,
+} from "@/components/ui/prompt-input";
+import { useGatewayChat } from "@/hooks/use-gateway-chat";
+
+function getMessageText(message: { parts?: Array<{ type: string; text?: string }> }) {
+  return (
+    message.parts
+      ?.filter((part) => part.type === "text")
+      .map((part) => part.text ?? "")
+      .join("") ?? ""
+  );
+}
+
+export function SidekickChat() {
+  const { messages, sendMessage, status } = useGatewayChat({
+    gateway: { modelId: "openai/gpt-4o-mini" },
+  });
+
+  const handleSubmit = async ({ text }) => {
+    if (!text.trim()) return;
+    await sendMessage({ text });
+  };
+
+  return (
+    <Sidekick standalone>
+      <SidekickHeader>Support</SidekickHeader>
+      <SidekickContent>
+        <Conversation>
+          <ConversationContent>
+            {messages.map((msg) => (
+              <Message
+                key={msg.id}
+                from={msg.role === "assistant" ? "assistant" : "user"}
+              >
+                <MessageContent
+                  from={msg.role === "assistant" ? "assistant" : "user"}
+                >
+                  {getMessageText(msg)}
+                </MessageContent>
+              </Message>
+            ))}
+          </ConversationContent>
+        </Conversation>
+      </SidekickContent>
+      <SidekickFooter>
+        <PromptInput onSubmit={handleSubmit}>
+          <PromptInputBody>
+            <PromptInputTextarea placeholder="Ask a question..." />
+          </PromptInputBody>
+          <PromptInputFooter>
+            <PromptInputTools />
+            <PromptInputSubmit status={status} />
+          </PromptInputFooter>
+        </PromptInput>
+      </SidekickFooter>
+    </Sidekick>
+  );
+}
+```
+
+If you need attachments, read `message.files` from `PromptInput` and pass them to your API route.
+
+## Gateway Providers
+
+All providers are optional. The gateway auto-detects which provider to use based on available environment variables.
+
+### Vercel AI Gateway
+
+```ts
+const model = createGatewayModel({
+  provider: "vercel",
+  modelId: "anthropic/claude-sonnet-4",
+});
+```
+
+Uses `VERCEL_AI_GATEWAY_API_KEY` or `AI_GATEWAY_API_KEY`.
+
+### LLM Gateway
+
+```ts
+const model = createGatewayModel({
+  provider: "llmgateway",
+  modelId: "openai/gpt-4o",
+});
+```
+
+Requires `LLM_GATEWAY_API_KEY`. (The LLM Gateway provider reads the key from the environment.)
+
+### OpenRouter
+
+```ts
+const model = createGatewayModel({
+  provider: "openrouter",
+  modelId: "openai/gpt-4o",
+});
+```
+
+Requires `OPENROUTER_API_KEY`. Use `OPENROUTER_SITE_URL` and `OPENROUTER_SITE_NAME` to set ranking headers.
+
+## Auto-Detect Priority
+
+When `provider` is not specified, the gateway checks:
+
+1. Vercel AI Gateway (`VERCEL_AI_GATEWAY_API_KEY` or `AI_GATEWAY_API_KEY`)
+2. LLM Gateway (`LLM_GATEWAY_API_KEY`)
+3. OpenRouter (`OPENROUTER_API_KEY`)
+
+## Error Handling
+
+```ts
+import { createGatewayModel, GatewayError } from "@/lib/gateway";
+
+try {
+  const model = createGatewayModel({ modelId: "openai/gpt-4o" });
+  const result = await generateText({ model, prompt: "Hello" });
+} catch (error) {
+  if (error instanceof GatewayError) {
+    console.error(`Gateway Error [${error.provider}]:`, error.message);
+  }
+}
+```
 
 ## Troubleshooting
 
@@ -325,25 +215,18 @@ export async function POST(request: Request) {
 
 Make sure you have at least one of these environment variables set:
 
-- `VERCEL_AI_GATEWAY_API_KEY`
+- `VERCEL_AI_GATEWAY_API_KEY` or `AI_GATEWAY_API_KEY`
 - `LLM_GATEWAY_API_KEY`
 - `OPENROUTER_API_KEY`
 
 ### "Vercel AI Gateway requires VERCEL_AI_GATEWAY_API_KEY"
 
-Set the `VERCEL_AI_GATEWAY_API_KEY` environment variable or pass an `apiKey` parameter.
+Set `VERCEL_AI_GATEWAY_API_KEY` or pass an `apiKey` parameter.
 
 ### "LLM Gateway requires LLM_GATEWAY_API_KEY"
 
-Get your API key from [LLM Gateway dashboard](https://llmgateway.io/dashboard) and add it to your environment.
+Set `LLM_GATEWAY_API_KEY` in your environment.
 
 ### "OpenRouter requires OPENROUTER_API_KEY"
 
-Sign up at [OpenRouter](https://openrouter.ai) and add your API key to the environment.
-
-## Links
-
-- [Vercel AI Gateway Docs](https://vercel.com/docs/ai-gateway)
-- [LLM Gateway Docs](https://docs.llmgateway.io)
-- [OpenRouter Docs](https://openrouter.ai/docs)
-- [AI SDK Documentation](https://sdk.vercel.ai/docs)
+Set `OPENROUTER_API_KEY` in your environment or pass an `apiKey` parameter.

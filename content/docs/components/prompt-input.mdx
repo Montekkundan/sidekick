@@ -1,6 +1,6 @@
 ---
 title: Prompt Input
-description: The foundational input component for AI interfaces. 100% compatible with Shadcn UI, featuring compound component architecture, flexible variants, and seamless composition.
+description: The foundational input component for AI interfaces. Built on Shadcn UI principles with compound composition, attachments, and speech controls.
 component: true
 ---
 
@@ -8,9 +8,9 @@ component: true
 
 ## Overview
 
-The `PromptInput` is designed to be the logic and visual foundation for any AI interaction. Built on top of `radix-ui` primitives and 100% compatible with Shadcn UI's styling system, it acts as a robust `form` wrapper that handles state, attachments, and submissions while letting you compose the internal layout exactly how you want.
+`PromptInput` is a composable `form` wrapper for AI chats. It handles text, attachments, and submit behavior while letting you control the exact layout with compound subcomponents. It is built on top of the `InputGroup` primitives and is fully compatible with shadcn/ui styling.
 
-It follows the **Compound Component** pattern, allowing granular control over every part of the input, from the textarea to the toolbars and actions.
+You can use it as a self-contained component or lift its state with `PromptInputProvider` to place external buttons, menus, or presets anywhere in the UI.
 
 ## Installation
 
@@ -44,16 +44,6 @@ npx shadcn@latest add https://sidekick.montek.dev/r/prompt-input.json
 
 </CodeTabs>
 
-## Core Concepts
-
-### Foundation & Compatibility
-
-`PromptInput` uses `InputGroup` (a flexible flexbox container) internally to align elements. It is fully compatible with Shadcn UI Form schemas and themes.
-
-### Compound Composition
-
-You can use the dot-notation exports (e.g., `PromptInput.Textarea`) or named imports to build your interface. This decoupled architecture allows you to place buttons, menus, and text areas anywhere within the root provider.
-
 ## Usage
 
 ### Basic
@@ -62,10 +52,20 @@ You can use the dot-notation exports (e.g., `PromptInput.Textarea`) or named imp
 import { PromptInput } from "@/components/ui/prompt-input";
 
 export function ChatInput() {
+  const handleSubmit = async ({ text, files }) => {
+    if (!text.trim()) return;
+    // Send text + files to your API route
+    await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, files }),
+    });
+  };
+
   return (
-    <PromptInput onSubmit={(message) => console.log(message)}>
+    <PromptInput onSubmit={handleSubmit}>
       <PromptInput.Body>
-        <PromptInput.Textarea />
+        <PromptInput.Textarea placeholder="Ask me anything..." />
       </PromptInput.Body>
       <PromptInput.Footer>
         <PromptInput.Tools />
@@ -76,148 +76,76 @@ export function ChatInput() {
 }
 ```
 
-### Advanced Layout (Small / Compact)
-
-Since `PromptInput` logic is separated from its layout, you can hoist the state using `PromptInputProvider` to place external triggers (like an "Add" button) next to the input while sharing the same context. This is perfect for "Pill" or "Compact" designs.
+### Attachments + Action Menu
 
 ```tsx
-import { PlusIcon } from "lucide-react"
-import { PromptInput, PromptInputProvider } from "@/components/ui/prompt-input"
+<PromptInput
+  accept="image/*"
+  multiple
+  maxFiles={4}
+  onError={(err) => console.log(err.message)}
+  onSubmit={handleSubmit}
+>
+  <PromptInput.Attachments>
+    {(file) => <PromptInput.Attachment data={file} />}
+  </PromptInput.Attachments>
 
-export function CompactChatInput() {
-  return (
-    <PromptInputProvider>
-      <div className="flex items-center gap-2 rounded-full border p-1 pl-3 shadow-sm">
-        {/* External Trigger accessing PromptInput context */}
-        <button className="text-muted-foreground hover:text-foreground">
-          <PlusIcon className="size-5" />
-        </button>
-
-        {/* The Input Component */}
-        <PromptInput
-          variant="ghost"
-          size="sm"
-          className="flex-1 border-none shadow-none"
-          onSubmit={...}
-        >
-          <PromptInput.Body>
-            <PromptInput.Textarea placeholder="Send a message..." />
-            <PromptInput.Button size="sm">
-              <MicIcon />
-            </PromptInput.Button>
-          </PromptInput.Body>
-        </PromptInput>
-      </div>
-    </PromptInputProvider>
-  )
-}
-```
-
-### Large Variant
-
-For standard detailed inputs with tools and attachments:
-
-```tsx
-<PromptInput variant="default" size="lg" onSubmit={...}>
   <PromptInput.Body>
-    <PromptInput.Textarea minRows={3} />
+    <PromptInput.Textarea minRows={3} placeholder="Drop files or paste images..." />
   </PromptInput.Body>
+
   <PromptInput.Footer>
-    <PromptInput.Tools>
-      <PromptInput.Attachment />
-      <PromptInput.ActionMenu />
+    <PromptInput.Tools className="gap-2">
+      <PromptInput.ActionMenu>
+        <PromptInput.ActionMenuTrigger />
+        <PromptInput.ActionMenuContent>
+          <PromptInput.ActionAddAttachments />
+          <PromptInput.ActionMenuItem>Summarize</PromptInput.ActionMenuItem>
+        </PromptInput.ActionMenuContent>
+      </PromptInput.ActionMenu>
     </PromptInput.Tools>
     <PromptInput.Submit />
-</PromptInput.Footer>
-</PromptInput>
-```
-
-### Custom Layouts & Toolbars
-
-Leverage `PromptInput.Header`, `PromptInput.Footer`, and `PromptInput.Button` to build stacked layouts. Chip styling is intentionally minimal so teams can theme it.
-
-```tsx
-<PromptInput variant="outline" size="lg" onSubmit={...}>
-  <PromptInput.Header align="block-start" className="gap-2">
-    <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-      {["Campaign", "Brand voice"].map((chip) => (
-        <span key={chip} className="whitespace-nowrap">
-          {chip}
-        </span>
-      ))}
-    </div>
-  </PromptInput.Header>
-
-  <PromptInput.Body>
-    <PromptInput.Textarea minRows={4} placeholder="Detail the hero message..." />
-    <PromptInput.Button>
-      <MicIcon className="size-4" />
-    </PromptInput.Button>
-  </PromptInput.Body>
-
-  <PromptInput.Footer className="flex-col gap-3">
-    <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
-      <span className="whitespace-nowrap">Tone: Playful</span>
-      <span className="whitespace-nowrap">Audience: Growth</span>
-    </div>
-    <div className="flex w-full items-center justify-between gap-2">
-      <PromptInput.Tools className="gap-2">
-        <PromptInput.Button className="gap-1 px-3">
-          <SparklesIcon className="size-4" />
-          <span>Magic Fill</span>
-        </PromptInput.Button>
-        <PromptInput.Button className="gap-1 px-3">
-          <GlobeIcon className="size-4" />
-          <span>Search Docs</span>
-        </PromptInput.Button>
-      </PromptInput.Tools>
-      <PromptInput.Submit />
-    </div>
   </PromptInput.Footer>
 </PromptInput>
 ```
 
-Use the optional `align` prop on `PromptInput.Header`/`PromptInput.Footer` to switch between inline or stacked placement.
+### External Controls with Provider
 
-### Provider Controlled State
-
-`PromptInputProvider` lets external controls manipulate the textarea or attachments. Useful for presets, context menus, or floating mic buttons.
+Use `PromptInputProvider` to share input state across siblings, presets, or floating buttons.
 
 ```tsx
+import { usePromptInputController } from "@/components/ui/prompt-input";
+
 function Presets() {
-  const controller = usePromptInputController()
+  const controller = usePromptInputController();
   return (
     <div className="flex flex-wrap gap-2">
       <button
         className="rounded-full border px-3 py-1 text-xs"
-        onClick={() =>
-          controller.textInput.setInput("Summarize the research call...")
-        }
+        onClick={() => controller.textInput.setInput("Summarize the call")}
+        type="button"
       >
-        Research recap
+        Recap
       </button>
       <button
         className="rounded-full border px-3 py-1 text-xs"
-        onClick={() =>
-          controller.textInput.setInput("Draft a beta onboarding email.")
-        }
+        onClick={() => controller.textInput.setInput("Draft a follow-up email")}
+        type="button"
       >
-        Email draft
+        Follow-up
       </button>
     </div>
-  )
+  );
 }
 
 export function ProviderExample() {
   return (
-    <PromptInputProvider initialInput="Give me a quick standup summary.">
+    <PromptInput.Provider initialInput="Give me a quick update.">
       <Presets />
-      <PromptInput shape="pill" size="sm" onSubmit={...}>
+      <PromptInput shape="pill" size="sm" onSubmit={handleSubmit}>
         <PromptInput.Body>
-          <PromptInput.Textarea ref={textareaRef} />
-          <PromptInput.Button size="icon-sm">
-            <MicIcon className="size-4" />
-          </PromptInput.Button>
+          <PromptInput.Textarea />
+          <PromptInput.SpeechButton />
         </PromptInput.Body>
         <PromptInput.Footer align="inline-end">
           <PromptInput.Tools>
@@ -229,56 +157,73 @@ export function ProviderExample() {
           <PromptInput.Submit />
         </PromptInput.Footer>
       </PromptInput>
-    </PromptInputProvider>
-  )
+    </PromptInput.Provider>
+  );
 }
 ```
 
+## Behavior
+
+- **Enter to submit** (Shift+Enter for a new line).
+- **Paste images/files** directly into the textarea.
+- **Backspace on empty input** removes the last attachment.
+- **Drag and drop** files onto the input (or anywhere with `globalDrop`).
+
 ## API Reference
 
-### Root: PromptInput
+### PromptInput
 
-The main container. Accepts `className`, `variant`, `shape`, `size`, and standard form props.
+The root form container. Accepts standard form props plus the options below.
 
-| Prop      | Type                                        | Description                                                                                       |
-| --------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `variant` | `default` \| `ghost` \| `outline` \| `none` | Controls the visual border and background style. Use `none` when wrapping with `PromptInputCard`. |
-| `shape`   | `default` \| `pill`                         | Controls the border-radius. `pill` creates a fully rounded input.                                 |
-| `size`    | `default` \| `sm` \| `lg`                   | Controls height, padding, and text size. `sm` is compact/single-line optimized.                   |
+| Prop             | Type                                        | Description                                                                                       |
+| ---------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `variant`        | `default` \| `ghost` \| `outline` \| `none` | Controls the visual border and background style. Use `none` when wrapping with `PromptInput.Card`. |
+| `shape`          | `default` \| `pill`                         | Controls the border-radius. `pill` creates a fully rounded input.                                 |
+| `size`           | `default` \| `sm` \| `lg`                   | Controls height, padding, and text size. `sm` is compact/single-line optimized.                   |
+| `focusRing`      | `boolean`                                   | Toggles the input focus ring styling.                                                             |
+| `accept`         | `string`                                    | MIME types allowed (ex: `image/*`).                                                               |
+| `multiple`       | `boolean`                                   | Allow multiple files in the picker.                                                               |
+| `globalDrop`     | `boolean`                                   | Accept drops anywhere on the document instead of just the input.                                  |
+| `maxFiles`       | `number`                                    | Maximum number of files allowed.                                                                  |
+| `maxFileSize`    | `number`                                    | Maximum file size in bytes.                                                                       |
+| `syncHiddenInput`| `boolean`                                   | Legacy flag for native forms (not used by default).                                               |
+| `onError`        | `(err) => void`                             | Called on max file/size/accept errors.                                                            |
+| `onSubmit`       | `(message, event) => void \| Promise<void>` | Called with `{ text, files }` after submit.                                                       |
 
-### PromptInputCard
+### PromptInputMessage
 
-Optional wrapper component for custom card-style containers with built-in transitions.
-
-| Prop      | Type                 | Description                                                      |
-| --------- | -------------------- | ---------------------------------------------------------------- |
-| `variant` | `default` \| `muted` | Controls the background color intensity.                         |
-| `shape`   | `default` \| `pill`  | Controls the border-radius. `pill` creates a fully rounded card. |
-
-```tsx
-<PromptInputCard shape="pill" variant="muted">
-  <PromptInput variant="none" onSubmit={...}>
-    ...
-  </PromptInput>
-</PromptInputCard>
+```ts
+type PromptInputMessage = {
+  text: string;
+  files: FileUIPart[];
+};
 ```
 
-### Logic: PromptInputProvider
+Files are converted to data URLs when submitted so they can be sent to your API route or stored in the database.
 
-Optional context provider. Use this when you need to control the input state (files, text) from _outside_ the main `PromptInput` component (e.g., a sibling button).
+### PromptInput.Card
 
-```tsx
-<PromptInputProvider>
-  <ExternalButton />
-  <PromptInput />
-</PromptInputProvider>
-```
+Optional wrapper component for custom card-style containers.
+
+| Prop      | Type                 | Description                              |
+| --------- | -------------------- | ---------------------------------------- |
+| `variant` | `default` \| `muted` | Controls the background color intensity. |
+| `shape`   | `default` \| `pill`  | Controls the border-radius.              |
+
+### PromptInput.Provider
+
+Optional context provider that lifts text + attachment state outside of `PromptInput`.
 
 ### Subcomponents
 
-- **PromptInput.Textarea**: Auto-resizing textarea with `ref` support for speech or focus controls.
-- **PromptInput.Header / PromptInput.Footer**: Toolbar containers. Pass `align` to toggle inline or stacked placement.
+- **PromptInput.Body**: Flex container for the textarea + inline buttons.
+- **PromptInput.Textarea**: Auto-resizing textarea with paste/file handling.
+- **PromptInput.Header / PromptInput.Footer**: Toolbar containers. Pass `align` to toggle inline/stacked placement.
 - **PromptInput.Tools**: Wrapper for grouped buttons or chip lists.
 - **PromptInput.Button / PromptInput.Submit / PromptInput.SpeechButton**: Composable buttons built on top of `InputGroupButton`.
 - **PromptInput.Attachments / PromptInput.Attachment**: File preview list plus individual attachment chips.
-- **PromptInput.ActionMenu**: Pre-wired dropdown menu for custom actions or file uploads.
+- **PromptInput.ActionMenu / ActionMenuTrigger / ActionMenuContent / ActionMenuItem**: Dropdown menu primitives.
+- **PromptInput.ActionAddAttachments**: Pre-wired menu item to open the file picker.
+- **PromptInput.Select / SelectTrigger / SelectContent / SelectItem / SelectValue**: Select primitives styled for toolbars.
+- **PromptInput.HoverCard / HoverCardTrigger / HoverCardContent**: Hover card primitives for attachment previews.
+- **PromptInput.TabsList / Tab / TabLabel / TabBody / TabItem**: Lightweight tab primitives for quick presets.

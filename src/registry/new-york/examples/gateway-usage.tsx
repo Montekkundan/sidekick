@@ -3,6 +3,7 @@
  * Shows how to use the AI Gateway library with different providers
  */
 
+import * as React from "react";
 import { generateText, streamText } from "ai";
 import { createGatewayModel } from "@/registry/new-york/lib/gateway";
 import { useGatewayChat } from "@/registry/new-york/hooks/use-gateway-chat";
@@ -133,29 +134,53 @@ export async function exampleWithErrorHandling() {
 // ============================================================================
 
 export function ExampleChatComponent() {
-	const { messages, input, handleInputChange, handleSubmit, isLoading } =
-		useGatewayChat({
-			gateway: {
-				modelId: "openai/gpt-4o",
-				// provider: 'vercel', // Optional - auto-detects if not specified
+	const [input, setInput] = React.useState("");
+	const { messages, sendMessage, status } = useGatewayChat({
+		gateway: {
+			modelId: "openai/gpt-4o",
+			// provider: 'vercel', // Optional - auto-detects if not specified
+		},
+		messages: [
+			{
+				id: "1",
+				role: "user",
+				parts: [{ type: "text", text: "Hello!" }],
 			},
-			initialMessages: [
-				{ id: "1", role: "user", content: "Hello!" },
-				{ id: "2", role: "assistant", content: "Hi! How can I help you?" },
-			],
-		});
+			{
+				id: "2",
+				role: "assistant",
+				parts: [{ type: "text", text: "Hi! How can I help you?" }],
+			},
+		],
+	});
+	const isLoading = status === "streaming";
+
+	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		if (!input.trim()) return;
+		void sendMessage({ text: input });
+		setInput("");
+	};
+
+	const getMessageText = (message: {
+		parts?: Array<{ type: string; text?: string }>;
+	}) =>
+		message.parts
+			?.filter((part) => part.type === "text")
+			.map((part) => part.text ?? "")
+			.join("") ?? "";
 
 	return (
 		<form onSubmit={handleSubmit}>
 			<div>
 				{messages.map((msg) => (
 					<div key={msg.id}>
-						<strong>{msg.role}:</strong> {msg.content}
+						<strong>{msg.role}:</strong> {getMessageText(msg)}
 					</div>
 				))}
 			</div>
 			<input
-				onChange={handleInputChange}
+				onChange={(event) => setInput(event.target.value)}
 				placeholder="Type a message..."
 				value={input}
 			/>
@@ -180,7 +205,7 @@ export async function POST(request: Request) {
 		messages,
 	});
 
-	return result.toDataStreamResponse();
+	return result.toTextStreamResponse();
 }
 
 // ============================================================================
@@ -200,4 +225,3 @@ export function ExampleWithoutGateway() {
 	// Use PromptInput or any other component with custom logic
 	return <div>Custom implementation without gateway</div>;
 }
-
