@@ -9,7 +9,7 @@
     "start": "next start",
     "analyze": "next experimental-analyze",
     "upgrade": "next upgrade",
-    "registry:build": "shadcn build",
+    "registry:build": "shadcn build && node scripts/postprocess-registry-v0.mjs",
     "postinstall": "fumadocs-mdx",
     "typecheck": "tsc --noEmit"
   },

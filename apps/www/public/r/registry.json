@@ -9,10 +9,13 @@
       "title": "Ask AI Button",
       "description": "A component set for triggering AI interactions and displaying labels.",
       "dependencies": [],
-      "registryDependencies": ["button", "avatar"],
+      "registryDependencies": [
+        "button",
+        "avatar"
+      ],
       "files": [
         {
-          "path": "src/registry/new-york/blocks/ask-ai/index.tsx",
+          "path": "registry/new-york/blocks/ask-ai/index.tsx",
           "type": "registry:component"
         }
       ]
@@ -22,7 +25,10 @@
       "type": "registry:component",
       "title": "Prompt Input",
       "description": "An input component for entering prompts with file attachments, speech recognition, and status indication.",
-      "dependencies": ["nanoid", "ai"],
+      "dependencies": [
+        "nanoid",
+        "ai"
+      ],
       "registryDependencies": [
         "button",
         "input",
@@ -32,7 +38,7 @@
       ],
       "files": [
         {
-          "path": "src/registry/new-york/blocks/prompt-input/index.tsx",
+          "path": "registry/new-york/blocks/prompt-input/index.tsx",
           "type": "registry:component"
         }
       ]
@@ -42,7 +48,10 @@
       "type": "registry:component",
       "title": "Sidekick",
       "description": "An AI chat sidebar component with conversation history, message bubbles, and integrated prompt input.",
-      "dependencies": ["nanoid", "ai"],
+      "dependencies": [
+        "nanoid",
+        "ai"
+      ],
       "registryDependencies": [
         "button",
         "input",
@@ -53,7 +62,7 @@
       ],
       "files": [
         {
-          "path": "src/registry/new-york/blocks/sidekick/index.tsx",
+          "path": "registry/new-york/blocks/sidekick/index.tsx",
           "type": "registry:component"
         }
       ]
@@ -71,11 +80,11 @@
       "registryDependencies": [],
       "files": [
         {
-          "path": "src/registry/new-york/lib/gateway.ts",
+          "path": "registry/new-york/lib/gateway.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/registry/new-york/hooks/use-gateway-chat.ts",
+          "path": "registry/new-york/hooks/use-gateway-chat.ts",
           "type": "registry:hook"
         }
       ]
@@ -85,7 +94,10 @@
       "type": "registry:block",
       "title": "Sidekick Standalone Chat",
       "description": "A standalone AI chat interface with gateway integration and streaming responses. Demonstrates how to build a complete chat experience with the Sidekick component and AI Gateway.",
-      "dependencies": ["nanoid", "ai"],
+      "dependencies": [
+        "nanoid",
+        "ai"
+      ],
       "registryDependencies": [
         "https://sidekick.montek.dev/r/sidekick.json",
         "https://sidekick.montek.dev/r/prompt-input.json",
@@ -94,19 +106,21 @@
       ],
       "files": [
         {
-          "path": "src/registry/new-york/blocks/sidekick-01/page.tsx",
+          "path": "registry/new-york/blocks/sidekick-01/page.tsx",
           "type": "registry:page",
           "target": "app/sidekick/page.tsx"
         },
         {
-          "path": "src/registry/new-york/blocks/sidekick-01/components/sidekick-standalone.tsx",
+          "path": "registry/new-york/blocks/sidekick-01/components/sidekick-standalone.tsx",
           "type": "registry:component"
         }
       ],
       "meta": {
         "iframeHeight": "800px"
       },
-      "categories": ["sidekick"]
+      "categories": [
+        "sidekick"
+      ]
     },
     {
       "name": "sidekick-02",
@@ -121,19 +135,21 @@
       ],
       "files": [
         {
-          "path": "src/registry/new-york/blocks/sidekick-02/page.tsx",
+          "path": "registry/new-york/blocks/sidekick-02/page.tsx",
           "type": "registry:page",
           "target": "app/sidekick-02/page.tsx"
         },
         {
-          "path": "src/registry/new-york/blocks/sidekick-02/components/sidekick-chatbot.tsx",
+          "path": "registry/new-york/blocks/sidekick-02/components/sidekick-chatbot.tsx",
           "type": "registry:component"
         }
       ],
       "meta": {
         "iframeHeight": "800px"
       },
-      "categories": ["sidekick"]
+      "categories": [
+        "sidekick"
+      ]
     },
     {
       "name": "sidekick-03",
@@ -148,19 +164,21 @@
       ],
       "files": [
         {
-          "path": "src/registry/new-york/blocks/sidekick-03/page.tsx",
+          "path": "registry/new-york/blocks/sidekick-03/page.tsx",
           "type": "registry:page",
           "target": "app/sidekick-03/page.tsx"
         },
         {
-          "path": "src/registry/new-york/blocks/sidekick-03/components/sidekick-floating.tsx",
+          "path": "registry/new-york/blocks/sidekick-03/components/sidekick-floating.tsx",
           "type": "registry:component"
         }
       ],
       "meta": {
         "iframeHeight": "800px"
       },
-      "categories": ["sidekick"]
+      "categories": [
+        "sidekick"
+      ]
     },
     {
       "name": "prompt-input-01",
@@ -173,19 +191,21 @@
       ],
       "files": [
         {
-          "path": "src/registry/new-york/blocks/prompt-input-01/page.tsx",
+          "path": "registry/new-york/blocks/prompt-input-01/page.tsx",
           "type": "registry:page",
           "target": "app/prompt-input-01/page.tsx"
         },
         {
-          "path": "src/registry/new-york/blocks/prompt-input-01/components/agent-prompt-input.tsx",
+          "path": "registry/new-york/blocks/prompt-input-01/components/agent-prompt-input.tsx",
           "type": "registry:component"
         }
       ],
       "meta": {
         "iframeHeight": "800px"
       },
-      "categories": ["prompt-input"]
+      "categories": [
+        "prompt-input"
+      ]
     },
     {
       "name": "prompt-input-02",
@@ -198,19 +218,21 @@
       ],
       "files": [
         {
-          "path": "src/registry/new-york/blocks/prompt-input-02/page.tsx",
+          "path": "registry/new-york/blocks/prompt-input-02/page.tsx",
           "type": "registry:page",
           "target": "app/prompt-input-02/page.tsx"
         },
         {
-          "path": "src/registry/new-york/blocks/prompt-input-02/components/cursor-prompt-input.tsx",
+          "path": "registry/new-york/blocks/prompt-input-02/components/cursor-prompt-input.tsx",
           "type": "registry:component"
         }
       ],
       "meta": {
         "iframeHeight": "800px"
       },
-      "categories": ["prompt-input"]
+      "categories": [
+        "prompt-input"
+      ]
     },
     {
       "name": "prompt-input-03",
@@ -223,19 +245,21 @@
       ],
       "files": [
         {
-          "path": "src/registry/new-york/blocks/prompt-input-03/page.tsx",
+          "path": "registry/new-york/blocks/prompt-input-03/page.tsx",
           "type": "registry:page",
           "target": "app/prompt-input-03/page.tsx"
         },
         {
-          "path": "src/registry/new-york/blocks/prompt-input-03/components/claude-prompt-input.tsx",
+          "path": "registry/new-york/blocks/prompt-input-03/components/claude-prompt-input.tsx",
           "type": "registry:component"
         }
       ],
       "meta": {
         "iframeHeight": "800px"
       },
-      "categories": ["prompt-input"]
+      "categories": [
+        "prompt-input"
+      ]
     },
     {
       "name": "dashboard-01",
@@ -274,56 +298,58 @@
       ],
       "files": [
         {
-          "path": "src/registry/new-york/blocks/dashboard-01/page.tsx",
+          "path": "registry/new-york/blocks/dashboard-01/page.tsx",
           "type": "registry:page",
           "target": "app/dashboard/page.tsx"
         },
         {
-          "path": "src/registry/new-york/blocks/dashboard-01/data.json",
+          "path": "registry/new-york/blocks/dashboard-01/data.json",
           "type": "registry:file",
           "target": "app/dashboard/data.json"
         },
         {
-          "path": "src/registry/new-york/blocks/dashboard-01/components/app-sidebar.tsx",
+          "path": "registry/new-york/blocks/dashboard-01/components/app-sidebar.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/blocks/dashboard-01/components/chart-area-interactive.tsx",
+          "path": "registry/new-york/blocks/dashboard-01/components/chart-area-interactive.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/blocks/dashboard-01/components/data-table.tsx",
+          "path": "registry/new-york/blocks/dashboard-01/components/data-table.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/blocks/dashboard-01/components/nav-documents.tsx",
+          "path": "registry/new-york/blocks/dashboard-01/components/nav-documents.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/blocks/dashboard-01/components/nav-main.tsx",
+          "path": "registry/new-york/blocks/dashboard-01/components/nav-main.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/blocks/dashboard-01/components/nav-secondary.tsx",
+          "path": "registry/new-york/blocks/dashboard-01/components/nav-secondary.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/blocks/dashboard-01/components/nav-user.tsx",
+          "path": "registry/new-york/blocks/dashboard-01/components/nav-user.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/blocks/dashboard-01/components/section-cards.tsx",
+          "path": "registry/new-york/blocks/dashboard-01/components/section-cards.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/blocks/dashboard-01/components/site-header.tsx",
+          "path": "registry/new-york/blocks/dashboard-01/components/site-header.tsx",
           "type": "registry:component"
         }
       ],
       "meta": {
         "iframeHeight": "1000px"
       },
-      "categories": ["dashboard"]
+      "categories": [
+        "dashboard"
+      ]
     }
   ]
 }

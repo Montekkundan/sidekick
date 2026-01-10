@@ -9,13 +9,13 @@
   ],
   "files": [
     {
-      "path": "src/registry/new-york/blocks/prompt-input-02/page.tsx",
+      "path": "registry/new-york/blocks/prompt-input-02/page.tsx",
       "content": "import { CursorPromptInput } from \"@/registry/new-york/blocks/prompt-input-02/components/cursor-prompt-input\"\n\nexport default function Page() {\n  return (\n    <div className=\"flex min-h-svh w-full items-center justify-center p-6 md:p-10\">\n      <CursorPromptInput />\n    </div>\n  )\n}\n",
       "type": "registry:page",
       "target": "app/prompt-input-02/page.tsx"
     },
     {
-      "path": "src/registry/new-york/blocks/prompt-input-02/components/cursor-prompt-input.tsx",
+      "path": "registry/new-york/blocks/prompt-input-02/components/cursor-prompt-input.tsx",
       "content": "\"use client\";\n\nimport {\n  ChevronDownIcon,\n  GlobeIcon,\n  MicIcon,\n  PlusIcon,\n  SparklesIcon,\n} from \"lucide-react\";\n\nimport {\n  PromptInput,\n  PromptInputBody,\n  PromptInputButton,\n  PromptInputFooter,\n  PromptInputSubmit,\n  PromptInputTextarea,\n  PromptInputTools,\n} from \"@/registry/new-york/blocks/prompt-input\";\n\nexport function CursorPromptInput() {\n  return (\n    <div className=\"space-y-3 text-center\">\n      <h2 className=\"text-2xl font-semibold text-foreground\">\n        Ask Cursor to build, fix, or explore\n      </h2>\n\n      <PromptInput\n        className=\"mx-auto w-full max-w-2xl\"\n        size=\"lg\"\n        variant=\"outline\"\n        onSubmit={(message) => console.log(\"cursor-prompt\", message)}\n      >\n        <PromptInputBody>\n          <PromptInputTextarea\n            minRows={2}\n            placeholder=\"Describe a task\"\n          />\n        </PromptInputBody>\n        <PromptInputFooter className=\"items-center\">\n          <PromptInputTools className=\"gap-1\">\n            <PromptInputButton className=\"rounded-full\" size=\"icon-xs\">\n              <PlusIcon className=\"size-3.5\" />\n            </PromptInputButton>\n            <PromptInputButton className=\"gap-1 px-2\" size=\"xs\">\n              <SparklesIcon className=\"size-3.5\" />\n              Agent\n            </PromptInputButton>\n            <PromptInputButton className=\"gap-1 px-2\" size=\"xs\">\n              <GlobeIcon className=\"size-3.5\" />\n              Web\n              <ChevronDownIcon className=\"size-3\" />\n            </PromptInputButton>\n          </PromptInputTools>\n          <PromptInputTools className=\"gap-1\">\n            <PromptInputButton className=\"rounded-full\" size=\"icon-xs\">\n              <MicIcon className=\"size-3.5\" />\n            </PromptInputButton>\n            <PromptInputSubmit className=\"rounded-full\" size=\"icon-xs\" />\n          </PromptInputTools>\n        </PromptInputFooter>\n      </PromptInput>\n    </div>\n  );\n}\n",
       "type": "registry:component"
     }

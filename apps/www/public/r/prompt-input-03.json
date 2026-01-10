@@ -9,13 +9,13 @@
   ],
   "files": [
     {
-      "path": "src/registry/new-york/blocks/prompt-input-03/page.tsx",
+      "path": "registry/new-york/blocks/prompt-input-03/page.tsx",
       "content": "import { ClaudePromptInput } from \"@/registry/new-york/blocks/prompt-input-03/components/claude-prompt-input\"\n\nexport default function Page() {\n  return (\n    <div className=\"flex min-h-svh w-full items-center justify-center p-6 md:p-10\">\n      <ClaudePromptInput />\n    </div>\n  )\n}\n",
       "type": "registry:page",
       "target": "app/prompt-input-03/page.tsx"
     },
     {
-      "path": "src/registry/new-york/blocks/prompt-input-03/components/claude-prompt-input.tsx",
+      "path": "registry/new-york/blocks/prompt-input-03/components/claude-prompt-input.tsx",
       "content": "\"use client\";\n\nimport { ChevronDownIcon, FolderIcon, PlugZapIcon } from \"lucide-react\";\n\nimport {\n  PromptInput,\n  PromptInputBody,\n  PromptInputButton,\n  PromptInputFooter,\n  PromptInputSubmit,\n  PromptInputTextarea,\n  PromptInputTools,\n} from \"@/registry/new-york/blocks/prompt-input\";\n\nexport function ClaudePromptInput() {\n  return (\n    <div className=\"space-y-5 text-center\">\n      <div className=\"space-y-2\">\n        <p className=\"text-sm uppercase tracking-[0.2em] text-muted-foreground\">\n          Montek returns!\n        </p>\n        <h2 className=\"text-3xl font-semibold text-foreground\">\n          How can I help you today?\n        </h2>\n      </div>\n\n      <div className=\"mx-auto w-full max-w-3xl space-y-3\">\n        <PromptInput\n          className=\"rounded-2xl\"\n          size=\"lg\"\n          variant=\"default\"\n          onSubmit={(message) => console.log(\"claude-prompt\", message)}\n        >\n          <PromptInputBody>\n            <PromptInputTextarea\n              minRows={2}\n              placeholder=\"Ask anything...\"\n            />\n          </PromptInputBody>\n          <PromptInputFooter className=\"items-center\">\n            <PromptInputTools className=\"gap-2\">\n              <PromptInputButton className=\"rounded-full\" size=\"icon-sm\">\n                <FolderIcon className=\"size-4\" />\n              </PromptInputButton>\n              <PromptInputButton className=\"gap-2 px-3\" size=\"sm\">\n                Sonnet 4.5\n                <ChevronDownIcon className=\"size-3.5\" />\n              </PromptInputButton>\n            </PromptInputTools>\n            <PromptInputSubmit className=\"rounded-xl\" size=\"icon-sm\" />\n          </PromptInputFooter>\n        </PromptInput>\n\n        <div className=\"flex items-center justify-between rounded-full border bg-muted/30 px-4 py-2 text-xs text-muted-foreground\">\n          <span>Upgrade to connect your tools to Claude</span>\n          <div className=\"flex items-center gap-2 text-foreground\">\n            <PlugZapIcon className=\"size-4\" />\n            <span className=\"text-xs\">Connect</span>\n          </div>\n        </div>\n      </div>\n    </div>\n  );\n}\n",
       "type": "registry:component"
     }
