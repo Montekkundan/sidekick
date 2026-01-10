@@ -1,5 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": ["NEXT_PUBLIC_APP_URL", "ANALYZE"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
