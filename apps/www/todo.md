@@ -20,3 +20,6 @@
 - floating and full screen sidekick
 - universal search component https://threadreaderapp.com/thread/1937259475599261713.html
 - fix prompt input 01, 02, 03 blocks
+- add ai search in cmdk
+- add https://www.transhumans.xyz/images/new-beginnings in message block
+- examples page with https://turborepo.com/docs/guides/microfrontends
