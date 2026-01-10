@@ -1,0 +1,661 @@
+---
+title: AI Navigation Tool
+description: Universal AI-powered navigation tool for AI SDK. Helps AI understand and navigate your app's routes.
+---
+
+<Callout>
+  The AI Navigation Tool enables AI models to understand your application's
+  structure and help users find pages, settings, and features through natural
+  language queries.
+</Callout>
+
+## Installation
+
+<Tabs defaultValue="bun" items={["bun", "npm", "pnpm", "yarn"]}>
+  <Tab value="bun">```bash bun add ai-navigation-tool ```</Tab>
+  <Tab value="npm">```bash npm install ai-navigation-tool ```</Tab>
+  <Tab value="pnpm">```bash pnpm add ai-navigation-tool ```</Tab>
+  <Tab value="yarn">```bash yarn add ai-navigation-tool ```</Tab>
+</Tabs>
+
+## Quick Start
+
+```tsx
+import { navigationTool, defineSchema } from "ai-navigation-tool";
+import { generateText, gateway } from "ai";
+
+// Define your app's routes
+const schema = defineSchema([
+  { path: "/", name: "Home" },
+  { path: "/docs", name: "Documentation", aliases: ["help", "guides"] },
+  { path: "/settings", name: "Settings" },
+]);
+
+// Use with AI SDK
+const result = await generateText({
+  model: gateway("openai/gpt-4o-mini"),
+  prompt: "Where can I find the documentation?",
+  tools: {
+    navigate: navigationTool({ schema }),
+  },
+});
+```
+
+## Features
+
+- **Framework Agnostic** - Works with Next.js, SvelteKit, Astro, Remix, or any framework
+- **Fuzzy Search** - Smart matching with typo tolerance
+- **Custom Filters** - Filter routes with your own logic (permissions, subscriptions, feature flags)
+- **Glob Patterns** - Include/exclude routes like tsconfig
+- **Zero Config** - Works out of the box with sensible defaults
+- **CLI** - Generate schemas automatically from Next.js projects
+
+## Schema Definition
+
+### Manual Schema
+
+The most flexible approach - define your routes explicitly:
+
+```tsx
+import { defineSchema } from "ai-navigation-tool";
+
+const schema = defineSchema([
+  {
+    path: "/",
+    name: "Home",
+    description: "Landing page",
+  },
+  {
+    path: "/docs",
+    name: "Documentation",
+    description: "Learn how to use the app",
+    aliases: ["help", "guides", "tutorials"],
+    keywords: ["learn", "tutorial", "getting started"],
+    category: "docs",
+  },
+  {
+    path: "/settings/profile",
+    name: "Profile Settings",
+    description: "Manage your profile information",
+    category: "settings",
+  },
+  {
+    path: "/admin/users",
+    name: "User Management",
+    description: "Manage all users",
+    metadata: { requiresAdmin: true },
+    category: "admin",
+  },
+]);
+```
+
+### Fluent Builder
+
+For a more ergonomic API:
+
+```tsx
+import { createSchema } from "ai-navigation-tool";
+
+const schema = createSchema()
+  .route("/", "Home", { description: "Landing page" })
+  .route("/docs", "Documentation", {
+    aliases: ["help"],
+    keywords: ["learn", "tutorial"],
+  })
+  .category("settings", [
+    { path: "/settings/profile", name: "Profile" },
+    { path: "/settings/account", name: "Account" },
+    { path: "/settings/security", name: "Security" },
+  ])
+  .build();
+```
+
+### Next.js Auto-Generation
+
+Automatically generate a schema from your Next.js App Router structure:
+
+```tsx
+import { navigationTool } from "ai-navigation-tool";
+import { generateNextSchema } from "ai-navigation-tool/next";
+
+// Generate at build time or server startup
+const schema = await generateNextSchema({
+  rootDir: "./app",
+  exclude: ["api/**", "admin/**"],
+});
+
+const result = await generateText({
+  model: gateway("openai/gpt-4o-mini"),
+  prompt: "Where is the settings page?",
+  tools: {
+    navigate: navigationTool({ schema }),
+  },
+});
+```
+
+## CLI Usage
+
+Generate schemas from the command line:
+
+<Tabs defaultValue="next" items={["Next.js", "Manual Template"]}>
+  <Tab value="next">
+    ```bash
+    # Generate from Next.js App Router
+    bunx ai-navigation generate -f next -d ./app -o nav-schema.json
+
+    # With exclusions
+    bunx ai-navigation generate -f next --exclude "api/**,admin/**"
+
+    # Generate TypeScript file
+    bunx ai-navigation generate -f next --format typescript -o nav-schema.ts
+    ```
+
+  </Tab>
+  <Tab value="Manual Template">
+    ```bash
+    # Create a manual schema template
+    bunx ai-navigation generate -f manual -o nav-schema.ts
+    ```
+  </Tab>
+</Tabs>
+
+### CLI Options
+
+| Option        | Alias | Description                                | Default           |
+| ------------- | ----- | ------------------------------------------ | ----------------- |
+| `--framework` | `-f`  | Framework: `next`, `next-pages`, `manual`  | `next`            |
+| `--dir`       | `-d`  | Directory to scan                          | `./app`           |
+| `--output`    | `-o`  | Output file path                           | `nav-schema.json` |
+| `--include`   |       | Glob patterns to include (comma-separated) | `**/*`            |
+| `--exclude`   |       | Glob patterns to exclude (comma-separated) | API, internal     |
+| `--base-url`  |       | Base URL prefix for all routes             |                   |
+| `--format`    |       | Output format: `json` or `typescript`      | `json`            |
+
+## Configuration
+
+### Custom Filter Function
+
+The most powerful way to control route visibility. Use your own logic to filter routes based on any criteria - permissions, subscriptions, feature flags, or any custom business logic:
+
+```tsx
+// Define your context type
+type UserContext = {
+  role: "admin" | "user" | "guest";
+  subscription: "free" | "pro" | "enterprise";
+  featureFlags: string[];
+};
+
+// Create the tool with a custom filter
+const tool = navigationTool<UserContext>({
+  schema,
+  // Your custom filter logic
+  filter: (route, context) => {
+    // Admin-only routes
+    if (route.metadata?.requiresAdmin && context.role !== "admin") {
+      return false;
+    }
+
+    // Subscription-based access
+    if (route.metadata?.requiresPro) {
+      if (!["pro", "enterprise"].includes(context.subscription)) {
+        return false;
+      }
+    }
+
+    // Feature flag check
+    if (route.metadata?.featureFlag) {
+      if (!context.featureFlags.includes(route.metadata.featureFlag)) {
+        return false;
+      }
+    }
+
+    return true;
+  },
+  // Pass your context data
+  context: {
+    role: currentUser.role,
+    subscription: currentUser.subscription,
+    featureFlags: getFeatureFlags(currentUser),
+  },
+});
+```
+
+### Filter Examples
+
+#### Permission-Based Filter
+
+```tsx
+type AuthContext = { permissions: string[] };
+
+const tool = navigationTool<AuthContext>({
+  schema,
+  filter: (route, ctx) => {
+    // Routes with required permissions
+    if (route.metadata?.permissions) {
+      const required = route.metadata.permissions as string[];
+      return required.every((p) => ctx.permissions.includes(p));
+    }
+    return true;
+  },
+  context: { permissions: ["read", "write"] },
+});
+```
+
+#### Subscription-Based Filter
+
+```tsx
+type SubContext = { tier: "free" | "pro" | "enterprise" };
+
+const tool = navigationTool<SubContext>({
+  schema,
+  filter: (route, ctx) => {
+    const tierLevels = { free: 0, pro: 1, enterprise: 2 };
+    const required = (route.metadata?.minTier as string) || "free";
+    return tierLevels[ctx.tier] >= tierLevels[required];
+  },
+  context: { tier: "pro" },
+});
+```
+
+#### Feature Flag Filter
+
+```tsx
+type FlagContext = { flags: Set<string> };
+
+const tool = navigationTool<FlagContext>({
+  schema,
+  filter: (route, ctx) => {
+    if (route.metadata?.featureFlag) {
+      return ctx.flags.has(route.metadata.featureFlag as string);
+    }
+    return true;
+  },
+  context: { flags: new Set(["new-dashboard", "beta-features"]) },
+});
+```
+
+#### Async Filter (Database/API Lookup)
+
+```tsx
+type AsyncContext = { userId: string };
+
+const tool = navigationTool<AsyncContext>({
+  schema,
+  // Filter can be async!
+  filter: async (route, ctx) => {
+    if (route.metadata?.checkAccess) {
+      const hasAccess = await checkUserAccess(ctx.userId, route.path);
+      return hasAccess;
+    }
+    return true;
+  },
+  context: { userId: session.userId },
+});
+```
+
+### Glob Patterns (Path-Based Filtering)
+
+Filter routes by path patterns (like tsconfig include/exclude):
+
+```tsx
+const tool = navigationTool({
+  schema,
+  globFilter: {
+    // Only include these patterns
+    include: ["docs/**", "settings/**", "dashboard/**"],
+
+    // Exclude these patterns
+    exclude: ["**/internal/**", "api/**", "admin/**"],
+  },
+});
+```
+
+### Combining Filters
+
+Use both custom filter and glob patterns together:
+
+```tsx
+const tool = navigationTool<UserContext>({
+  schema,
+  // Custom logic filter
+  filter: (route, ctx) => {
+    if (route.metadata?.requiresAdmin) {
+      return ctx.role === "admin";
+    }
+    return true;
+  },
+  context: userContext,
+  // Path-based filter
+  globFilter: {
+    exclude: ["api/**", "**/internal/**"],
+  },
+});
+```
+
+### Result Options
+
+Configure how results are returned:
+
+```tsx
+const tool = navigationTool({
+  schema,
+  results: {
+    // Return single best match or multiple
+    mode: "single", // or "multiple"
+
+    // Max results for multiple mode
+    maxResults: 5,
+
+    // Include confidence scores (0-1)
+    includeConfidence: true,
+
+    // Minimum match threshold
+    threshold: 0.3,
+  },
+});
+```
+
+### Available Actions
+
+Configure what actions the AI can suggest:
+
+```tsx
+const tool = navigationTool({
+  schema,
+  actions: {
+    navigate: true, // Navigate to the route (default)
+    openNewTab: true, // Open in new tab
+    copyLink: true, // Copy link to clipboard
+    preview: true, // Preview in modal/sidebar
+  },
+});
+```
+
+## Route Schema Reference
+
+Each route can have the following properties:
+
+```tsx
+type Route = {
+  // Required
+  path: string; // URL path (e.g., "/docs/getting-started")
+  name: string; // Human-readable name (e.g., "Getting Started")
+
+  // Optional - Enhance AI understanding
+  description?: string; // Description for AI context
+  aliases?: string[]; // Alternative search terms
+  keywords?: string[]; // Additional keywords for matching
+  category?: string; // Route category for filtering
+
+  // Optional - Search ranking
+  priority?: number; // Higher = more important (0-100)
+  isIndex?: boolean; // Is this an index/landing page
+
+  // Optional - Dynamic routes
+  params?: Record<string, string>; // URL parameters
+  isDynamic?: boolean; // Has dynamic segments
+
+  // Optional - Custom data for filtering
+  metadata?: Record<string, unknown>; // Store any custom data here
+};
+```
+
+## Tool Output
+
+The navigation tool returns structured output:
+
+```tsx
+type NavigationToolOutput = {
+  // Whether a matching route was found
+  found: boolean;
+
+  // Single result (when mode is "single")
+  result?: {
+    route: Route;
+    confidence: number; // 0-1 match score
+    url: string; // Full URL
+    action?: NavigationAction;
+    matchReason?: string; // Why this matched
+  };
+
+  // Multiple results (when mode is "multiple")
+  results?: NavigationResult[];
+
+  // The search query
+  query: string;
+
+  // Total routes that were searched
+  totalRoutes: number;
+
+  // Error message if something went wrong
+  error?: string;
+};
+```
+
+## Examples
+
+### Basic Chat Navigation
+
+```tsx
+import { generateText, gateway } from "ai";
+import { navigationTool, defineSchema } from "ai-navigation-tool";
+
+const schema = defineSchema([
+  { path: "/", name: "Home" },
+  { path: "/settings/security", name: "Security Settings" },
+  { path: "/settings/profile", name: "Profile Settings" },
+]);
+
+const result = await generateText({
+  model: gateway("openai/gpt-4o-mini"),
+  system:
+    "Help users navigate the app. When you find a relevant page, suggest navigating there.",
+  prompt: "I need to change my password",
+  tools: {
+    navigate: navigationTool({ schema }),
+  },
+});
+
+// AI response: "You can change your password in Security Settings.
+//              Would you like me to take you there?"
+```
+
+### With Streaming
+
+```tsx
+import { streamText, gateway } from "ai";
+
+const result = streamText({
+  model: gateway("openai/gpt-4o-mini"),
+  messages,
+  tools: {
+    navigate: navigationTool({ schema }),
+  },
+});
+
+return result.toDataStreamResponse();
+```
+
+### Server Component with Filters (Next.js)
+
+```tsx
+// app/api/chat/route.ts
+import { navigationTool, defineSchema } from "ai-navigation-tool";
+import { streamText, gateway } from "ai";
+import { getSession } from "@/lib/auth";
+
+const schema = defineSchema([
+  { path: "/", name: "Home" },
+  { path: "/admin", name: "Admin Panel", metadata: { requiresAdmin: true } },
+  { path: "/billing", name: "Billing", metadata: { requiresPro: true } },
+]);
+
+type UserContext = {
+  isAdmin: boolean;
+  subscription: string;
+};
+
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+  const session = await getSession();
+
+  const result = streamText({
+    model: gateway("openai/gpt-4o-mini"),
+    messages,
+    tools: {
+      navigate: navigationTool<UserContext>({
+        schema,
+        filter: (route, ctx) => {
+          if (route.metadata?.requiresAdmin && !ctx.isAdmin) return false;
+          if (route.metadata?.requiresPro && ctx.subscription === "free")
+            return false;
+          return true;
+        },
+        context: {
+          isAdmin: session.user.role === "admin",
+          subscription: session.user.subscription,
+        },
+      }),
+    },
+  });
+
+  return result.toDataStreamResponse();
+}
+```
+
+### Multiple Results with Disambiguation
+
+```tsx
+const tool = navigationTool({
+  schema,
+  results: {
+    mode: "multiple",
+    maxResults: 3,
+    includeConfidence: true,
+  },
+});
+
+// When user asks "settings", AI gets multiple options:
+// [
+//   { route: "/settings", confidence: 0.95 },
+//   { route: "/settings/profile", confidence: 0.82 },
+//   { route: "/settings/security", confidence: 0.78 },
+// ]
+
+// AI can then ask: "Which settings page did you mean?"
+```
+
+## Best Practices
+
+### 1. Add Rich Descriptions
+
+```tsx
+// ❌ Minimal - AI has limited context
+{ path: "/docs", name: "Docs" }
+
+// ✅ Rich - AI understands the page better
+{
+  path: "/docs",
+  name: "Documentation",
+  description: "Learn how to use Sidekick with guides, tutorials, and API references",
+  aliases: ["help", "guides", "tutorials", "api docs"],
+  keywords: ["learn", "getting started", "reference"],
+}
+```
+
+### 2. Use Categories for Organization
+
+```tsx
+const schema = defineSchema([
+  // Docs category
+  { path: "/docs", name: "Documentation", category: "docs" },
+  { path: "/docs/components", name: "Components", category: "docs" },
+
+  // Settings category
+  { path: "/settings", name: "Settings", category: "settings" },
+  { path: "/settings/profile", name: "Profile", category: "settings" },
+]);
+
+// AI can filter: "Show me all settings pages"
+```
+
+### 3. Set Priorities for Important Pages
+
+```tsx
+{
+  path: "/",
+  name: "Home",
+  priority: 100,  // Highest priority
+},
+{
+  path: "/docs/getting-started",
+  name: "Getting Started",
+  priority: 90,   // High priority for new users
+}
+```
+
+### 4. Use Metadata for Custom Filtering
+
+```tsx
+const schema = defineSchema([
+  {
+    path: "/admin",
+    name: "Admin Panel",
+    metadata: {
+      requiresAdmin: true,
+      minTier: "enterprise",
+    },
+  },
+  {
+    path: "/beta-feature",
+    name: "Beta Feature",
+    metadata: {
+      featureFlag: "beta-features",
+    },
+  },
+]);
+```
+
+### 5. Keep Filter Logic Simple
+
+```tsx
+// ✅ Good - Simple, readable filter
+const tool = navigationTool<UserContext>({
+  schema,
+  filter: (route, ctx) => {
+    if (route.metadata?.requiresAdmin) return ctx.role === "admin";
+    if (route.metadata?.requiresPro) return ctx.tier !== "free";
+    return true;
+  },
+  context: userContext,
+});
+
+// ❌ Avoid - Complex nested logic
+const tool = navigationTool({
+  schema,
+  filter: (route, ctx) => {
+    // Too much complexity in one filter
+  },
+});
+```
+
+## Troubleshooting
+
+### Routes Not Found
+
+1. **Check filter logic** - Make sure your filter isn't excluding routes unintentionally
+2. **Check glob patterns** - Verify include/exclude patterns aren't too restrictive
+3. **Lower the threshold** - Try `results: { threshold: 0.2 }` for more lenient matching
+
+### Low Confidence Scores
+
+1. **Add aliases** - Add common terms users might search for
+2. **Add keywords** - Include relevant keywords for better matching
+3. **Improve descriptions** - More descriptive text helps fuzzy matching
+
+### Performance
+
+1. **Generate schema at build time** - Don't regenerate on every request
+2. **Cache the schema** - Store in memory or Redis for server-side usage
+3. **Keep filters sync when possible** - Async filters add latency
+4. **Filter routes** - Only include routes the AI needs to know about

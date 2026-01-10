@@ -1,0 +1,53 @@
+---
+title: Tools
+description: AI SDK tools to enhance your AI applications with powerful capabilities.
+---
+
+We build on [AI SDK Tool Registry](https://ai-sdk.dev/tools-registry) and provide a set of pre-built tools to enhance your AI applications. Tools allow your AI models to interact with external systems, APIs, and perform complex tasks.
+
+## Available Tools
+
+TODO add list of available tools here
+
+## What are AI SDK Tools?
+
+Tools are functions that can be called by AI models during a conversation. They enable AI to:
+
+- **Access Real-Time Data**: Fetch current information from APIs and databases
+- **Perform Actions**: Execute tasks like navigation, search, or data manipulation
+- **Extend Capabilities**: Add custom functionality specific to your application
+
+## Using Tools with AI SDK
+
+```tsx
+import { generateText, gateway } from "ai";
+import { navigationTool } from "ai-navigation-tool";
+
+const result = await generateText({
+  model: gateway("openai/gpt-4o-mini"),
+  prompt: "Where can I find the documentation?",
+  tools: {
+    navigate: navigationTool({ schema }),
+  },
+});
+```
+
+## Building Custom Tools
+
+All tools follow the AI SDK tool pattern:
+
+```tsx
+import { tool } from "ai";
+import { z } from "zod";
+
+export const myTool = tool({
+  description: "Description for the AI model",
+  parameters: z.object({
+    input: z.string().describe("What this parameter is for"),
+  }),
+  execute: async ({ input }) => {
+    // Your tool logic
+    return { result: "..." };
+  },
+});
+```
