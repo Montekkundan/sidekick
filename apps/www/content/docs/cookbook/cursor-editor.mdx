@@ -1,0 +1,66 @@
+---
+title: Cursor Editor Page
+description: Build an editor layout with file tree, tabs, and Sidekick chat.
+---
+
+## Overview
+
+This cookbook recreates a Cursor-like editor layout: a left file tree, a center editor, and an AI assistant panel on the right. The aim is to keep code and chat in the same workflow.
+
+## Page Structure
+
+- Left sidebar: file tree + search
+- Center: editor tabs + editor canvas
+- Right: `Sidekick` panel for AI help
+- Bottom: status bar
+
+## Ingredients
+
+- `SidekickProvider` + `Sidekick`
+- Tabs for open files
+- Scrollable file tree
+- Editor surface (Monaco, CodeMirror, or placeholder)
+
+## Steps
+
+1. Create a 3-column layout with `SidekickProvider` and `SidekickInset`.
+2. Build a file tree in the left sidebar with a filter input.
+3. Add tabs and a code editor in the center.
+4. Add `Sidekick` on the right with a `PromptInput` footer.
+
+## Layout Example
+
+```tsx
+<SidekickProvider defaultOpen>
+  <SidekickInset className="grid grid-cols-[240px_1fr]">
+    <aside className="border-r p-4">File tree</aside>
+    <main className="p-4">Editor</main>
+  </SidekickInset>
+
+  <Sidekick>
+    <SidekickHeader>Assistant</SidekickHeader>
+    <SidekickContent>
+      <Conversation>
+        <ConversationContent>{/* messages */}</ConversationContent>
+      </Conversation>
+    </SidekickContent>
+    <SidekickFooter>
+      <PromptInput onSubmit={handleSubmit}>
+        <PromptInput.Body>
+          <PromptInput.Textarea placeholder="Ask about this file..." />
+        </PromptInput.Body>
+        <PromptInput.Footer>
+          <PromptInput.Tools />
+          <PromptInput.Submit />
+        </PromptInput.Footer>
+      </PromptInput>
+    </SidekickFooter>
+  </Sidekick>
+</SidekickProvider>
+```
+
+## Enhancements
+
+- Add file context chips inside the prompt header
+- Stream answers with `useGatewayChat`
+- Persist conversations per file or project

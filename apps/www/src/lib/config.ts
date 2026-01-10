@@ -1,9 +1,14 @@
-import { SquarePlus, Grid2x2, Box, PencilRuler } from 'lucide-react';
+import { SquarePlus, Grid2x2, Box, PencilRuler } from "lucide-react";
+
+export const APP_URL = (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").replace(
+  /\/$/,
+  ""
+);
 
 export const siteConfig = {
   name: "Sidekick",
-  url: "https://sidekick.montek.dev",
-  ogImage: "https://sidekick.montek.dev/og.jpg",
+  url: APP_URL,
+  ogImage: `${APP_URL}/og.jpg`,
   description:
     "An open-source library of pre-built components and templates for building developer tools.",
   links: {

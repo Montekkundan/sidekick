@@ -8,6 +8,7 @@ import { CodeTabs } from "@/components/code-tabs";
 import { ComponentPreview } from "@/components/component-preview";
 import { ComponentSource } from "@/components/component-source";
 import { CopyButton } from "@/components/copy-button";
+import { RegistryCommand } from "@/components/registry-command";
 import { getIconForLanguageExtension } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import {
@@ -340,6 +341,7 @@ export const mdxComponents = {
   ComponentsList,
   CookbookBooksGrid,
   CodeCollapsibleWrapper,
+  RegistryCommand,
   Link: ({ className, ...props }: React.ComponentProps<typeof Link>) => (
     <Link
       className={cn("font-medium underline underline-offset-4", className)}

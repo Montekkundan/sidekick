@@ -1,0 +1,58 @@
+---
+title: ChatGPT Home Page
+description: Build a centered chat composer with prompt suggestions and model picker.
+---
+
+## Overview
+
+This recipe captures the ChatGPT-style landing page: a calm hero, a central prompt input, and quick-start suggestions. The goal is to get the user into a conversation immediately.
+
+## Page Structure
+
+- Minimal header (logo, settings, account)
+- Centered prompt composer
+- Suggestion tiles or chips
+- Footer with privacy or product links
+
+## Ingredients
+
+- `PromptInput` for the composer
+- Suggestion cards or chips
+- Optional model selector
+
+## Steps
+
+1. Center the layout vertically with a single-column container.
+2. Drop in `PromptInput` with a large textarea and submit button.
+3. Add 4-6 suggestion cards below the composer.
+4. Place a small model selector above or inside the input footer.
+
+## Composer Example
+
+```tsx
+<PromptInput onSubmit={handleSubmit} size="lg" variant="outline">
+  <PromptInput.Body>
+    <PromptInput.Textarea placeholder="Message Sidekick" minRows={4} />
+  </PromptInput.Body>
+  <PromptInput.Footer>
+    <PromptInput.Tools>
+      <PromptInput.Select>
+        <PromptInput.SelectTrigger>
+          <PromptInput.SelectValue placeholder="Model" />
+        </PromptInput.SelectTrigger>
+        <PromptInput.SelectContent>
+          <PromptInput.SelectItem value="gpt-4o">GPT-4o</PromptInput.SelectItem>
+          <PromptInput.SelectItem value="gpt-4o-mini">GPT-4o mini</PromptInput.SelectItem>
+        </PromptInput.SelectContent>
+      </PromptInput.Select>
+    </PromptInput.Tools>
+    <PromptInput.Submit />
+  </PromptInput.Footer>
+</PromptInput>
+```
+
+## Enhancements
+
+- Remember last used model in local storage
+- Add a subtle gradient background
+- Include keyboard shortcuts in the footer

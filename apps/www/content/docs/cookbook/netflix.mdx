@@ -1,8 +1,66 @@
 ---
-title: Netflix Cookbook
-description: Here you can find all Cookbooks
+title: Netflix Search Page
+description: Build a Netflix-style search page with filters and a results grid.
 ---
 
-list of all cookbooks
+## Overview
 
----
+This cookbook walks through a Netflix-inspired search experience: a bold search bar, quick filters, and a responsive results grid. The focus is on layout, hierarchy, and speed.
+
+## Page Structure
+
+- Hero search bar with auto-suggest
+- Filter chips (Genre, Year, Type)
+- Results grid with hover previews
+- Empty state for no matches
+
+## Ingredients
+
+- Search input (`Input`, `Button`)
+- Chip list (simple `Button` variants)
+- Media cards (poster + title + meta)
+- Pagination or infinite scroll
+
+## Steps
+
+1. Build a centered search header with a large input and primary action.
+2. Add a horizontal chip bar for common filters.
+3. Render results in a 5-6 column grid on desktop, 2-3 on mobile.
+4. Add a skeleton or shimmer for loading states.
+5. Provide an empty state with recovery actions.
+
+## Layout Sketch
+
+```tsx
+export function NetflixSearchPage() {
+  return (
+    <div className="space-y-10">
+      <header className="space-y-4">
+        <h1 className="text-3xl font-semibold">Search</h1>
+        <div className="flex gap-2">
+          <Input placeholder="Search for movies, shows, or people" />
+          <Button>Search</Button>
+        </div>
+      </header>
+
+      <div className="flex flex-wrap gap-2">
+        {"Action, Drama, Comedy".split(", ").map((tag) => (
+          <Button key={tag} variant="outline" size="sm">
+            {tag}
+          </Button>
+        ))}
+      </div>
+
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Movie cards */}
+      </section>
+    </div>
+  );
+}
+```
+
+## Enhancements
+
+- Keyboard focus on search on page load
+- Auto-suggest dropdown with recent searches
+- Hover preview on cards (video or summary)

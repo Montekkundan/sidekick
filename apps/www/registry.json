@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "sidekick",
-  "homepage": "https://sidekick.montek.dev",
+  "homepage": "${NEXT_PUBLIC_APP_URL}",
   "items": [
     {
       "name": "ask-ai",

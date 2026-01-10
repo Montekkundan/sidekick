@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="https://sidekick.montek.dev/og.png" />
-</p>
-
 # Sidekick
 
 AI-powered components for building chat interfaces. Built with [shadcn/ui](https://ui.shadcn.com) principles.

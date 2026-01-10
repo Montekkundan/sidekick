@@ -1,0 +1,45 @@
+---
+title: Fumadocs + MDX
+description: Set up Fumadocs with local MDX content.
+---
+
+## Overview
+
+Use Fumadocs to build a docs site from local MDX files. This recipe focuses on a clean file structure, MDX components, and fast content iteration.
+
+## Ingredients
+
+- `fumadocs-core`
+- `fumadocs-mdx`
+- A `content/docs` folder
+
+## Steps
+
+1. Install Fumadocs packages.
+2. Create `content/docs` and add your first MDX file.
+3. Register MDX components (callouts, tabs, previews).
+4. Add the docs route and layout.
+
+## Suggested Structure
+
+```text
+content/
+  docs/
+    (root)/index.mdx
+    components/
+    cookbook/
+```
+
+## Example MDX Frontmatter
+
+```mdx
+---
+title: Getting Started
+description: Quickstart guide for your docs.
+---
+```
+
+## Tips
+
+- Use a dedicated `mdx-components.tsx` to register custom components.
+- Keep docs headings short so auto-generated anchors are clean.

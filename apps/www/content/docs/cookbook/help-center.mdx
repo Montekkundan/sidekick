@@ -1,0 +1,59 @@
+---
+title: Help Center Page
+description: Build a searchable help center with categories, articles, and FAQ.
+---
+
+## Overview
+
+This recipe builds a help center experience with a prominent search bar, category cards, and a FAQ section. It works well for SaaS documentation and support portals.
+
+## Page Structure
+
+- Hero search bar
+- Category cards (Getting Started, Billing, API)
+- Featured articles list
+- FAQ accordion
+
+## Ingredients
+
+- `Input` + `Button` for search
+- Card grid for categories
+- `Accordion` for FAQs
+
+## Steps
+
+1. Create a hero section with a search input and short description.
+2. Add a grid of category cards with counts.
+3. Render featured articles with short summaries.
+4. Add a FAQ accordion for quick answers.
+
+## Example Layout
+
+```tsx
+<section className="space-y-8">
+  <header className="space-y-3 text-center">
+    <h1 className="text-3xl font-semibold">How can we help?</h1>
+    <div className="mx-auto flex max-w-xl gap-2">
+      <Input placeholder="Search docs, guides, and FAQs" />
+      <Button>Search</Button>
+    </div>
+  </header>
+
+  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {/* Category cards */}
+  </div>
+
+  <Accordion type="single" collapsible>
+    <AccordionItem value="faq-1">
+      <AccordionTrigger>How do I reset my API key?</AccordionTrigger>
+      <AccordionContent>Open settings and generate a new key.</AccordionContent>
+    </AccordionItem>
+  </Accordion>
+</section>
+```
+
+## Enhancements
+
+- Add search analytics (top queries)
+- Provide quick contact CTA
+- Add article feedback buttons
