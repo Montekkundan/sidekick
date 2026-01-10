@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:inspect": "next dev --turbopack --inspect",
     "build": "next build",
     "start": "next start",
     "analyze": "next experimental-analyze",
+    "upgrade": "next upgrade",
     "registry:build": "shadcn build",
     "postinstall": "fumadocs-mdx",
     "typecheck": "tsc --noEmit"
