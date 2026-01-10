@@ -5,8 +5,8 @@
   "description": "A floating chatbot button that opens a standalone Sidekick panel with a preview toast.",
   "dependencies": [],
   "registryDependencies": [
-    "sidekick",
-    "prompt-input",
+    "https://sidekick.montek.dev/r/sidekick.json",
+    "https://sidekick.montek.dev/r/prompt-input.json",
     "button"
   ],
   "files": [

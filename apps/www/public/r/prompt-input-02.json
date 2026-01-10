@@ -5,7 +5,7 @@
   "description": "A compact prompt input with minimal chrome and tiny action icons inspired by Cursor.",
   "dependencies": [],
   "registryDependencies": [
-    "prompt-input"
+    "https://sidekick.montek.dev/r/prompt-input.json"
   ],
   "files": [
     {

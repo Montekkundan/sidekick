@@ -5,8 +5,8 @@
   "description": "A floating card that uses SidekickProvider with an inset area and a full chat panel.",
   "dependencies": [],
   "registryDependencies": [
-    "sidekick",
-    "prompt-input",
+    "https://sidekick.montek.dev/r/sidekick.json",
+    "https://sidekick.montek.dev/r/prompt-input.json",
     "button"
   ],
   "files": [

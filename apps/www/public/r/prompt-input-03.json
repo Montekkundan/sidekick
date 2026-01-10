@@ -5,7 +5,7 @@
   "description": "A prompt input with a secondary upgrade banner below the composer.",
   "dependencies": [],
   "registryDependencies": [
-    "prompt-input"
+    "https://sidekick.montek.dev/r/prompt-input.json"
   ],
   "files": [
     {

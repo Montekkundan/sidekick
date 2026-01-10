@@ -8,10 +8,10 @@
     "ai"
   ],
   "registryDependencies": [
-    "sidekick",
-    "prompt-input",
+    "https://sidekick.montek.dev/r/sidekick.json",
+    "https://sidekick.montek.dev/r/prompt-input.json",
     "button",
-    "gateway"
+    "https://sidekick.montek.dev/r/gateway.json"
   ],
   "files": [
     {

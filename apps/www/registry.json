@@ -49,7 +49,7 @@
         "separator",
         "sheet",
         "tooltip",
-        "prompt-input"
+        "https://sidekick.montek.dev/r/prompt-input.json"
       ],
       "files": [
         {
@@ -63,7 +63,11 @@
       "type": "registry:lib",
       "title": "AI Gateway",
       "description": "AI Gateway library for managing multiple AI providers (Vercel AI Gateway, LLM Gateway, OpenRouter) with automatic fallbacks and error handling. Integrates seamlessly with AI SDK v6.",
-      "dependencies": ["ai", "@llmgateway/ai-sdk-provider", "@openrouter/ai-sdk-provider"],
+      "dependencies": [
+        "ai",
+        "@llmgateway/ai-sdk-provider",
+        "@openrouter/ai-sdk-provider"
+      ],
       "registryDependencies": [],
       "files": [
         {
@@ -83,10 +87,10 @@
       "description": "A standalone AI chat interface with gateway integration and streaming responses. Demonstrates how to build a complete chat experience with the Sidekick component and AI Gateway.",
       "dependencies": ["nanoid", "ai"],
       "registryDependencies": [
-        "sidekick",
-        "prompt-input",
+        "https://sidekick.montek.dev/r/sidekick.json",
+        "https://sidekick.montek.dev/r/prompt-input.json",
         "button",
-        "gateway"
+        "https://sidekick.montek.dev/r/gateway.json"
       ],
       "files": [
         {
@@ -111,8 +115,8 @@
       "description": "A floating chatbot button that opens a standalone Sidekick panel with a preview toast.",
       "dependencies": [],
       "registryDependencies": [
-        "sidekick",
-        "prompt-input",
+        "https://sidekick.montek.dev/r/sidekick.json",
+        "https://sidekick.montek.dev/r/prompt-input.json",
         "button"
       ],
       "files": [
@@ -138,8 +142,8 @@
       "description": "A floating card that uses SidekickProvider with an inset area and a full chat panel.",
       "dependencies": [],
       "registryDependencies": [
-        "sidekick",
-        "prompt-input",
+        "https://sidekick.montek.dev/r/sidekick.json",
+        "https://sidekick.montek.dev/r/prompt-input.json",
         "button"
       ],
       "files": [
@@ -164,7 +168,9 @@
       "title": "Prompt Input Agent Mode",
       "description": "A prompt input with an action menu that expands into agent mode and reveals footer controls.",
       "dependencies": [],
-      "registryDependencies": ["prompt-input"],
+      "registryDependencies": [
+        "https://sidekick.montek.dev/r/prompt-input.json"
+      ],
       "files": [
         {
           "path": "src/registry/new-york/blocks/prompt-input-01/page.tsx",
@@ -187,7 +193,9 @@
       "title": "Prompt Input Compact Cursor Style",
       "description": "A compact prompt input with minimal chrome and tiny action icons inspired by Cursor.",
       "dependencies": [],
-      "registryDependencies": ["prompt-input"],
+      "registryDependencies": [
+        "https://sidekick.montek.dev/r/prompt-input.json"
+      ],
       "files": [
         {
           "path": "src/registry/new-york/blocks/prompt-input-02/page.tsx",
@@ -210,7 +218,9 @@
       "title": "Prompt Input Claude Upgrade Banner",
       "description": "A prompt input with a secondary upgrade banner below the composer.",
       "dependencies": [],
-      "registryDependencies": ["prompt-input"],
+      "registryDependencies": [
+        "https://sidekick.montek.dev/r/prompt-input.json"
+      ],
       "files": [
         {
           "path": "src/registry/new-york/blocks/prompt-input-03/page.tsx",
