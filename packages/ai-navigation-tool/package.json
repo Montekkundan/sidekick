@@ -1,0 +1,63 @@
+{
+  "name": "ai-navigation-tool",
+  "version": "0.0.1",
+  "description": "Universal AI-powered navigation tool for AI SDK - helps AI understand and navigate your app's routes",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "ai-navigation": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./next": {
+      "import": "./dist/generators/next.js",
+      "types": "./dist/generators/next.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "typecheck": "tsc --noEmit",
+    "change": "changeset",
+    "version": "changeset version",
+    "release": "bun run build && changeset publish",
+    "prepublishOnly": "bun run build"
+  },
+  "keywords": [
+    "ai",
+    "ai-sdk",
+    "navigation",
+    "search",
+    "tools",
+    "nextjs",
+    "universal"
+  ],
+  "author": "Sidekick",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Montekkundan/sidekick"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.29.0",
+    "@types/node": "^22.10.0",
+    "ai": "^6.0.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.3",
+    "zod": "^4.0.0"
+  },
+  "peerDependencies": {
+    "ai": "^6.0.0",
+    "zod": "^4.0.0"
+  }
+}
