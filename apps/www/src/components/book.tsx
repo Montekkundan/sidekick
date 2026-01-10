@@ -52,18 +52,30 @@ export const Book = ({
   textured = false
 }: BookProps) => {
   const _width = useResponsive(width);
+  const bookWidth =
+    typeof _width === "number"
+      ? _width
+      : typeof width === "number"
+        ? width
+        : width?.sm ?? width?.md ?? width?.lg ?? width?.xl ?? 196;
+  const bookHeight = bookWidth * (60 / 49);
   const _color = color ? color : variant === "simple" ? "var(--ds-background-200)" : "var(--ds-amber-600)";
   const _illustration = illustration ? illustration : DefaultIllustration;
 
   return (
-    <div className="inline-block w-fit" style={{ perspective: 900 }}>
+    <div className="block" style={{ perspective: 900, width: bookWidth }}>
       <div
         className="aspect-[49/60] w-fit relative rotate-0 duration-[250ms] book-rotate"
-        style={{ transformStyle: "preserve-3d", minWidth: _width, containerType: "inline-size" }}
+        style={{
+          transformStyle: "preserve-3d",
+          width: bookWidth,
+          height: bookHeight,
+          containerType: "inline-size"
+        }}
       >
         <div
           className="flex flex-col h-full rounded-l-md rounded-r overflow-hidden bg-background-200 shadow-book translate-x-0 relative after:absolute after:border after:border-gray-alpha-400 after:w-full after:h-full after:shadow-book-border after:rounded-l-md after:rounded-r"
-          style={{ width: _width }}
+          style={{ width: bookWidth }}
         >
           <div
             className={clsx(
@@ -92,7 +104,7 @@ export const Book = ({
                 "flex flex-col w-full p-[6.1%] pl-[14.3%]",
                 variant === "simple" ? "gap-4" : "justify-between"
               )}
-              style={{ containerType: "inline-size", gap: `calc((24px / 196) * ${_width})` }}
+              style={{ containerType: "inline-size", gap: `calc((24px / 196) * ${bookWidth})` }}
             >
               <span
                 className={clsx(
@@ -116,12 +128,12 @@ export const Book = ({
           className="h-[calc(100%_-_2_*_3px)] w-[calc(29cqw_-_2px)] absolute top-[3px]"
           style={{
             background: "linear-gradient(90deg, #eaeaea, transparent 70%), linear-gradient(#fff, #fafafa)",
-            transform: `translateX(calc(${_width} * 1px - 29cqw / 2 - 3px)) rotateY(90deg) translateX(calc(29cqw / 2))`
+            transform: `translateX(calc(${bookWidth} * 1px - 29cqw / 2 - 3px)) rotateY(90deg) translateX(calc(29cqw / 2))`
           }}
         />
         <div
           className="bg-gray-200 absolute left-0 top-0 rounded-l-md rounded-r h-full"
-          style={{ width: _width, transform: "translateZ(calc(-1 * 29cqw))" }}
+          style={{ width: bookWidth, transform: "translateZ(calc(-1 * 29cqw))" }}
         />
       </div>
     </div>

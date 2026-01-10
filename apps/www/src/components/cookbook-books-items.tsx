@@ -55,7 +55,7 @@ export function CookbookBooksItems() {
   return (
     <>
       {cookbookItems.map((item) => (
-        <Link key={item.href} href={item.href} className="group">
+        <Link key={item.href} href={item.href} className="group flex self-start">
           <Book
             color={item.color}
             textColor={item.textColor}
