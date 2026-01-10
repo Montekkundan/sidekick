@@ -12,6 +12,9 @@
     "start": {
       "dependsOn": ["build"]
     },
+    "test": {
+      "dependsOn": ["^build"]
+    },
     "typecheck": {
       "dependsOn": ["^build"]
     },
@@ -23,6 +26,16 @@
     "dev:inspect": {
       "cache": false,
       "persistent": true
+    },
+    "change": {
+      "cache": false
+    },
+    "version": {
+      "cache": false
+    },
+    "release": {
+      "dependsOn": ["build"],
+      "cache": false
     },
     "//#check": {},
     "//#fix": {
