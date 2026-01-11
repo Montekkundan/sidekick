@@ -54,6 +54,8 @@
         "ai"
       ],
       "registryDependencies": [
+        "@ai-elements/message",
+        "@ai-elements/conversation",
         "button",
         "input",
         "separator",
