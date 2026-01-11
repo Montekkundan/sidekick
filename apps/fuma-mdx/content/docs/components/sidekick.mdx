@@ -1,0 +1,68 @@
+---
+title: Sidekick
+description: An AI chat sidebar component.
+---
+
+## Overview
+
+Sidekick is a composable chat layout system. It ships as a sidebar with optional toggle behavior, a conversation container with auto-scroll, and a set of message primitives.
+
+## Installation
+
+```package-install
+npm i fumadocs-ui fumadocs-core
+```
+
+## Basic Usage
+
+```tsx
+import {
+  Sidekick,
+  SidekickContent,
+  SidekickFooter,
+  SidekickHeader,
+  SidekickInset,
+  SidekickProvider,
+  SidekickTrigger,
+} from "@/components/sidekick";
+
+export default function Layout() {
+  return (
+    <SidekickProvider defaultOpen>
+      <SidekickInset>
+        <SidekickTrigger />
+        Main Content
+      </SidekickInset>
+
+      <Sidekick>
+        <SidekickHeader>
+          AI Assistant
+        </SidekickHeader>
+        <SidekickContent>
+          Chat goes here
+        </SidekickContent>
+        <SidekickFooter>
+          Input goes here
+        </SidekickFooter>
+      </Sidekick>
+    </SidekickProvider>
+  );
+}
+```
+
+## Features
+
+- **Collapsible Panel**: Toggle with `⌘I` / `Ctrl+I`
+- **Mobile Modes**: Sheet, Inline, or Floating
+- **Conversation History**: Auto-scrolling
+- **Themable**: Full CSS control
+
+### Themes
+
+Customize the appearance using CSS variables or Tailwind classes.
+
+```css
+.my-theme [data-slot="sidekick"] {
+  background-color: #1a1a1a;
+}
+```
