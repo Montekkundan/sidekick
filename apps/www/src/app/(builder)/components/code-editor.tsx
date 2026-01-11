@@ -6,7 +6,7 @@ import type { OnMount } from "@monaco-editor/react";
 import type * as Monaco from "monaco-editor";
 import { useTheme } from "next-themes";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/design-system/lib/utils";;
 import * as RegistryComponents from "@/registry/new-york/ui";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {

@@ -5,8 +5,8 @@ import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LayoutProvider } from "@/hooks/use-layout";
 import { APP_URL, META_THEME_COLORS, siteConfig } from "@/lib/config";
-import { fontVariables } from "@/lib/fonts";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/design-system/lib/utils";
+import { fonts } from "@repo/design-system/lib/fonts";
 
 import "@/app/globals.css";
 
@@ -62,7 +62,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html className={fontVariables} lang="en" suppressHydrationWarning>
+    <html className={fonts} lang="en" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{

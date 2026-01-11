@@ -1,7 +1,7 @@
 "use client";
 
 import { CookbookBooksItems } from "@/components/cookbook-books-items";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/design-system/lib/utils";;
 
 type CookbookBooksGridProps = {
   className?: string;

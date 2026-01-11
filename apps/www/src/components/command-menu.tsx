@@ -10,7 +10,7 @@ import { copyToClipboardWithMeta } from "@/components/copy-button";
 import { useConfig } from "@/hooks/use-config";
 import { useMutationObserver } from "@/hooks/use-mutation-observer";
 import type { source } from "@/lib/source";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/design-system/lib/utils";;
 import { Button } from "@/registry/new-york/ui/button";
 import {
   Command,

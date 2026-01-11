@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import * as React from "react";
 import { TOP_LEVEL_SECTIONS } from "@/lib/config";
 import type { source } from "@/lib/source";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/design-system/lib/utils";;
 import { Button } from "@/registry/new-york/ui/button";
 import {
   Popover,

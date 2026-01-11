@@ -4,7 +4,7 @@ import { IconCheck, IconCopy } from "@tabler/icons-react";
 import * as React from "react";
 
 import { type Event, trackEvent } from "@/lib/events";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/design-system/lib/utils";;
 import { Button } from "@/registry/new-york/ui/button";
 import {
   Tooltip,

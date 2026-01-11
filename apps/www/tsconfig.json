@@ -3,7 +3,8 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"],
-      "@/.source": ["./.source/server.ts"]
+      "@/.source": ["./.source/server.ts"],
+      "@repo/*": ["../../packages/*"]
     }
   },
   "include": [

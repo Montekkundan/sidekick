@@ -1,7 +1,10 @@
 {
   "name": "sidekick",
   "private": true,
-  "workspaces": ["apps/*", "packages/*"],
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
@@ -13,7 +16,9 @@
     "fix": "ultracite fix",
     "lint": "ultracite check",
     "format": "ultracite fix",
-    "doctor": "ultracite doctor"
+    "doctor": "ultracite doctor",
+    "bump-deps": "npx npm-check-updates --deep -u -x react-day-picker,recharts",
+    "bump-ui": "npx shadcn@latest add --all --overwrite -c packages/design-system"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.11",

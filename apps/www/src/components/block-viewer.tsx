@@ -28,8 +28,8 @@ import {
   type FileTree,
   type RegistryItem,
 } from "@/lib/registry"
-import { cn } from "@/lib/utils"
-import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
+import { cn } from "@repo/design-system/lib/utils";
+import { useCopyToClipboard } from "@repo/design-system//hooks/use-copy-to-clipboard"
 import { getIconForLanguageExtension } from "@/components/icons"
 import { OpenInV0Button } from "@/components/open-in-v0-button"
 import { Button } from "@/registry/new-york/ui/button"

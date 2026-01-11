@@ -1,7 +1,7 @@
 "use client";
 
 import { AudioLines, Plus } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/design-system/lib/utils";
 import {
   PromptInput,
   PromptInputBody,

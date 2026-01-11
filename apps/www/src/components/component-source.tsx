@@ -6,7 +6,7 @@ import { CopyButton } from "@/components/copy-button";
 import { getIconForLanguageExtension } from "@/components/icons";
 import { highlightCode } from "@/lib/highlight-code";
 import { getRegistryItem } from "@/lib/registry";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/design-system/lib/utils";;
 
 export async function ComponentSource({
   name,

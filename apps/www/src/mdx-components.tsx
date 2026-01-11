@@ -10,7 +10,7 @@ import { ComponentSource } from "@/components/component-source";
 import { CopyButton } from "@/components/copy-button";
 import { RegistryCommand } from "@/components/registry-command";
 import { getIconForLanguageExtension } from "@/components/icons";
-import { cn } from "@/lib/utils";
+import { cn } from "@repo/design-system/lib/utils";;
 import {
   Accordion,
   AccordionContent,

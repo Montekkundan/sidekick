@@ -7,7 +7,7 @@ import {
   createFileTreeForRegistryItemFiles,
   getRegistryItem,
 } from "@/lib/registry"
-import { cn } from "@/lib/utils"
+import { cn } from "@repo/design-system/lib/utils";
 import { BlockViewer } from "@/components/block-viewer"
 import { ComponentPreview } from "@/components/component-preview"
 
