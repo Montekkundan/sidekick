@@ -36,3 +36,16 @@ Sidekick provides composable, customizable React components for AI chat experien
 ## License
 
 MIT
+
+## Adding New Examples
+
+To add a new example application (e.g., for testing a new UI block), use the `_template` workspace.
+
+1.  Run the generator command:
+    ```sh
+    bun turbo gen workspace --copy
+    ```
+2.  Select `apps/_template` as the source to copy.
+3.  Give your new app a name (e.g., `examples/dashboard`).
+
+This will create a new Next.js app with all the repository configurations (Typescript, Tailwind, etc.) pre-configured, giving you a clean slate to build your example.
