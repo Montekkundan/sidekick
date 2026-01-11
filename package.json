@@ -18,7 +18,8 @@
     "format": "ultracite fix",
     "doctor": "ultracite doctor",
     "bump-deps": "npx npm-check-updates --deep -u -x react-day-picker,recharts",
-    "bump-ui": "npx shadcn@latest add --all --overwrite -c packages/design-system"
+    "bump-ui": "npx shadcn@latest add --all --overwrite -c packages/design-system",
+    "clean": "turbo clean"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.11",

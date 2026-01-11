@@ -31,6 +31,9 @@
     "change": {
       "cache": false
     },
+    "clean": {
+      "cache": false
+    },
     "version": {
       "cache": false
     },
