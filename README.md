@@ -47,5 +47,25 @@ To add a new example application (e.g., for testing a new UI block), use the `_t
     ```
 2.  Select `apps/_template` as the source to copy.
 3.  Give your new app a name (e.g., `examples/dashboard`).
+4.  **Important**: When asked if you want to add workspace dependencies, select **No** (or press Enter without selecting any). The template already includes the necessary core dependencies.
+5.  **Set a Unique Port**: Open `apps/<your-app>/package.json` and update the `dev` script to use a unique port (e.g., `-p 3002`) so it doesn't conflict with other apps.
+    ```json
+    "dev": "next dev --turbopack -p 3002"
+    ```
+6.  **Configure Environment**: Rename `.env.example` to `.env` inside your new app directory and update `NEXT_PUBLIC_APP_URL` to match your new port.
+    ```bash
+    NEXT_PUBLIC_APP_URL="http://localhost:3002"
+    ```
+7.  **Optional - Subpath Routing**: If you want this app to run under a specific path (e.g., `/examples/dashboard`), update `next.config.ts`:
+    ```ts
+    basePath: "/examples/dashboard",
+    ```
 
-This will create a new Next.js app with all the repository configurations (Typescript, Tailwind, etc.) pre-configured, giving you a clean slate to build your example.
+8.  **Run and View**:
+    *   Start the app: `bun turbo dev --filter=<your-app>`
+    *   **Crucial**: Because of the `basePath`, your app will **NOT** be at `http://localhost:3002/`.
+    *   You **MUST** visit the full path: `http://localhost:3002/examples/dashboard` (or whatever you set as `basePath`).
+
+    > **Note**: If you set a `basePath`, you will need to update the path of any static assets (like images) in your code to include that base path (e.g., `/examples/dashboard/next.svg` instead of `/next.svg`).
+
+To optionally integrate this new app into the main website (so it's accessible via the main domain), follow the guide in [MICROFRONTENDS.md](apps/www/MICROFRONTENDS.md).
