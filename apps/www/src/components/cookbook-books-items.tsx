@@ -4,14 +4,14 @@ import Link from "next/link";
 import { Book } from "@/components/book";
 
 const cookbookItems = [
-  {
-    title: "Netflix Search Page",
-    href: "/docs/cookbook/netflix",
-    color: "#9D2127",
-    textColor: "#F6EEE7",
-    textured: true,
-    variant: "simple" as const,
-  },
+  // {
+  //   title: "Netflix Search Page",
+  //   href: "/docs/cookbook/netflix",
+  //   color: "#9D2127",
+  //   textColor: "#F6EEE7",
+  //   textured: true,
+  //   variant: "simple" as const,
+  // },
   {
     title: "ChatGPT Home Page",
     href: "/docs/cookbook/chatgpt-home",
@@ -55,7 +55,11 @@ export function CookbookBooksItems() {
   return (
     <>
       {cookbookItems.map((item) => (
-        <Link key={item.href} href={item.href} className="group flex self-start">
+        <Link
+          className="group flex self-start"
+          href={item.href}
+          key={item.href}
+        >
           <Book
             color={item.color}
             textColor={item.textColor}

@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-
-import { Announcement } from "@/components/announcement";
 import { ExamplesNav } from "@/components/examples-nav";
 import {
   PageActions,
@@ -15,7 +13,7 @@ import { Button } from "@/registry/new-york/ui/button";
 export const dynamic = "force-static";
 export const revalidate = false;
 
-const title = "The Foundation for your Design System";
+const title = "The Foundation for your AI System";
 const description =
   "A set of beautifully designed components that you can customize, extend, and build on. Start here then make it your own. Open Source. Open Code.";
 
@@ -51,7 +49,7 @@ export default function ExamplesLayout({
   return (
     <>
       <PageHeader>
-        <Announcement />
+        {/* <Announcement /> */}
         <PageHeaderHeading className="max-w-4xl">{title}</PageHeaderHeading>
         <PageHeaderDescription>{description}</PageHeaderDescription>
         <PageActions>

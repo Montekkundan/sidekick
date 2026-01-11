@@ -1,9 +1,8 @@
-import { SquarePlus, Grid2x2, Box, PencilRuler } from "lucide-react";
+import { Box, Grid2x2, PencilRuler, SquarePlus } from "lucide-react";
 
-export const APP_URL = (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").replace(
-  /\/$/,
-  ""
-);
+export const APP_URL = (
+  process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
+).replace(/\/$/, "");
 
 export const siteConfig = {
   name: "Sidekick",
@@ -28,10 +27,10 @@ export const siteConfig = {
       href: "/docs/cookbook",
       label: "Cookbook",
     },
-    {
-      href: "/builder",
-      label: "Builder",
-    }
+    // {
+    //   href: "/builder",
+    //   label: "Builder",
+    // }
   ],
   widgetNavItems: [
     {
@@ -53,7 +52,7 @@ export const siteConfig = {
       href: "/builder/icons",
       label: "Icons",
       icon: PencilRuler,
-    }
+    },
   ],
 };
 
