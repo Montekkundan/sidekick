@@ -1,8 +1,20 @@
 "use client";
 
-import * as React from "react";
+import {
+  Conversation,
+  ConversationContent,
+} from "@repo/design-system/components/ai-elements/conversation";
+import {
+  Message,
+  MessageContent,
+} from "@repo/design-system/components/ai-elements/message";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@repo/design-system/components/ui/avatar";
 import { MessageCircleIcon, XIcon } from "lucide-react";
-import { Button } from "@/registry/new-york/ui/button";
+import React from "react";
 import {
   PromptInput,
   PromptInputBody,
@@ -12,21 +24,18 @@ import {
   PromptInputTools,
 } from "@/registry/new-york/blocks/prompt-input";
 import {
-  Conversation,
-  ConversationContent,
-  Message,
-  MessageContent,
   Sidekick,
   SidekickContent,
   SidekickFooter,
   SidekickHeader,
 } from "@/registry/new-york/blocks/sidekick";
+import { Button } from "@/registry/new-york/ui/button";
 
-type ChatMessage = {
+interface ChatMessage {
   id: string;
   from: "user" | "assistant";
   content: string;
-};
+}
 
 export function SidekickChatbot() {
   const [open, setOpen] = React.useState(false);
@@ -40,7 +49,9 @@ export function SidekickChatbot() {
   ]);
 
   const handleSubmit = (message: { text: string }) => {
-    if (!message.text.trim()) return;
+    if (!message.text.trim()) {
+      return;
+    }
     const userMessage: ChatMessage = {
       id: String(Date.now()),
       from: "user",
@@ -60,14 +71,14 @@ export function SidekickChatbot() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+    <div className="fixed right-6 bottom-6 z-50 flex flex-col items-end gap-3">
       {!open && showPreview && (
         <div className="flex w-80 items-center gap-4 rounded-full border bg-background px-4 py-3 shadow-lg">
           <div className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
             <MessageCircleIcon className="size-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium">
+            <p className="truncate font-medium text-sm">
               Hi, how can I help you today? 👋
             </p>
             <p className="text-muted-foreground text-xs">Just now</p>
@@ -94,8 +105,27 @@ export function SidekickChatbot() {
               <Conversation>
                 <ConversationContent>
                   {messages.map((msg) => (
-                    <Message from={msg.from} key={msg.id}>
-                      <MessageContent from={msg.from}>{msg.content}</MessageContent>
+                    <Message
+                      className={
+                        msg.from === "user" ? "flex-row-reverse" : "flex-row"
+                      }
+                      from={msg.from as "user" | "assistant"}
+                      key={msg.id}
+                    >
+                      <Avatar className="h-6 w-6 rounded-full">
+                        <AvatarImage
+                          alt={msg.from === "user" ? "@montekkundan" : "shadcn"}
+                          src={
+                            msg.from === "user"
+                              ? "https://github.com/montekkundan.png"
+                              : "https://github.com/shadcn.png"
+                          }
+                        />
+                        <AvatarFallback>
+                          {msg.from === "user" ? "MK" : "CN"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <MessageContent>{msg.content}</MessageContent>
                     </Message>
                   ))}
                 </ConversationContent>
@@ -122,7 +152,11 @@ export function SidekickChatbot() {
         onClick={() => setOpen((prev) => !prev)}
         size="icon"
       >
-        {open ? <XIcon className="size-5" /> : <MessageCircleIcon className="size-5" />}
+        {open ? (
+          <XIcon className="size-5" />
+        ) : (
+          <MessageCircleIcon className="size-5" />
+        )}
       </Button>
     </div>
   );

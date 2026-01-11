@@ -8,12 +8,20 @@ let nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: "/examples",
-        destination: `${env.NAVIGATION_APP_URL}/examples`,
+        source: "/examples/next-navigation",
+        destination: `${env.NAVIGATION_APP_URL}/examples/next-navigation`,
       },
       {
-        source: "/examples/:path*",
-        destination: `${env.NAVIGATION_APP_URL}/examples/:path*`,
+        source: "/examples/next-navigation/:path*",
+        destination: `${env.NAVIGATION_APP_URL}/examples/next-navigation/:path*`,
+      },
+      {
+        source: "/examples/mdx",
+        destination: `${env.FUMA_MDX_URL}/examples/mdx`,
+      },
+      {
+        source: "/examples/mdx/:path*",
+        destination: `${env.FUMA_MDX_URL}/examples/mdx/:path*`,
       },
     ];
   },

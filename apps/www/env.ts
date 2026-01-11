@@ -6,9 +6,11 @@ export const env = createEnv({
   extends: [core()],
   server: {
     NAVIGATION_APP_URL: z.string().min(1).default("http://localhost:3001"),
+    FUMA_MDX_URL: z.string().min(1).default("http://localhost:3002"),
   },
   client: {},
   runtimeEnv: {
     NAVIGATION_APP_URL: process.env.NAVIGATION_APP_URL,
+    FUMA_MDX_URL: process.env.FUMA_MDX_URL,
   },
 });

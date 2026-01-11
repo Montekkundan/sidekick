@@ -1,9 +1,7 @@
 "use client";
 
-import { cva, type VariantProps } from "class-variance-authority";
-import { ArrowDownIcon, PanelLeftIcon } from "lucide-react";
-import * as React from "react";
-
+import { PanelLeftIcon } from "lucide-react";
+import React from "react";
 import { cn } from "@/registry/new-york/lib/utils";
 import { Button } from "@/registry/new-york/ui/button";
 import { Input } from "@/registry/new-york/ui/input";
@@ -24,7 +22,7 @@ const SIDEKICK_WIDTH_MOBILE = "100%";
 const SIDEKICK_WIDTH_COLLAPSED = "0rem";
 const SIDEKICK_KEYBOARD_SHORTCUT = "i";
 
-type SidekickContextProps = {
+interface SidekickContextProps {
   state: "expanded" | "collapsed";
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -32,7 +30,7 @@ type SidekickContextProps = {
   setOpenMobile: (open: boolean) => void;
   isMobile: boolean;
   toggleSidekick: () => void;
-};
+}
 
 const SidekickContext = React.createContext<SidekickContextProps | null>(null);
 
@@ -92,6 +90,7 @@ function SidekickProvider({
       } else {
         _setOpen(openState);
       }
+      // biome-ignore lint/suspicious/noDocumentCookie: Used for client-side state persistence
       document.cookie = `${SIDEKICK_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEKICK_COOKIE_MAX_AGE}`;
     },
     [setOpenProp, open]
@@ -130,7 +129,7 @@ function SidekickProvider({
       setOpenMobile,
       toggleSidekick,
     }),
-    [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidekick]
+    [state, open, setOpen, isMobile, openMobile, toggleSidekick]
   );
 
   return (
@@ -383,252 +382,6 @@ function SidekickInput({
   );
 }
 
-type ConversationContextProps = {
-  scrollToBottom: () => void;
-  isAtBottom: boolean;
-};
-
-const ConversationContext =
-  React.createContext<ConversationContextProps | null>(null);
-
-function useConversation() {
-  const context = React.useContext(ConversationContext);
-  if (!context) {
-    throw new Error("useConversation must be used within a Conversation.");
-  }
-  return context;
-}
-
-type ConversationProps = React.ComponentProps<"div">;
-
-function Conversation({ className, children, ...props }: ConversationProps) {
-  const scrollRef = React.useRef<HTMLDivElement>(null);
-  const [isAtBottom, setIsAtBottom] = React.useState(true);
-
-  const scrollToBottom = React.useCallback(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTo({
-        top: scrollRef.current.scrollHeight,
-        behavior: "smooth",
-      });
-    }
-  }, []);
-
-  const handleScroll = React.useCallback(() => {
-    if (scrollRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
-      setIsAtBottom(scrollHeight - scrollTop - clientHeight < 50);
-    }
-  }, []);
-
-  React.useEffect(() => {
-    const scrollEl = scrollRef.current;
-    if (scrollEl) {
-      scrollEl.addEventListener("scroll", handleScroll);
-      return () => scrollEl.removeEventListener("scroll", handleScroll);
-    }
-  }, [handleScroll]);
-
-  // Auto-scroll when children change and user is at bottom
-  React.useEffect(() => {
-    if (isAtBottom) {
-      scrollToBottom();
-    }
-  }, [children, isAtBottom, scrollToBottom]);
-
-  const contextValue = React.useMemo(
-    () => ({ scrollToBottom, isAtBottom }),
-    [scrollToBottom, isAtBottom]
-  );
-
-  return (
-    <ConversationContext.Provider value={contextValue}>
-      <div
-        className={cn("relative flex-1 overflow-y-auto", className)}
-        data-slot="conversation"
-        ref={scrollRef}
-        role="log"
-        {...props}
-      >
-        {children}
-      </div>
-    </ConversationContext.Provider>
-  );
-}
-
-function ConversationContent({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn("flex flex-col gap-4 p-4", className)}
-      data-slot="conversation-content"
-      {...props}
-    />
-  );
-}
-
-type ConversationEmptyStateProps = React.ComponentProps<"div"> & {
-  title?: string;
-  description?: string;
-  icon?: React.ReactNode;
-};
-
-function ConversationEmptyState({
-  className,
-  title = "No messages yet",
-  description = "Start a conversation to see messages here",
-  icon,
-  children,
-  ...props
-}: ConversationEmptyStateProps) {
-  return (
-    <div
-      className={cn(
-        "flex size-full flex-col items-center justify-center gap-3 p-8 text-center",
-        className
-      )}
-      data-slot="conversation-empty-state"
-      {...props}
-    >
-      {children ?? (
-        <>
-          {icon && <div className="text-muted-foreground">{icon}</div>}
-          <div className="space-y-1">
-            <h3 className="font-medium text-sm">{title}</h3>
-            {description && (
-              <p className="text-muted-foreground text-sm">{description}</p>
-            )}
-          </div>
-        </>
-      )}
-    </div>
-  );
-}
-
-function ConversationScrollButton({
-  className,
-  ...props
-}: React.ComponentProps<typeof Button>) {
-  const { isAtBottom, scrollToBottom } = useConversation();
-
-  if (isAtBottom) return null;
-
-  return (
-    <Button
-      className={cn(
-        "absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full",
-        className
-      )}
-      data-slot="conversation-scroll-button"
-      onClick={scrollToBottom}
-      size="icon"
-      type="button"
-      variant="outline"
-      {...props}
-    >
-      <ArrowDownIcon className="size-4" />
-    </Button>
-  );
-}
-
-const messageVariants = cva("flex w-full gap-3", {
-  variants: {
-    from: {
-      user: "flex-row-reverse",
-      assistant: "flex-row",
-    },
-  },
-  defaultVariants: {
-    from: "assistant",
-  },
-});
-
-type MessageProps = React.ComponentProps<"div"> &
-  VariantProps<typeof messageVariants>;
-
-function Message({ className, from, children, ...props }: MessageProps) {
-  return (
-    <div
-      className={cn(messageVariants({ from }), className)}
-      data-from={from}
-      data-slot="message"
-      {...props}
-    >
-      {children}
-    </div>
-  );
-}
-
-const messageContentVariants = cva(
-  "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm",
-  {
-    variants: {
-      from: {
-        user: "rounded-br-md bg-primary text-primary-foreground",
-        assistant: "rounded-bl-md bg-muted text-foreground",
-      },
-    },
-    defaultVariants: {
-      from: "assistant",
-    },
-  }
-);
-
-type MessageContentProps = React.ComponentProps<"div"> &
-  VariantProps<typeof messageContentVariants>;
-
-function MessageContent({ className, from, ...props }: MessageContentProps) {
-  return (
-    <div
-      className={cn(messageContentVariants({ from }), className)}
-      data-from={from}
-      data-slot="message-content"
-      {...props}
-    />
-  );
-}
-
-function MessageAvatar({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn(
-        "flex size-8 shrink-0 items-center justify-center rounded-full bg-muted",
-        className
-      )}
-      data-slot="message-avatar"
-      {...props}
-    />
-  );
-}
-
-function MessageTimestamp({
-  className,
-  ...props
-}: React.ComponentProps<"span">) {
-  return (
-    <span
-      className={cn("text-muted-foreground text-xs", className)}
-      data-slot="message-timestamp"
-      {...props}
-    />
-  );
-}
-
-function MessageActions({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      className={cn(
-        "flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100",
-        className
-      )}
-      data-slot="message-actions"
-      {...props}
-    />
-  );
-}
-
 export {
   // Sidekick
   Sidekick,
@@ -641,18 +394,6 @@ export {
   SidekickSeparator,
   SidekickTrigger,
   useSidekick,
-  // Conversation
-  Conversation,
-  ConversationContent,
-  ConversationEmptyState,
-  ConversationScrollButton,
-  useConversation,
-  // Message
-  Message,
-  MessageActions,
-  MessageAvatar,
-  MessageContent,
-  MessageTimestamp,
 };
 
 Sidekick.Header = SidekickHeader;

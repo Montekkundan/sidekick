@@ -45,6 +45,8 @@
       "description": "An AI chat sidebar component with conversation history, message bubbles, and integrated prompt input.",
       "dependencies": ["nanoid", "ai"],
       "registryDependencies": [
+        "@ai-elements/message",
+        "@ai-elements/conversation",
         "button",
         "input",
         "separator",

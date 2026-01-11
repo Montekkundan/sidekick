@@ -1,6 +1,11 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalEnv": ["NEXT_PUBLIC_APP_URL", "ANALYZE", "NAVIGATION_APP_URL"],
+  "globalEnv": [
+    "NEXT_PUBLIC_APP_URL",
+    "ANALYZE",
+    "NAVIGATION_APP_URL",
+    "FUMA_MDX_URL"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
