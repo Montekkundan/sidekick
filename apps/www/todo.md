@@ -23,3 +23,4 @@
 - add ai search in cmdk
 - add https://www.transhumans.xyz/images/new-beginnings in message block
 - examples page with https://turborepo.com/docs/guides/microfrontends
+- remove uncessary Add Environment Variables for v0 for blocks

@@ -12,7 +12,7 @@
     "declaration": false,
     "declarationMap": false,
     "paths": {
-      "@/*": ["./*"],
+      "@/*": ["./src/*"],
       "@repo/*": ["../../packages/*"]
     }
   }
