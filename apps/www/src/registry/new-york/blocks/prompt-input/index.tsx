@@ -28,10 +28,6 @@ import {
   SelectValue,
 } from "@/registry/new-york/ui/select";
 
-// ============================================================================
-// Prompt Input Variants
-// ============================================================================
-
 export const promptInputVariants = cva(
   "**:data-[slot=input-group]:transition-[background-color,border-color,box-shadow]",
   {
@@ -84,8 +80,8 @@ import {
   createContext,
   type FormEvent,
   type FormEventHandler,
-  forwardRef,
   Fragment,
+  forwardRef,
   type HTMLAttributes,
   type KeyboardEventHandler,
   type PropsWithChildren,
@@ -98,10 +94,6 @@ import {
   useRef,
   useState,
 } from "react";
-
-// ============================================================================
-// Provider Context & Types
-// ============================================================================
 
 export type AttachmentsContext = {
   files: (FileUIPart & { id: string })[];
@@ -286,10 +278,6 @@ export function PromptInputProvider({
     </PromptInputController.Provider>
   );
 }
-
-// ============================================================================
-// Component Context & Hooks
-// ============================================================================
 
 const LocalAttachmentsContext = createContext<AttachmentsContext | null>(null);
 
@@ -898,10 +886,7 @@ export const PromptInputBody = ({
   ...props
 }: PromptInputBodyProps) => (
   <div
-    className={cn(
-      "flex w-full flex-1 items-center gap-1 px-3",
-      className
-    )}
+    className={cn("flex w-full flex-1 items-center gap-1 px-3", className)}
     {...props}
   />
 );
@@ -1142,7 +1127,9 @@ export const PromptInputSubmit = ({
   ...props
 }: PromptInputSubmitProps) => {
   const controller = useOptionalPromptInputController();
-  const hasText = controller ? controller.textInput.value.trim().length > 0 : false;
+  const hasText = controller
+    ? controller.textInput.value.trim().length > 0
+    : false;
   let Icon: ReactNode = <CornerDownLeftIcon className="size-4" />;
 
   if (status === "submitted") {

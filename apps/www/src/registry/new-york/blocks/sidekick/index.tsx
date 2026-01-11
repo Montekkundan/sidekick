@@ -17,20 +17,12 @@ import {
 } from "@/registry/new-york/ui/sheet";
 import { TooltipProvider } from "@/registry/new-york/ui/tooltip";
 
-// ============================================================================
-// Sidekick Constants
-// ============================================================================
-
 const SIDEKICK_COOKIE_NAME = "sidekick_state";
 const SIDEKICK_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEKICK_WIDTH = "24rem";
 const SIDEKICK_WIDTH_MOBILE = "100%";
 const SIDEKICK_WIDTH_COLLAPSED = "0rem";
 const SIDEKICK_KEYBOARD_SHORTCUT = "i";
-
-// ============================================================================
-// Sidekick Context
-// ============================================================================
 
 type SidekickContextProps = {
   state: "expanded" | "collapsed";
@@ -57,10 +49,6 @@ function useOptionalSidekick() {
   return React.useContext(SidekickContext);
 }
 
-// ============================================================================
-// Hook: useIsMobile
-// ============================================================================
-
 function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState(false);
 
@@ -73,10 +61,6 @@ function useIsMobile() {
 
   return isMobile;
 }
-
-// ============================================================================
-// Sidekick Provider
-// ============================================================================
 
 type SidekickProviderProps = React.ComponentProps<"div"> & {
   defaultOpen?: boolean;
@@ -171,10 +155,6 @@ function SidekickProvider({
   );
 }
 
-// ============================================================================
-// Sidekick Panel
-// ============================================================================
-
 type SidekickProps = React.ComponentProps<"aside"> & {
   side?: "left" | "right";
   mobileBehavior?: "sheet" | "inline" | "floating";
@@ -248,7 +228,9 @@ function Sidekick({
       <aside
         className={cn(
           "flex w-full flex-col border-t bg-background text-foreground transition-[max-height,opacity] duration-200",
-          openMobile ? "max-h-[75vh] opacity-100" : "max-h-0 overflow-hidden opacity-0",
+          openMobile
+            ? "max-h-[75vh] opacity-100"
+            : "max-h-0 overflow-hidden opacity-0",
           className
         )}
         data-side={side}
@@ -299,10 +281,6 @@ function Sidekick({
   );
 }
 
-// ============================================================================
-// Sidekick Trigger
-// ============================================================================
-
 function SidekickTrigger({
   className,
   onClick,
@@ -335,10 +313,6 @@ function SidekickTrigger({
     </Button>
   );
 }
-
-// ============================================================================
-// Sidekick Layout Components
-// ============================================================================
 
 function SidekickHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -408,10 +382,6 @@ function SidekickInput({
     />
   );
 }
-
-// ============================================================================
-// Conversation Components
-// ============================================================================
 
 type ConversationContextProps = {
   scrollToBottom: () => void;
@@ -548,7 +518,7 @@ function ConversationScrollButton({
   return (
     <Button
       className={cn(
-        "-translate-x-1/2 absolute bottom-4 left-1/2 rounded-full",
+        "absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full",
         className
       )}
       data-slot="conversation-scroll-button"
@@ -562,10 +532,6 @@ function ConversationScrollButton({
     </Button>
   );
 }
-
-// ============================================================================
-// Message Components
-// ============================================================================
 
 const messageVariants = cva("flex w-full gap-3", {
   variants: {
@@ -663,10 +629,6 @@ function MessageActions({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-// ============================================================================
-// Exports
-// ============================================================================
-
 export {
   // Sidekick
   Sidekick,
@@ -692,10 +654,6 @@ export {
   MessageContent,
   MessageTimestamp,
 };
-
-// ============================================================================
-// Compound Component Exports
-// ============================================================================
 
 Sidekick.Header = SidekickHeader;
 Sidekick.Content = SidekickContent;

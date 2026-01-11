@@ -28,7 +28,8 @@
         "input",
         "select",
         "dropdown-menu",
-        "hover-card"
+        "hover-card",
+        "input-group"
       ],
       "files": [
         {
