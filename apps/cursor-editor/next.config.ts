@@ -4,7 +4,7 @@ import { env } from "./env";
 
 let nextConfig: NextConfig = {
   ...config,
-  basePath: "/examples",
+  basePath: "/examples/cursor-editor",
   transpilePackages: ["@repo/design-system"],
 };
 

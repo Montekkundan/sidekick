@@ -64,10 +64,6 @@
         {
           "path": "src/registry/new-york/lib/gateway.ts",
           "type": "registry:lib"
-        },
-        {
-          "path": "src/registry/new-york/hooks/use-gateway-chat.ts",
-          "type": "registry:hook"
         }
       ]
     },

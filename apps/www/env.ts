@@ -7,10 +7,16 @@ export const env = createEnv({
   server: {
     NAVIGATION_APP_URL: z.string().min(1).default("http://localhost:3001"),
     FUMA_MDX_URL: z.string().min(1).default("http://localhost:3002"),
+    CURSOR_EDITOR_APP_URL: z.string().min(1).default("http://localhost:3003"),
+    CHATGPT_APP_URL: z.string().min(1).default("http://localhost:3004"),
+    HELP_PAGE_APP_URL: z.string().min(1).default("http://localhost:3005"),
   },
   client: {},
   runtimeEnv: {
     NAVIGATION_APP_URL: process.env.NAVIGATION_APP_URL,
     FUMA_MDX_URL: process.env.FUMA_MDX_URL,
+    CURSOR_EDITOR_APP_URL: process.env.CURSOR_EDITOR_APP_URL,
+    CHATGPT_APP_URL: process.env.CHATGPT_APP_URL,
+    HELP_PAGE_APP_URL: process.env.HELP_PAGE_APP_URL,
   },
 });

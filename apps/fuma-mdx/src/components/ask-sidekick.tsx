@@ -36,7 +36,7 @@ export function AskSidekick() {
     return () => window.removeEventListener("builder:ask-ai", handleAskAI);
   }, [toggleSidekick]);
 
-  const messages = [
+  const messages: Array<{ id: string; from: "user" | "assistant" | "system"; content: string }> = [
     {
       id: "1",
       from: "user",

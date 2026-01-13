@@ -16,13 +16,37 @@ let nextConfig: NextConfig = {
         destination: `${env.NAVIGATION_APP_URL}/examples/next-navigation/:path*`,
       },
       {
-        source: "/examples/mdx",
-        destination: `${env.FUMA_MDX_URL}/examples/mdx`,
+        source: "/examples/fuma-mdx",
+        destination: `${env.FUMA_MDX_URL}/examples/fuma-mdx`,
       },
       {
-        source: "/examples/mdx/:path*",
-        destination: `${env.FUMA_MDX_URL}/examples/mdx/:path*`,
+        source: "/examples/fuma-mdx/:path*",
+        destination: `${env.FUMA_MDX_URL}/examples/fuma-mdx/:path*`,
       },
+      {
+        source: "/examples/help-page",
+        destination: `${env.HELP_PAGE_APP_URL}/examples/help-page`,
+      },
+      {
+        source: "/examples/help-page/:path*",
+        destination: `${env.HELP_PAGE_APP_URL}/examples/help-page/:path*`,
+      },
+      {
+        source: "/examples/chatgpt",
+        destination: `${env.CHATGPT_APP_URL}/examples/chatgpt`,
+      },  
+      {
+        source: "/examples/chatgpt/:path*",
+        destination: `${env.CHATGPT_APP_URL}/examples/chatgpt/:path*`,
+      },
+      {
+        source: "/examples/cursor-editor",
+        destination: `${env.CURSOR_EDITOR_APP_URL}/examples/cursor-editor`,
+      },
+      {
+        source: "/examples/cursor-editor/:path*",
+        destination: `${env.CURSOR_EDITOR_APP_URL}/examples/cursor-editor/:path*`,
+      }
     ];
   },
 };

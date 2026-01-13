@@ -1,5 +1,6 @@
 "use client";
 
+import { useChat } from "@ai-sdk/react";
 import {
   Conversation,
   ConversationContent,
@@ -27,7 +28,6 @@ import {
   SidekickHeader,
   SidekickTrigger,
 } from "@/registry/new-york/blocks/sidekick";
-import { useGatewayChat } from "@/registry/new-york/hooks/use-gateway-chat";
 import { Kbd, KbdGroup } from "@/registry/new-york/ui/kbd";
 
 const SIDEKICK_SUGGESTIONS = [
@@ -67,17 +67,8 @@ export function BuilderSidekick() {
   );
   const chatId = chatIdFromPath ?? activeSessionId ?? "builder";
 
-  const gatewayConfig = React.useMemo(
-    () => ({
-      modelId: "openai/gpt-4o-mini",
-      provider: "vercel" as const,
-    }),
-    []
-  );
-
-  const { messages, sendMessage, status } = useGatewayChat({
+  const { messages, sendMessage, status } = useChat({
     id: chatId,
-    gateway: gatewayConfig,
   });
 
   const handleSubmit = React.useCallback(

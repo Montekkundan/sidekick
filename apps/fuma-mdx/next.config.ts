@@ -5,7 +5,7 @@ import { env } from "./env";
 
 let nextConfig: NextConfig = {
   ...config,
-  basePath: "/examples/mdx",
+  basePath: "/examples/fuma-mdx",
   transpilePackages: ["@repo/design-system"],
 };
 

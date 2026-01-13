@@ -44,24 +44,7 @@ import {
 export default function SidekickDemo() {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
 
-  // Example 1: Using Gateway (with auto-detection)
-  // Uncomment to use with gateway - requires API route
-  // const { messages, handleSubmit, isLoading } = useGatewayChat({
-  //   gateway: {
-  //     modelId: 'openai/gpt-4o',
-  //     // provider: 'vercel', // Optional: specify provider
-  //   },
-  //   initialMessages: [
-  //     { id: '1', role: 'user', content: 'Hello, how can you help me?' },
-  //     {
-  //       id: '2',
-  //       role: 'assistant',
-  //       content: 'I am your AI Sidekick. I can help you with coding, writing, and more.',
-  //     },
-  //   ],
-  // });
-
-  // Example 2: Without Gateway (custom implementation)
+  // Example: Custom implementation
   const [messages, setMessages] = React.useState([
     { id: "1", from: "user", content: "Hello, how can you help me?" },
     {
