@@ -47,6 +47,9 @@ function rewriteContentForV0(content) {
     "@/components/ui/"
   );
 
+  // v0 installs ai-elements into components/ai-elements.
+  next = next.replaceAll("@ai-elements/", "@/components/ai-elements/");
+
   return next;
 }
 

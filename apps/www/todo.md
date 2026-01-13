@@ -28,3 +28,4 @@
 - fix prompt input padding and margin
 - https://cursor.com/docs like docs sidekick example cookbook
 - https://ucp.dev/specification/checkout-rest/
+- add copy ai prompt button like https://vercel.com/sandbox
