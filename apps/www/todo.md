@@ -21,6 +21,10 @@
 - universal search component https://threadreaderapp.com/thread/1937259475599261713.html
 - fix prompt input 01, 02, 03 blocks
 - add ai search in cmdk
-- add https://www.transhumans.xyz/images/new-beginnings in message block
-- examples page with https://turborepo.com/docs/guides/microfrontends
 - remove uncessary Add Environment Variables for v0 for blocks
+- update docs for sidekick and prompt input based on new changes
+- fix bunx --bun shadcn@latest add https://sidekick.montek.dev/r/prompt-input.json and siekick to not install as index files
+- make sidekick slide animation faster
+- fix prompt input padding and margin
+- https://cursor.com/docs like docs sidekick example cookbook
+- https://ucp.dev/specification/checkout-rest/

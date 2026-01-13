@@ -1,10 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-
+import { useBuilder } from "@/app/(builder)/components/builder-provider";
 import { AgentPromptInput } from "@/registry/new-york/blocks/prompt-input-01/components/agent-prompt-input";
 import { Button } from "@/registry/new-york/ui/button";
-import { useBuilder } from "@/app/(builder)/components/builder-provider";
 
 function BuilderLandingPage() {
   const router = useRouter();
@@ -24,7 +23,7 @@ function BuilderLandingPage() {
       <div className="relative flex min-h-[calc(100dvh-4rem)] items-center justify-center px-6 py-16">
         <div className="w-full max-w-4xl">
           <AgentPromptInput />
-          <div className="mt-6 space-y-3 text-center text-xs text-muted-foreground">
+          <div className="mt-6 space-y-3 text-center text-muted-foreground text-xs">
             <div>Powered by Sidekick</div>
             <Button
               className="h-auto px-3 py-1 text-xs"

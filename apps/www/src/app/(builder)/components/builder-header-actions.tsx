@@ -1,10 +1,9 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { Download, Share2, Sparkles } from "lucide-react";
-
-import { Button } from "@/registry/new-york/ui/button";
+import { usePathname } from "next/navigation";
 import { ModeSwitcher } from "@/components/mode-switcher";
+import { Button } from "@/registry/new-york/ui/button";
 
 function dispatchBuilderEvent(name: string) {
   window.dispatchEvent(new CustomEvent(name));

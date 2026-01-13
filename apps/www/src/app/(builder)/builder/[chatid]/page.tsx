@@ -1,8 +1,5 @@
 "use client";
 
-import * as React from "react";
-import { nanoid } from "nanoid";
-import { z, toJSONSchema } from "zod";
 import { parse } from "@babel/parser";
 import type {
   Expression,
@@ -14,38 +11,41 @@ import type {
   JSXSpreadChild,
   JSXText,
 } from "@babel/types";
+import { X } from "lucide-react";
+import { nanoid } from "nanoid";
+import React from "react";
+import { toJSONSchema, z } from "zod";
+import {
+  DEFAULT_A2UI_DATA,
+  DEFAULT_STATE_SCHEMA_JSON,
+  DEFAULT_STATE_SCHEMA_ZOD,
+  DEFAULT_WIDGET_JSX,
+  useBuilder,
+} from "@/app/(builder)/components/builder-provider";
+import { CodeEditor } from "@/app/(builder)/components/code-editor";
 import {
   RegistryRenderer,
   type RegistryUIChild,
   type RegistryUINode,
   type RegistryUIValue,
 } from "@/registry/new-york/lib/registry-renderer";
+import { Button } from "@/registry/new-york/ui/button";
+import { Input } from "@/registry/new-york/ui/input";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/registry/new-york/ui/resizable";
-import {
-  DEFAULT_A2UI_DATA,
-  DEFAULT_WIDGET_JSX,
-  DEFAULT_STATE_SCHEMA_JSON,
-  DEFAULT_STATE_SCHEMA_ZOD,
-  useBuilder,
-} from "@/app/(builder)/components/builder-provider";
-import { CodeEditor } from "@/app/(builder)/components/code-editor";
-import { Button } from "@/registry/new-york/ui/button";
-import { Input } from "@/registry/new-york/ui/input";
-import { X } from "lucide-react";
 
-type JsonParseResult<T> = {
+interface JsonParseResult<T> {
   value: T | null;
   error: string | null;
-};
+}
 
-type JsxParseResult = {
+interface JsxParseResult {
   value: RegistryUIChild | null;
   error: string | null;
-};
+}
 
 type JsxChild =
   | JSXElement
@@ -54,10 +54,10 @@ type JsxChild =
   | JSXText
   | JSXSpreadChild;
 
-type ZodSchemaResult = {
+interface ZodSchemaResult {
   schema: Record<string, unknown> | null;
   error: string | null;
-};
+}
 
 function parseJson<T>(text: string): JsonParseResult<T> {
   try {
@@ -89,27 +89,41 @@ function getJsxRoot(ast: File): JSXElement | JSXFragment | null {
 }
 
 function getJsxName(name: JSXElement["openingElement"]["name"]): string | null {
-  if (name.type === "JSXIdentifier") return name.name;
+  if (name.type === "JSXIdentifier") {
+    return name.name;
+  }
   return null;
 }
 
 function toBindingPath(expression: Expression): string | null {
-  if (expression.type === "Identifier") return `/${expression.name}`;
+  if (expression.type === "Identifier") {
+    return `/${expression.name}`;
+  }
   if (expression.type === "MemberExpression" && !expression.computed) {
     const objectPath =
       expression.object.type === "Identifier"
         ? `/${expression.object.name}`
         : toBindingPath(expression.object);
-    if (!objectPath) return null;
-    if (expression.property.type !== "Identifier") return null;
+    if (!objectPath) {
+      return null;
+    }
+    if (expression.property.type !== "Identifier") {
+      return null;
+    }
     return `${objectPath}/${expression.property.name}`;
   }
   return null;
 }
 
-function isBindingValue(value: RegistryUIValue | null): value is { path: string } {
-  if (!value || typeof value !== "object") return false;
-  if (!("path" in value)) return false;
+function isBindingValue(
+  value: RegistryUIValue | null
+): value is { path: string } {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  if (!("path" in value)) {
+    return false;
+  }
   return (
     typeof (value as { path: unknown }).path === "string" &&
     Object.keys(value as { path: unknown }).length === 1
@@ -135,7 +149,9 @@ function parseExpression(
     }
     case "MemberExpression": {
       const path = toBindingPath(expression);
-      if (path) return { path };
+      if (path) {
+        return { path };
+      }
       errors.push("Unsupported member expression in JSX binding.");
       return null;
     }
@@ -160,7 +176,9 @@ function parseExpression(
           errors.push("JSX elements are not supported inside object props.");
           continue;
         }
-        if (!("type" in property.value)) continue;
+        if (!("type" in property.value)) {
+          continue;
+        }
         const childValue = parseExpression(
           property.value as Expression,
           errors
@@ -200,7 +218,9 @@ function parseAttribute(
     return null;
   }
   const name = attribute.name.name;
-  if (!attribute.value) return [name, true];
+  if (!attribute.value) {
+    return [name, true];
+  }
   if (attribute.value.type === "StringLiteral") {
     return [name, attribute.value.value];
   }
@@ -229,9 +249,13 @@ function parseJsxChild(
   }
   if (child.type === "JSXExpressionContainer") {
     const expression = (child as JSXExpressionContainer).expression;
-    if (expression.type === "JSXEmptyExpression") return null;
+    if (expression.type === "JSXEmptyExpression") {
+      return null;
+    }
     const value = parseExpression(expression as Expression, errors);
-    if (value === null) return null;
+    if (value === null) {
+      return null;
+    }
     if (Array.isArray(value)) {
       errors.push("Arrays are not supported as JSX children.");
       return null;
@@ -318,9 +342,13 @@ function parseJsx(source: string): JsxParseResult {
 }
 
 function getSchemaGlobals(schema: Record<string, unknown> | null): string[] {
-  if (!schema) return [];
+  if (!schema) {
+    return [];
+  }
   const properties = schema.properties;
-  if (!properties || typeof properties !== "object") return [];
+  if (!properties || typeof properties !== "object") {
+    return [];
+  }
   return Object.keys(properties);
 }
 
@@ -341,7 +369,7 @@ function compileZodToJsonSchema(source: string): ZodSchemaResult {
     );
     const fallbackReturn = hasDefaultExport
       ? ""
-      : "\nreturn typeof WidgetState !== \"undefined\" ? WidgetState : undefined;";
+      : '\nreturn typeof WidgetState !== "undefined" ? WidgetState : undefined;';
     const factory = new Function(
       "zod",
       `const { z } = zod;\n${sanitized}${fallbackReturn}`
@@ -356,7 +384,7 @@ function compileZodToJsonSchema(source: string): ZodSchemaResult {
     }
     const schemaObject = { ...jsonSchema } as Record<string, unknown>;
     if ("$schema" in schemaObject) {
-      delete schemaObject.$schema;
+      schemaObject.$schema = undefined;
     }
     return { schema: schemaObject, error: null };
   } catch (error) {
@@ -378,7 +406,7 @@ function PanelHeader({
 }) {
   const actionsClassName = className ?? "flex items-center gap-2";
   return (
-    <div className="flex items-center justify-between border-b px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+    <div className="flex items-center justify-between border-b px-4 py-2 font-semibold text-muted-foreground text-xs uppercase tracking-wide">
       <span>{title}</span>
       {children && <div className={actionsClassName}>{children}</div>}
     </div>
@@ -402,9 +430,9 @@ function BuilderChatContent({ chatid }: { chatid: string }) {
   const [activeStateId, setActiveStateId] = React.useState("default");
   const [activeTab, setActiveTab] = React.useState<string>("default");
   const [showJsonPreview, setShowJsonPreview] = React.useState(false);
-  const [stateSchemaMode, setStateSchemaMode] = React.useState<
-    "zod" | "json"
-  >("json");
+  const [stateSchemaMode, setStateSchemaMode] = React.useState<"zod" | "json">(
+    "json"
+  );
   const [stateSchemaZod, setStateSchemaZod] = React.useState(
     DEFAULT_STATE_SCHEMA_ZOD
   );
@@ -420,7 +448,9 @@ function BuilderChatContent({ chatid }: { chatid: string }) {
   );
 
   React.useEffect(() => {
-    if (!isReady) return;
+    if (!isReady) {
+      return;
+    }
     if (!currentSessionId) {
       createSession({ id: chatid, title: "Untitled chat" });
       return;
@@ -438,7 +468,9 @@ function BuilderChatContent({ chatid }: { chatid: string }) {
   ]);
 
   React.useEffect(() => {
-    if (!currentSession) return;
+    if (!currentSession) {
+      return;
+    }
     setJsxText(currentSession.jsx);
     setActiveStateId(currentSession.activeStateId);
     setActiveTab(currentSession.activeStateId);
@@ -446,13 +478,16 @@ function BuilderChatContent({ chatid }: { chatid: string }) {
     setStateSchemaZod(currentSession.stateSchema.zod);
     setStateSchemaJson(currentSession.stateSchema.json);
     const activeState =
-      currentSession.states.find((state) => state.id === currentSession.activeStateId) ??
-      currentSession.states[0];
+      currentSession.states.find(
+        (state) => state.id === currentSession.activeStateId
+      ) ?? currentSession.states[0];
     setDataText(activeState?.data ?? DEFAULT_A2UI_DATA);
-  }, [currentSessionId]);
+  }, [currentSession]);
 
   React.useEffect(() => {
-    if (!isReady || !currentSession) return;
+    if (!(isReady && currentSession)) {
+      return;
+    }
     const timer = window.setTimeout(() => {
       updateSession(chatid, {
         jsx: jsxText,
@@ -522,14 +557,16 @@ function BuilderChatContent({ chatid }: { chatid: string }) {
       : `a2ui://state-schema/${chatid}.json`;
   const resolvedStateSchema =
     stateSchemaMode === "json"
-      ? stateSchemaJsonParse.value ?? lastValidJsonSchemaRef.current
-      : stateSchemaZodParse.schema ?? lastValidZodSchemaRef.current;
+      ? (stateSchemaJsonParse.value ?? lastValidJsonSchemaRef.current)
+      : (stateSchemaZodParse.schema ?? lastValidZodSchemaRef.current);
   const stateGlobals = React.useMemo(
     () => getSchemaGlobals(resolvedStateSchema ?? null),
     [resolvedStateSchema]
   );
   const stateJsonSchema = React.useMemo(() => {
-    if (!resolvedStateSchema) return undefined;
+    if (!resolvedStateSchema) {
+      return undefined;
+    }
     return {
       uri: `a2ui://schema/${chatid}.json`,
       schema: resolvedStateSchema,
@@ -568,7 +605,9 @@ function BuilderChatContent({ chatid }: { chatid: string }) {
       const nextState = currentSession?.states.find(
         (state) => state.id === stateId
       );
-      if (!nextState) return;
+      if (!nextState) {
+        return;
+      }
       setActiveStateId(stateId);
       setActiveTab(stateId);
       setDataText(nextState.data);
@@ -583,12 +622,18 @@ function BuilderChatContent({ chatid }: { chatid: string }) {
 
   const handleDeleteState = React.useCallback(
     (stateId: string) => {
-      if (stateId === "default") return;
+      if (stateId === "default") {
+        return;
+      }
       const nextStates =
         currentSession?.states.filter((state) => state.id !== stateId) ?? [];
-      if (nextStates.length === 0) return;
+      if (nextStates.length === 0) {
+        return;
+      }
       const firstNextState = nextStates[0];
-      if (!firstNextState) return;
+      if (!firstNextState) {
+        return;
+      }
       let nextActiveId = activeStateId;
       if (stateId === activeStateId) {
         nextActiveId = firstNextState.id;
@@ -658,25 +703,25 @@ function BuilderChatContent({ chatid }: { chatid: string }) {
     [uiTree]
   );
 
-  if (!isReady || !currentSession) {
+  if (!(isReady && currentSession)) {
     return <div className="h-[calc(100dvh-4rem)]" />;
   }
 
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-muted/20">
       <div className="flex items-center gap-3 border-b bg-background px-6 py-3">
-        <span className="text-sm font-semibold">{currentSession.title}</span>
-        <span className="text-xs text-muted-foreground">Widget Builder</span>
+        <span className="font-semibold text-sm">{currentSession.title}</span>
+        <span className="text-muted-foreground text-xs">Widget Builder</span>
       </div>
       <div className="min-h-0 flex-1">
-        <ResizablePanelGroup direction="horizontal" className="h-full">
+        <ResizablePanelGroup className="h-full" direction="horizontal">
           <ResizablePanel defaultSize={30} minSize={22}>
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={70} minSize={30}>
                 <div className="flex h-full flex-col border-r bg-background">
                   <PanelHeader title="JSX">
                     {hasSchemaError && (
-                      <span className="text-xs text-destructive">
+                      <span className="text-destructive text-xs">
                         Invalid JSX
                       </span>
                     )}
@@ -698,7 +743,7 @@ function BuilderChatContent({ chatid }: { chatid: string }) {
                 <div className="flex h-full flex-col border-r bg-background">
                   <PanelHeader title="State">
                     {hasDataError && (
-                      <span className="text-xs text-destructive">
+                      <span className="text-destructive text-xs">
                         Invalid JSON
                       </span>
                     )}
@@ -713,9 +758,13 @@ function BuilderChatContent({ chatid }: { chatid: string }) {
                         Schema
                       </Button>
                       {currentSession.states.map((state) => {
-                        const isActive = !isSchemaTab && state.id === activeStateId;
+                        const isActive =
+                          !isSchemaTab && state.id === activeStateId;
                         return (
-                          <div className="flex items-center gap-1" key={state.id}>
+                          <div
+                            className="flex items-center gap-1"
+                            key={state.id}
+                          >
                             <Button
                               className="h-7 px-2 text-xs"
                               onClick={() => handleSelectState(state.id)}
@@ -750,14 +799,18 @@ function BuilderChatContent({ chatid }: { chatid: string }) {
                         <Button
                           className="h-7 px-2 text-xs"
                           onClick={() => setStateSchemaMode("zod")}
-                          variant={stateSchemaMode === "zod" ? "secondary" : "ghost"}
+                          variant={
+                            stateSchemaMode === "zod" ? "secondary" : "ghost"
+                          }
                         >
                           Zod
                         </Button>
                         <Button
                           className="h-7 px-2 text-xs"
                           onClick={() => setStateSchemaMode("json")}
-                          variant={stateSchemaMode === "json" ? "secondary" : "ghost"}
+                          variant={
+                            stateSchemaMode === "json" ? "secondary" : "ghost"
+                          }
                         >
                           JSON Schema
                         </Button>
@@ -781,7 +834,9 @@ function BuilderChatContent({ chatid }: { chatid: string }) {
                     {isSchemaTab ? (
                       <CodeEditor
                         className="h-full"
-                        language={stateSchemaMode === "zod" ? "typescript" : "json"}
+                        language={
+                          stateSchemaMode === "zod" ? "typescript" : "json"
+                        }
                         onChange={
                           stateSchemaMode === "zod"
                             ? setStateSchemaZod
@@ -798,8 +853,8 @@ function BuilderChatContent({ chatid }: { chatid: string }) {
                       <CodeEditor
                         className="h-full"
                         jsonSchema={stateJsonSchema}
-                        path={stateDataPath}
                         onChange={setDataText}
+                        path={stateDataPath}
                         value={dataText}
                       />
                     )}
@@ -831,12 +886,12 @@ function BuilderChatContent({ chatid }: { chatid: string }) {
                       value={jsonPreviewText}
                     />
                   ) : (
-                    <div className="rounded-lg border border-dashed bg-background p-6 text-sm text-muted-foreground">
+                    <div className="rounded-lg border border-dashed bg-background p-6 text-muted-foreground text-sm">
                       Fix JSX errors to view JSON.
                     </div>
                   )
                 ) : hasSchemaError || hasDataError || !uiTree ? (
-                  <div className="rounded-lg border border-dashed bg-background p-6 text-sm text-muted-foreground">
+                  <div className="rounded-lg border border-dashed bg-background p-6 text-muted-foreground text-sm">
                     Fix JSX or state JSON errors to render preview.
                   </div>
                 ) : (
@@ -857,16 +912,10 @@ function BuilderChatContent({ chatid }: { chatid: string }) {
   );
 }
 
-function BuilderChatPage({
-  params,
-}: {
-  params: Promise<{ chatid: string }>;
-}) {
+function BuilderChatPage({ params }: { params: Promise<{ chatid: string }> }) {
   const { chatid } = React.use(params);
 
-  return (
-    <BuilderChatContent chatid={chatid} />
-  );
+  return <BuilderChatContent chatid={chatid} />;
 }
 
 export default BuilderChatPage;
