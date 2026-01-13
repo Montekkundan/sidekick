@@ -93,7 +93,10 @@ export function ChatInput() {
   </PromptInput.Attachments>
 
   <PromptInput.Body>
-    <PromptInput.Textarea minRows={3} placeholder="Drop files or paste images..." />
+    <PromptInput.Textarea
+      minRows={3}
+      placeholder="Drop files or paste images..."
+    />
   </PromptInput.Body>
 
   <PromptInput.Footer>
@@ -182,20 +185,20 @@ export function ProviderExample() {
 
 The root form container. Accepts standard form props plus the options below.
 
-| Prop              | Type                                        | Description                                                                                         |
-| ----------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `variant`         | `default` \| `ghost` \| `outline` \| `none` | Controls the visual border and background style. Use `none` when wrapping with `PromptInput.Card`.  |
-| `shape`           | `default` \| `pill`                         | Controls the border-radius. `pill` creates a fully rounded input.                                   |
-| `size`            | `default` \| `sm` \| `lg`                   | Controls height, padding, and text size. `sm` is compact/single-line optimized.                     |
-| `focusRing`       | `boolean`                                   | Toggles the input focus ring styling.                                                               |
-| `accept`          | `string`                                    | MIME types allowed (ex: `image/*`).                                                                 |
-| `multiple`        | `boolean`                                   | Allow multiple files in the picker.                                                                 |
-| `globalDrop`      | `boolean`                                   | Accept drops anywhere on the document instead of just the input.                                    |
-| `maxFiles`        | `number`                                    | Maximum number of files allowed.                                                                    |
-| `maxFileSize`     | `number`                                    | Maximum file size in bytes.                                                                         |
-| `syncHiddenInput` | `boolean`                                   | Deprecated. File inputs cannot be set programmatically; prefer a custom submit payload.             |
-| `onError`         | `(err) => void`                             | Called on max file/size/accept errors.                                                              |
-| `onSubmit`        | `(message, event) => void \| Promise<void>` | Called with `{ text, files }` after submit (files are converted to data URLs when needed).          |
+| Prop              | Type                                        | Description                                                                                        |
+| ----------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `variant`         | `default` \| `ghost` \| `outline` \| `none` | Controls the visual border and background style. Use `none` when wrapping with `PromptInput.Card`. |
+| `shape`           | `default` \| `pill`                         | Controls the border-radius. `pill` creates a fully rounded input.                                  |
+| `size`            | `default` \| `sm` \| `lg`                   | Controls height, padding, and text size. `sm` is compact/single-line optimized.                    |
+| `focusRing`       | `boolean`                                   | Toggles the input focus ring styling.                                                              |
+| `accept`          | `string`                                    | MIME types allowed (ex: `image/*`).                                                                |
+| `multiple`        | `boolean`                                   | Allow multiple files in the picker.                                                                |
+| `globalDrop`      | `boolean`                                   | Accept drops anywhere on the document instead of just the input.                                   |
+| `maxFiles`        | `number`                                    | Maximum number of files allowed.                                                                   |
+| `maxFileSize`     | `number`                                    | Maximum file size in bytes.                                                                        |
+| `syncHiddenInput` | `boolean`                                   | Deprecated. File inputs cannot be set programmatically; prefer a custom submit payload.            |
+| `onError`         | `(err) => void`                             | Called on max file/size/accept errors.                                                             |
+| `onSubmit`        | `(message, event) => void \| Promise<void>` | Called with `{ text, files }` after submit (files are converted to data URLs when needed).         |
 
 ### PromptInputMessage
 

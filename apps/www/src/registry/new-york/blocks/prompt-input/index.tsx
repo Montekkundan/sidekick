@@ -1,5 +1,6 @@
 "use client";
 
+import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/registry/new-york/lib/utils";
 import { Button } from "@/registry/new-york/ui/button";
@@ -1453,6 +1454,55 @@ export const PromptInputTabItem = ({
   />
 );
 
+export type PromptInputSleeveProps = HTMLAttributes<HTMLDivElement> & {
+  /** Render the sleeve as the passed child element (button, link, trigger, etc.). */
+  asChild?: boolean;
+  /** "top" sleeves typically round the top; "bottom" sleeves round the bottom. */
+  position: "top" | "bottom";
+  /** Controls sleeve width relative to the prompt input container (e.g. `w-4/5`). */
+  widthClassName?: string;
+};
+
+export const PromptInputSleeve = ({
+  asChild,
+  className,
+  position,
+  widthClassName = "w-full",
+  ...props
+}: PromptInputSleeveProps) => {
+  const Comp = asChild ? Slot : "div";
+
+  return (
+    <Comp
+      className={cn(
+        "mx-auto",
+        "w-full",
+        widthClassName,
+        position === "top" && "rounded-t-xl",
+        position === "bottom" && "rounded-b-xl",
+        className
+      )}
+      {...props}
+    />
+  );
+};
+
+export type PromptInputTopSleeveProps = Omit<
+  PromptInputSleeveProps,
+  "position"
+>;
+export const PromptInputTopSleeve = (props: PromptInputTopSleeveProps) => (
+  <PromptInputSleeve position="top" {...props} />
+);
+
+export type PromptInputBottomSleeveProps = Omit<
+  PromptInputSleeveProps,
+  "position"
+>;
+export const PromptInputBottomSleeve = (
+  props: PromptInputBottomSleeveProps
+) => <PromptInputSleeve position="bottom" {...props} />;
+
 PromptInput.Card = PromptInputCard;
 PromptInput.Provider = PromptInputProvider;
 PromptInput.Body = PromptInputBody;
@@ -1483,3 +1533,6 @@ PromptInput.Tab = PromptInputTab;
 PromptInput.TabLabel = PromptInputTabLabel;
 PromptInput.TabBody = PromptInputTabBody;
 PromptInput.TabItem = PromptInputTabItem;
+PromptInput.Sleeve = PromptInputSleeve;
+PromptInput.TopSleeve = PromptInputTopSleeve;
+PromptInput.BottomSleeve = PromptInputBottomSleeve;
