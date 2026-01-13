@@ -10,7 +10,7 @@ component: true
 
 `PromptInput` is a composable `form` wrapper for AI chats. It handles text, attachments, and submit behavior while letting you control the exact layout with compound subcomponents. It is built on top of the `InputGroup` primitives and is fully compatible with shadcn/ui styling.
 
-You can use it as a self-contained component or lift its state with `PromptInputProvider` to place external buttons, menus, or presets anywhere in the UI.
+You can use it as a self-contained component, or lift its state with `PromptInputProvider` so external buttons, menus, or presets can read/write the same input state.
 
 ## Installation
 
@@ -47,11 +47,15 @@ You can use it as a self-contained component or lift its state with `PromptInput
 ### Basic
 
 ```tsx
-import { PromptInput } from "@/components/ui/prompt-input";
+import {
+  PromptInput,
+  type PromptInputMessage,
+} from "@/components/ui/prompt-input";
 
 export function ChatInput() {
-  const handleSubmit = async ({ text, files }) => {
+  const handleSubmit = async ({ text, files }: PromptInputMessage) => {
     if (!text.trim()) return;
+
     // Send text + files to your API route
     await fetch("/api/chat", {
       method: "POST",
@@ -109,10 +113,14 @@ export function ChatInput() {
 
 ### External Controls with Provider
 
-Use `PromptInputProvider` to share input state across siblings, presets, or floating buttons.
+Use `PromptInputProvider` when you want to control the same input from siblings (preset chips, floating toolbars, etc.).
 
 ```tsx
-import { usePromptInputController } from "@/components/ui/prompt-input";
+import {
+  PromptInput,
+  PromptInputProvider,
+  usePromptInputController,
+} from "@/components/ui/prompt-input";
 
 function Presets() {
   const controller = usePromptInputController();
@@ -138,7 +146,7 @@ function Presets() {
 
 export function ProviderExample() {
   return (
-    <PromptInput.Provider initialInput="Give me a quick update.">
+    <PromptInputProvider initialInput="Give me a quick update.">
       <Presets />
       <PromptInput shape="pill" size="sm" onSubmit={handleSubmit}>
         <PromptInput.Body>
@@ -155,7 +163,7 @@ export function ProviderExample() {
           <PromptInput.Submit />
         </PromptInput.Footer>
       </PromptInput>
-    </PromptInput.Provider>
+    </PromptInputProvider>
   );
 }
 ```
@@ -166,6 +174,7 @@ export function ProviderExample() {
 - **Paste images/files** directly into the textarea.
 - **Backspace on empty input** removes the last attachment.
 - **Drag and drop** files onto the input (or anywhere with `globalDrop`).
+- **Attachment payloads**: file attachments are stored as `blob:` URLs while editing, then converted to data URLs on submit.
 
 ## API Reference
 
@@ -173,20 +182,20 @@ export function ProviderExample() {
 
 The root form container. Accepts standard form props plus the options below.
 
-| Prop             | Type                                        | Description                                                                                       |
-| ---------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `variant`        | `default` \| `ghost` \| `outline` \| `none` | Controls the visual border and background style. Use `none` when wrapping with `PromptInput.Card`. |
-| `shape`          | `default` \| `pill`                         | Controls the border-radius. `pill` creates a fully rounded input.                                 |
-| `size`           | `default` \| `sm` \| `lg`                   | Controls height, padding, and text size. `sm` is compact/single-line optimized.                   |
-| `focusRing`      | `boolean`                                   | Toggles the input focus ring styling.                                                             |
-| `accept`         | `string`                                    | MIME types allowed (ex: `image/*`).                                                               |
-| `multiple`       | `boolean`                                   | Allow multiple files in the picker.                                                               |
-| `globalDrop`     | `boolean`                                   | Accept drops anywhere on the document instead of just the input.                                  |
-| `maxFiles`       | `number`                                    | Maximum number of files allowed.                                                                  |
-| `maxFileSize`    | `number`                                    | Maximum file size in bytes.                                                                       |
-| `syncHiddenInput`| `boolean`                                   | Legacy flag for native forms (not used by default).                                               |
-| `onError`        | `(err) => void`                             | Called on max file/size/accept errors.                                                            |
-| `onSubmit`       | `(message, event) => void \| Promise<void>` | Called with `{ text, files }` after submit.                                                       |
+| Prop              | Type                                        | Description                                                                                         |
+| ----------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `variant`         | `default` \| `ghost` \| `outline` \| `none` | Controls the visual border and background style. Use `none` when wrapping with `PromptInput.Card`.  |
+| `shape`           | `default` \| `pill`                         | Controls the border-radius. `pill` creates a fully rounded input.                                   |
+| `size`            | `default` \| `sm` \| `lg`                   | Controls height, padding, and text size. `sm` is compact/single-line optimized.                     |
+| `focusRing`       | `boolean`                                   | Toggles the input focus ring styling.                                                               |
+| `accept`          | `string`                                    | MIME types allowed (ex: `image/*`).                                                                 |
+| `multiple`        | `boolean`                                   | Allow multiple files in the picker.                                                                 |
+| `globalDrop`      | `boolean`                                   | Accept drops anywhere on the document instead of just the input.                                    |
+| `maxFiles`        | `number`                                    | Maximum number of files allowed.                                                                    |
+| `maxFileSize`     | `number`                                    | Maximum file size in bytes.                                                                         |
+| `syncHiddenInput` | `boolean`                                   | Deprecated. File inputs cannot be set programmatically; prefer a custom submit payload.             |
+| `onError`         | `(err) => void`                             | Called on max file/size/accept errors.                                                              |
+| `onSubmit`        | `(message, event) => void \| Promise<void>` | Called with `{ text, files }` after submit (files are converted to data URLs when needed).          |
 
 ### PromptInputMessage
 
@@ -197,8 +206,6 @@ type PromptInputMessage = {
 };
 ```
 
-Files are converted to data URLs when submitted so they can be sent to your API route or stored in the database.
-
 ### PromptInput.Card
 
 Optional wrapper component for custom card-style containers.
@@ -208,7 +215,7 @@ Optional wrapper component for custom card-style containers.
 | `variant` | `default` \| `muted` | Controls the background color intensity. |
 | `shape`   | `default` \| `pill`  | Controls the border-radius.              |
 
-### PromptInput.Provider
+### PromptInputProvider
 
 Optional context provider that lifts text + attachment state outside of `PromptInput`.
 

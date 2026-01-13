@@ -4,7 +4,6 @@
     "index", 
     "drizzle", 
     "prisma", 
-    "gateway", 
     "blocks",
     "[llms.txt](/llms.txt)"
   ]

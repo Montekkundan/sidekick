@@ -12,7 +12,14 @@ component: true
 
 ## Overview
 
-Sidekick is a composable chat layout system. It ships as a sidebar with optional toggle behavior, a conversation container with auto-scroll, and a set of message primitives you can style or extend. Use it standalone or wrap it in `SidekickProvider` for keyboard shortcuts, responsive behavior, and an inset layout area.
+Sidekick is a composable chat layout system. It ships as a sidebar with optional toggle behavior, a conversation container with auto-scroll, and a set of message primitives you can style or extend.
+
+Use it standalone, or wrap it in `SidekickProvider` to enable keyboard shortcuts (`⌘I` / `Ctrl+I`), responsive mobile behavior, and persisted open/closed state.
+
+Sidekick composes with AI SDK Elements for the chat primitives:
+
+- Conversation: https://ai-sdk.dev/elements/components/conversation
+- Message: https://ai-sdk.dev/elements/components/message
 
 ## Installation
 
@@ -73,7 +80,7 @@ import {
 
 ### Provider + Toggleable Panel
 
-Use `SidekickProvider` to enable toggling, keyboard shortcuts (`⌘I` / `Ctrl+I`), and responsive layouts.
+Use `SidekickProvider` to enable toggling, keyboard shortcuts, and responsive layouts.
 
 ```tsx
 <SidekickProvider defaultOpen>
@@ -104,10 +111,10 @@ Use `SidekickProvider` to enable toggling, keyboard shortcuts (`⌘I` / `Ctrl+I`
 
 ### Standalone Mode
 
-Use Sidekick as a fixed panel (no provider, no toggle behavior):
+If you render `Sidekick` without a provider, it behaves as a fixed panel (no toggle trigger).
 
 ```tsx
-<Sidekick standalone>
+<Sidekick>
   <SidekickHeader>
     <span className="font-semibold">AI Assistant</span>
   </SidekickHeader>
@@ -128,6 +135,8 @@ Use Sidekick as a fixed panel (no provider, no toggle behavior):
   <SidekickFooter>{/* Add PromptInput here */}</SidekickFooter>
 </Sidekick>
 ```
+
+If you want to force standalone mode even when a provider is present, pass `standalone`.
 
 ### Mobile Behavior
 
@@ -249,7 +258,7 @@ The sidebar panel component.
 
 ### SidekickTrigger
 
-A button to toggle the sidebar open/closed. Returns `null` in standalone mode.
+A button to toggle the sidebar open/closed. Returns `null` when no provider is present.
 
 ### SidekickHeader
 
