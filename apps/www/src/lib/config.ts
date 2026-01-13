@@ -27,6 +27,10 @@ export const siteConfig = {
       href: "/docs/cookbook",
       label: "Cookbook",
     },
+    {
+      href: "/examples",
+      label: "Examples",
+    }
     // {
     //   href: "/builder",
     //   label: "Builder",
