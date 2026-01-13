@@ -1,0 +1,24 @@
+{
+  "name": "@repo/database",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "drizzle-orm": "latest",
+    "@libsql/client": "latest",
+    "dotenv": "^16.4.7",
+    "@t3-oss/env-nextjs": "^0.13.10",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "drizzle-kit": "latest",
+    "@types/node": "^22.10.2",
+    "@repo/typescript-config": "workspace:*"
+  }
+}
