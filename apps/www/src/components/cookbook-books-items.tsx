@@ -42,13 +42,13 @@ const cookbookItems = [
     textured: true,
     variant: "simple" as const,
   },
-  {
-    title: "Fumadocs + Basehub",
-    href: "/docs/cookbook/fuma-docs-basehub",
-    color: "#2A1B3D",
-    textColor: "#F1E9FF",
-    textured: true,
-  },
+  // {
+  //   title: "Fumadocs + Basehub",
+  //   href: "/docs/cookbook/fuma-docs-basehub",
+  //   color: "#2A1B3D",
+  //   textColor: "#F1E9FF",
+  //   textured: true,
+  // },
 ];
 
 export function CookbookBooksItems() {
