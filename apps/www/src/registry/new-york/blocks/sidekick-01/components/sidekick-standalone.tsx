@@ -8,8 +8,6 @@ import {
   Message,
   MessageContent,
 } from "@repo/design-system/components/ai-elements/message";
-import { streamText } from "ai";
-import { nanoid } from "nanoid";
 import React from "react";
 import {
   PromptInput,
@@ -25,7 +23,16 @@ import {
   SidekickFooter,
   SidekickHeader,
 } from "@/registry/new-york/blocks/sidekick";
-import { createGatewayModel } from "@/registry/new-york/lib/gateway";
+
+function createId() {
+  return (
+    globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2)
+  );
+}
+
+function delay(ms: number) {
+  return new Promise<void>((resolve) => setTimeout(resolve, ms));
+}
 
 interface ChatMessage {
   id: string;
@@ -36,12 +43,12 @@ interface ChatMessage {
 export function SidekickStandalone() {
   const [messages, setMessages] = React.useState<ChatMessage[]>([
     {
-      id: nanoid(),
+      id: createId(),
       from: "user",
       content: "Hello!",
     },
     {
-      id: nanoid(),
+      id: createId(),
       from: "assistant",
       content: "Hi there! How can I help you today?",
     },
@@ -53,69 +60,46 @@ export function SidekickStandalone() {
       return;
     }
 
-    // Add user message
-    const userMessage: ChatMessage = {
-      id: nanoid(),
+    const nextUserMessage: ChatMessage = {
+      id: createId(),
       from: "user",
       content: message.text,
     };
-    setMessages((prev) => [...prev, userMessage]);
+
+    const assistantMessageId = createId();
+    setMessages((prev) => [
+      ...prev,
+      nextUserMessage,
+      {
+        id: assistantMessageId,
+        from: "assistant",
+        content: "Thinking…",
+      },
+    ]);
     setIsLoading(true);
 
     try {
-      // Create AI model using gateway
-      const model = createGatewayModel({
-        modelId: "openai/gpt-4o-mini",
-      });
+      await delay(600);
+      const reply =
+        "This is a UI-only demo (no API keys needed). Wire this up to your /api/chat route to stream real responses.";
 
-      // Create assistant message placeholder
-      const assistantMessageId = nanoid();
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: assistantMessageId,
-          from: "assistant",
-          content: "",
-        },
-      ]);
-
-      // Stream the response
-      const result = streamText({
-        model,
-        messages: [
-          ...messages.map((msg) => ({
-            role:
-              msg.from === "user" ? ("user" as const) : ("assistant" as const),
-            content: msg.content,
-          })),
-          {
-            role: "user" as const,
-            content: message.text,
-          },
-        ],
-      });
-
-      // Handle streaming
-      let fullText = "";
-      for await (const chunk of result.textStream) {
-        fullText += chunk;
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === assistantMessageId ? { ...msg, content: fullText } : msg
-          )
-        );
-      }
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === assistantMessageId ? { ...msg, content: reply } : msg
+        )
+      );
     } catch (error) {
       console.error("Chat error:", error);
-      // Add error message
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: nanoid(),
-          from: "assistant",
-          content: "Sorry, I encountered an error. Please try again.",
-        },
-      ]);
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === assistantMessageId
+            ? {
+                ...msg,
+                content: "Sorry, I encountered an error. Please try again.",
+              }
+            : msg
+        )
+      );
     } finally {
       setIsLoading(false);
     }

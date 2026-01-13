@@ -1,3 +1,5 @@
+import { access } from "node:fs/promises";
+import path from "node:path";
 import {
   IconArrowLeft,
   IconArrowRight,
@@ -8,7 +10,8 @@ import { findNeighbour } from "fumadocs-core/page-tree";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import z from "zod";
-import { DocsTableOfContents } from "@/components/docs-toc";
+import { DocsPageActions } from "@/components/docs-page-actions";
+import { DocsTableOfContents, DocsTocScrollArea } from "@/components/docs-toc";
 
 import { source } from "@/lib/source";
 import { absoluteUrl } from "@/lib/utils";
@@ -19,6 +22,39 @@ import { Button } from "@/registry/new-york/ui/button";
 export const revalidate = false;
 export const dynamic = "force-static";
 export const dynamicParams = false;
+
+async function exists(absolutePath: string) {
+  try {
+    await access(absolutePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function resolveDocsMdxRelativePath(slug: string[] | undefined) {
+  const slugParts = slug ?? [];
+  const slugPath = slugParts.join("/");
+
+  const candidates = slugPath
+    ? [`${slugPath}.mdx`, `${slugPath}/index.mdx`, `(root)/${slugPath}.mdx`]
+    : ["(root)/index.mdx"];
+
+  for (const relativePath of candidates) {
+    const absolutePath = path.join(
+      process.cwd(),
+      "content",
+      "docs",
+      relativePath
+    );
+
+    if (await exists(absolutePath)) {
+      return relativePath;
+    }
+  }
+
+  return null;
+}
 
 export function generateStaticParams() {
   return source.generateParams();
@@ -97,6 +133,11 @@ export default async function Page(props: {
         .optional(),
     })
     .parse(attributes);
+
+  const mdxRelativePath = await resolveDocsMdxRelativePath(params.slug);
+  const githubUrl = mdxRelativePath
+    ? `https://github.com/Montekkundan/sidekick/blob/main/apps/www/content/docs/${mdxRelativePath}`
+    : "https://github.com/Montekkundan/sidekick/tree/main/apps/www/content/docs";
 
   return (
     <div className="flex items-stretch text-[1.05rem] sm:text-[15px] xl:w-full">
@@ -197,11 +238,12 @@ export default async function Page(props: {
       <div className="sticky top-[calc(var(--header-height)+1px)] z-30 ml-auto hidden h-[calc(100svh-var(--footer-height)+2rem)] w-72 flex-col gap-4 overflow-hidden overscroll-none pb-8 xl:flex">
         <div className="h-(--top-spacing) shrink-0" />
         {doc.toc?.length ? (
-          <div className="no-scrollbar overflow-y-auto px-8">
+          <DocsTocScrollArea className="max-h-[50%]" contentClassName="px-8">
             <DocsTableOfContents toc={doc.toc} />
             <div className="h-12" />
-          </div>
+          </DocsTocScrollArea>
         ) : null}
+        <DocsPageActions githubUrl={githubUrl} rawMdx={raw} />
       </div>
     </div>
   );

@@ -1,9 +1,9 @@
 "use client";
 
+import { cn } from "@repo/design-system/lib/utils";
 import { IconMenu3 } from "@tabler/icons-react";
-import * as React from "react";
-
-import { cn } from "@repo/design-system/lib/utils";;
+import type { ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/registry/new-york/ui/button";
 import {
   DropdownMenu,
@@ -13,9 +13,9 @@ import {
 } from "@/registry/new-york/ui/dropdown-menu";
 
 function useActiveItem(itemIds: string[]) {
-  const [activeId, setActiveId] = React.useState<string | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -53,15 +53,15 @@ export function DocsTableOfContents({
   className,
 }: {
   toc: {
-    title?: React.ReactNode;
+    title?: ReactNode;
     url: string;
     depth: number;
   }[];
   variant?: "dropdown" | "list";
   className?: string;
 }) {
-  const [open, setOpen] = React.useState(false);
-  const itemIds = React.useMemo(
+  const [open, setOpen] = useState(false);
+  const itemIds = useMemo(
     () => toc.map((item) => item.url.replace("#", "")),
     [toc]
   );
@@ -121,6 +121,89 @@ export function DocsTableOfContents({
           {item.title}
         </a>
       ))}
+    </div>
+  );
+}
+
+export function DocsTocScrollArea({
+  children,
+  className,
+  contentClassName,
+}: {
+  children: ReactNode;
+  className?: string;
+  contentClassName?: string;
+}) {
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [showTop, setShowTop] = useState(false);
+  const [showBottom, setShowBottom] = useState(false);
+
+  const recompute = useCallback(() => {
+    const element = scrollRef.current;
+    if (!element) {
+      setShowTop(false);
+      setShowBottom(false);
+      return;
+    }
+
+    const overflow = element.scrollHeight > element.clientHeight + 4;
+    if (!overflow) {
+      setShowTop(false);
+      setShowBottom(false);
+      return;
+    }
+
+    setShowTop(element.scrollTop > 4);
+    setShowBottom(
+      element.scrollTop + element.clientHeight < element.scrollHeight - 4
+    );
+  }, []);
+
+  useEffect(() => {
+    recompute();
+
+    const element = scrollRef.current;
+    if (!element) {
+      return;
+    }
+
+    const observer = new ResizeObserver(() => {
+      recompute();
+    });
+
+    observer.observe(element);
+    return () => {
+      observer.disconnect();
+    };
+  }, [recompute]);
+
+  return (
+    <div className={cn("relative", className)}>
+      <div
+        className={cn(
+          "no-scrollbar max-h-full overflow-y-auto overscroll-contain",
+          contentClassName
+        )}
+        onScroll={recompute}
+        ref={scrollRef}
+      >
+        {children}
+      </div>
+
+      <div
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute inset-x-0 top-6 h-4 bg-linear-to-b from-background/60 to-transparent backdrop-blur-[2px] transition-opacity",
+          showTop ? "opacity-100" : "opacity-0"
+        )}
+      />
+      <div
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute inset-x-0 bottom-0 h-4 bg-linear-to-t from-background/60 to-transparent backdrop-blur-[2px] transition-opacity",
+          showBottom ? "opacity-100" : "opacity-0"
+        )}
+      />
     </div>
   );
 }

@@ -1,7 +1,5 @@
 "use client";
 
-import * as React from "react";
-import { LayoutGroup, motion } from "motion/react";
 import {
   BotIcon,
   CalendarIcon,
@@ -13,8 +11,8 @@ import {
   SearchIcon,
   SparklesIcon,
 } from "lucide-react";
-
-import { cn } from "@/registry/new-york/lib/utils";
+import { LayoutGroup, motion } from "motion/react";
+import * as React from "react";
 import {
   PromptInput,
   PromptInputActionMenu,
@@ -29,6 +27,7 @@ import {
   PromptInputTextarea,
   PromptInputTools,
 } from "@/registry/new-york/blocks/prompt-input";
+import { cn } from "@/registry/new-york/lib/utils";
 
 const quickSuggestions = [
   {
@@ -54,11 +53,11 @@ export function AgentPromptInput() {
   return (
     <div className="mx-auto w-full max-w-4xl space-y-10 py-16 text-center">
       <div className="space-y-2">
-        <h2 className="text-3xl font-semibold text-foreground">
+        <h2 className="font-semibold text-3xl text-foreground">
           {isAgent ? "What can I do for you?" : "Where should we begin?"}
         </h2>
         {!isAgent && (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Pick an action or switch into agent mode to unlock longer prompts.
           </p>
         )}
@@ -75,9 +74,9 @@ export function AgentPromptInput() {
               <PromptInput
                 className="py-2"
                 focusRing={false}
+                onSubmit={(message) => console.log("agent-prompt", message)}
                 size={isAgent ? "lg" : "default"}
                 variant="none"
-                onSubmit={(message) => console.log("agent-prompt", message)}
               >
                 <PromptInputBody
                   className={cn(
@@ -89,7 +88,11 @@ export function AgentPromptInput() {
                   {!isAgent && (
                     <motion.div
                       layoutId="plus-button"
-                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 30,
+                      }}
                     >
                       <PromptInputActionMenu>
                         <PromptInputActionMenuTrigger
@@ -140,15 +143,26 @@ export function AgentPromptInput() {
                     <>
                       <motion.div
                         layoutId="mic-button"
-                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 30,
+                        }}
                       >
-                        <PromptInputButton className="rounded-full" size="icon-sm">
+                        <PromptInputButton
+                          className="rounded-full"
+                          size="icon-sm"
+                        >
                           <MicIcon className="size-4" />
                         </PromptInputButton>
                       </motion.div>
                       <motion.div
                         layoutId="submit-button"
-                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 30,
+                        }}
                       >
                         <PromptInputSubmit
                           className="rounded-full bg-orange-500 text-white hover:bg-orange-500/90"
@@ -160,11 +174,15 @@ export function AgentPromptInput() {
                 </PromptInputBody>
 
                 {isAgent && (
-                  <PromptInputFooter className="items-center justify-between gap-3 px-4 pb-4 pt-0">
+                  <PromptInputFooter className="items-center justify-between gap-3 px-4 pt-0 pb-4">
                     <PromptInputTools className="flex-wrap gap-2">
                       <motion.div
                         layoutId="plus-button"
-                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 30,
+                        }}
                       >
                         <PromptInputActionMenu>
                           <PromptInputActionMenuTrigger
@@ -190,11 +208,11 @@ export function AgentPromptInput() {
                         </PromptInputActionMenu>
                       </motion.div>
                       <motion.button
-                        initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.2, delay: 0.15 }}
-                        className="inline-flex items-center gap-1.5 rounded-full border bg-background/60 px-2.5 py-1 text-xs font-medium text-foreground transition-colors hover:bg-background/80"
+                        className="inline-flex items-center gap-1.5 rounded-full border bg-background/60 px-2.5 py-1 font-medium text-foreground text-xs transition-colors hover:bg-background/80"
+                        initial={{ opacity: 0, scale: 0.9 }}
                         onClick={() => setMode("default")}
+                        transition={{ duration: 0.2, delay: 0.15 }}
                         type="button"
                       >
                         <BotIcon className="size-3.5 text-orange-500" />
@@ -204,15 +222,26 @@ export function AgentPromptInput() {
                     <div className="flex items-center gap-1">
                       <motion.div
                         layoutId="mic-button"
-                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 30,
+                        }}
                       >
-                        <PromptInputButton className="rounded-full" size="icon-sm">
+                        <PromptInputButton
+                          className="rounded-full"
+                          size="icon-sm"
+                        >
                           <MicIcon className="size-4" />
                         </PromptInputButton>
                       </motion.div>
                       <motion.div
                         layoutId="submit-button"
-                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 30,
+                        }}
                       >
                         <PromptInputSubmit
                           className="rounded-full bg-orange-500 text-white hover:bg-orange-500/90"
@@ -238,7 +267,7 @@ export function AgentPromptInput() {
                 { label: "Presentations", icon: ChevronRightIcon },
               ].map((chip) => (
                 <button
-                  className="inline-flex items-center gap-1.5 rounded-full border bg-background/50 px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:bg-background/80 dark:bg-muted/40 dark:hover:bg-muted/60"
+                  className="inline-flex items-center gap-1.5 rounded-full border bg-background/50 px-3 py-1.5 font-medium text-foreground/80 text-xs transition-colors hover:bg-background/80 dark:bg-muted/40 dark:hover:bg-muted/60"
                   key={chip.label}
                   type="button"
                 >

@@ -19,6 +19,37 @@ function rewritePathForV0(filePath) {
   return filePath;
 }
 
+function rewriteContentForV0(content) {
+  if (typeof content !== "string") {
+    return content;
+  }
+
+  let next = content;
+
+  next = next.replaceAll(
+    "@/registry/new-york/blocks/prompt-input",
+    "@/components/ui/prompt-input"
+  );
+  next = next.replaceAll(
+    "@/registry/new-york/blocks/sidekick",
+    "@/components/ui/sidekick"
+  );
+
+  next = next.replaceAll("@/registry/new-york/ui/", "@/components/ui/");
+  next = next.replaceAll("@/registry/new-york/lib/utils", "@/lib/utils");
+
+  next = next.replaceAll(
+    "@repo/design-system/components/ai-elements/",
+    "@ai-elements/"
+  );
+  next = next.replaceAll(
+    "@repo/design-system/components/ui/",
+    "@/components/ui/"
+  );
+
+  return next;
+}
+
 function rewriteFilesArray(files) {
   return files.map((file) => {
     if (!file || typeof file !== "object") {
@@ -28,6 +59,7 @@ function rewriteFilesArray(files) {
     return {
       ...file,
       path: rewritePathForV0(file.path),
+      content: rewriteContentForV0(file.content),
     };
   });
 }

@@ -21,21 +21,18 @@ import {
 export function CursorPromptInput() {
   return (
     <div className="space-y-3 text-center">
-      <h2 className="text-2xl font-semibold text-foreground">
+      <h2 className="font-semibold text-2xl text-foreground">
         Ask Cursor to build, fix, or explore
       </h2>
 
       <PromptInput
         className="mx-auto w-full max-w-2xl"
+        onSubmit={(message) => console.log("cursor-prompt", message)}
         size="lg"
         variant="outline"
-        onSubmit={(message) => console.log("cursor-prompt", message)}
       >
         <PromptInputBody>
-          <PromptInputTextarea
-            minRows={2}
-            placeholder="Describe a task"
-          />
+          <PromptInputTextarea minRows={2} placeholder="Describe a task" />
         </PromptInputBody>
         <PromptInputFooter className="items-center">
           <PromptInputTools className="gap-1">

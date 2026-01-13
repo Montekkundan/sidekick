@@ -98,7 +98,7 @@
       "name": "sidekick-01",
       "type": "registry:block",
       "title": "Sidekick Standalone Chat",
-      "description": "A standalone chat UI that demonstrates the Sidekick layout with a mocked assistant response (no API keys required).",
+      "description": "A standalone chat UI that demonstrates the Sidekick layout with a mocked assistant response.",
       "dependencies": [],
       "registryDependencies": [
         "https://sidekick.montek.dev/r/sidekick.json",
@@ -132,7 +132,8 @@
       "registryDependencies": [
         "https://sidekick.montek.dev/r/sidekick.json",
         "https://sidekick.montek.dev/r/prompt-input.json",
-        "button"
+        "button",
+        "avatar"
       ],
       "files": [
         {
@@ -161,7 +162,8 @@
       "registryDependencies": [
         "https://sidekick.montek.dev/r/sidekick.json",
         "https://sidekick.montek.dev/r/prompt-input.json",
-        "button"
+        "button",
+        "avatar"
       ],
       "files": [
         {

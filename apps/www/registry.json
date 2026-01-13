@@ -121,7 +121,8 @@
       "registryDependencies": [
         "https://sidekick.montek.dev/r/sidekick.json",
         "https://sidekick.montek.dev/r/prompt-input.json",
-        "button"
+        "button",
+        "avatar"
       ],
       "files": [
         {
@@ -148,7 +149,8 @@
       "registryDependencies": [
         "https://sidekick.montek.dev/r/sidekick.json",
         "https://sidekick.montek.dev/r/prompt-input.json",
-        "button"
+        "button",
+        "avatar"
       ],
       "files": [
         {
