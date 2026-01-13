@@ -40,7 +40,8 @@
       "files": [
         {
           "path": "registry/new-york/blocks/prompt-input/index.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/ui/prompt-input.tsx"
         }
       ]
     },
@@ -66,7 +67,8 @@
       "files": [
         {
           "path": "registry/new-york/blocks/sidekick/index.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/ui/sidekick.tsx"
         }
       ]
     },
@@ -96,16 +98,12 @@
       "name": "sidekick-01",
       "type": "registry:block",
       "title": "Sidekick Standalone Chat",
-      "description": "A standalone AI chat interface with gateway integration and streaming responses. Demonstrates how to build a complete chat experience with the Sidekick component and AI Gateway.",
-      "dependencies": [
-        "nanoid",
-        "ai"
-      ],
+      "description": "A standalone chat UI that demonstrates the Sidekick layout with a mocked assistant response (no API keys required).",
+      "dependencies": [],
       "registryDependencies": [
         "https://sidekick.montek.dev/r/sidekick.json",
         "https://sidekick.montek.dev/r/prompt-input.json",
-        "button",
-        "https://sidekick.montek.dev/r/gateway.json"
+        "button"
       ],
       "files": [
         {

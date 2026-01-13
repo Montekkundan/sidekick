@@ -4,7 +4,13 @@
     "NEXT_PUBLIC_APP_URL",
     "ANALYZE",
     "NAVIGATION_APP_URL",
-    "FUMA_MDX_URL"
+    "FUMA_MDX_URL",
+    "BETTER_AUTH_SECRET",
+    "BETTER_AUTH_URL",
+    "VERCEL_CLIENT_ID",
+    "VERCEL_CLIENT_SECRET",
+    "DATABASE_URL",
+    "DATABASE_AUTH_TOKEN"
   ],
   "tasks": {
     "build": {
