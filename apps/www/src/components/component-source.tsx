@@ -1,12 +1,12 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { cn } from "@repo/design-system/lib/utils";
 import type * as React from "react";
 import { CodeCollapsibleWrapper } from "@/components/code-collapsible-wrapper";
 import { CopyButton } from "@/components/copy-button";
 import { getIconForLanguageExtension } from "@/components/icons";
 import { highlightCode } from "@/lib/highlight-code";
 import { getRegistryItem } from "@/lib/registry";
-import { cn } from "@repo/design-system/lib/utils";;
 
 export async function ComponentSource({
   name,
@@ -42,9 +42,21 @@ export async function ComponentSource({
     return null;
   }
 
-  // Fix imports.
-  // Replace @/registry/.../ with @/components/.
-  code = code.replaceAll(/@\/registry\/[\w-]+\//g, "@/");
+  // Fix imports for docs (consumer-facing).
+  // Convert internal registry imports to the typical installed paths.
+  code = code
+    // Registry style folders.
+    .replaceAll(/@\/registry\/[\w-]+\/blocks\//g, "@/components/ui/")
+    .replaceAll(/@\/registry\/[\w-]+\/ui\//g, "@/components/ui/")
+    .replaceAll(/@\/registry\/[\w-]+\/hooks\//g, "@/hooks/")
+    .replaceAll(/@\/registry\/[\w-]+\/lib\//g, "@/lib/")
+    .replaceAll(/@\/registry\/[\w-]+\/components\//g, "@/components/")
+    // Monorepo-only imports.
+    .replaceAll(
+      /@repo\/design-system\/components\/ai-elements\//g,
+      "@ai-elements/"
+    )
+    .replaceAll(/@repo\/design-system\/components\/ui\//g, "@/components/ui/");
 
   // Replace export default with export.
   code = code.replaceAll("export default", "export");

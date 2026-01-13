@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, Share2, Sparkles } from "lucide-react";
+import { Download, Share2 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { ModeSwitcher } from "@/components/mode-switcher";
 import { Button } from "@/registry/new-york/ui/button";
@@ -34,15 +34,6 @@ export function BuilderHeaderActions() {
           >
             <Download className="size-4" />
             Download
-          </Button>
-          <Button
-            className="gap-1"
-            onClick={() => dispatchBuilderEvent("builder:ask-ai")}
-            size="sm"
-            variant="outline"
-          >
-            <Sparkles className="size-4" />
-            Ask AI
           </Button>
         </>
       )}

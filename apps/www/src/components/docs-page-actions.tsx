@@ -1,13 +1,7 @@
 "use client";
 
 import { cn } from "@repo/design-system/lib/utils";
-import {
-  IconArrowUp,
-  IconBrandGithub,
-  IconCopy,
-  IconMessageCircle,
-  IconSparkles,
-} from "@tabler/icons-react";
+import { IconArrowUp, IconBrandGithub, IconCopy } from "@tabler/icons-react";
 import { useCallback, useRef, useState } from "react";
 
 export function DocsPageActions({
@@ -65,16 +59,6 @@ export function DocsPageActions({
         <IconCopy className="size-4" />
         {copied ? "Copied" : "Copy page"}
       </button>
-
-      {/* <button className={itemClassName} data-action="ask-ai" type="button">
-        <IconSparkles className="size-4" />
-        Ask AI about this page
-      </button>
-
-      <button className={itemClassName} data-action="open-chat" type="button">
-        <IconMessageCircle className="size-4" />
-        Open in chat
-      </button> */}
     </div>
   );
 }

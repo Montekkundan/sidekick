@@ -26,7 +26,6 @@ import {
   SidekickFooter,
   SidekickHeader,
   SidekickTrigger,
-  useSidekick,
 } from "@/registry/new-york/blocks/sidekick";
 import { useGatewayChat } from "@/registry/new-york/hooks/use-gateway-chat";
 import { Kbd, KbdGroup } from "@/registry/new-york/ui/kbd";
@@ -62,18 +61,11 @@ function getChatIdFromPath(pathname: string) {
 export function BuilderSidekick() {
   const { activeSessionId } = useBuilder();
   const pathname = usePathname() ?? "";
-  const { toggleSidekick } = useSidekick();
   const chatIdFromPath = React.useMemo(
     () => getChatIdFromPath(pathname),
     [pathname]
   );
   const chatId = chatIdFromPath ?? activeSessionId ?? "builder";
-
-  React.useEffect(() => {
-    const handleAskAI = () => toggleSidekick();
-    window.addEventListener("builder:ask-ai", handleAskAI);
-    return () => window.removeEventListener("builder:ask-ai", handleAskAI);
-  }, [toggleSidekick]);
 
   const gatewayConfig = React.useMemo(
     () => ({

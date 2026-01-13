@@ -1,8 +1,7 @@
 "use client";
 
-import { CompactPromptInput } from "./compact-prompt-input";
-import { AskAIPanel } from "./ask-ai-panel";
 import { AttachmentsInput } from "./attachments-input";
+import { CompactPromptInput } from "./compact-prompt-input";
 import { PresetsInput } from "./presets-input";
 import { QuickActionsInput } from "./quick-actions-input";
 import { SearchAskInput } from "./search-ask-input";
@@ -24,7 +23,6 @@ export function RootComponents() {
       </div>
       <div className="order-first flex flex-col gap-6 lg:hidden xl:order-last xl:flex *:[div]:w-full *:[div]:max-w-full">
         <CompactPromptInput />
-        <AskAIPanel />
       </div>
     </div>
   );

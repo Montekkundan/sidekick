@@ -1,3 +1,4 @@
+import fs from "node:fs/promises";
 import Image from "next/image";
 import { Suspense } from "react";
 
@@ -67,7 +68,7 @@ export async function ComponentPreview({
 
   if (type === "block") {
     return (
-      <div className="md:-mx-1 relative aspect-[4/2.5] w-full overflow-hidden rounded-md border">
+      <div className="relative aspect-[4/2.5] w-full overflow-hidden rounded-md border md:-mx-1">
         <Image
           alt={name}
           className="absolute top-0 left-0 z-20 w-[970px] max-w-none bg-background sm:w-[1280px] md:hidden dark:hidden md:dark:hidden"
@@ -89,6 +90,12 @@ export async function ComponentPreview({
     );
   }
 
+  const exampleSrc = `src/registry/new-york/examples/${name}-demo.tsx`;
+  const hasExampleSource = await fs
+    .access(exampleSrc)
+    .then(() => true)
+    .catch(() => false);
+
   return (
     <ComponentPreviewTabs
       align={align}
@@ -105,7 +112,17 @@ export async function ComponentPreview({
       }
       hideCode={hideCode}
       previewClassName={computedPreviewClassName}
-      source={<ComponentSource collapsible={false} name={name} />}
+      source={
+        hasExampleSource ? (
+          <ComponentSource
+            collapsible={false}
+            src={exampleSrc}
+            title={`components/ui/${name}.demo.tsx`}
+          />
+        ) : (
+          <ComponentSource collapsible={false} name={name} />
+        )
+      }
       {...props}
     />
   );

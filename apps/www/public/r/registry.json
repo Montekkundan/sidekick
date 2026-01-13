@@ -4,23 +4,6 @@
   "homepage": "${NEXT_PUBLIC_APP_URL}",
   "items": [
     {
-      "name": "ask-ai",
-      "type": "registry:component",
-      "title": "Ask AI Button",
-      "description": "A component set for triggering AI interactions and displaying labels.",
-      "dependencies": [],
-      "registryDependencies": [
-        "button",
-        "avatar"
-      ],
-      "files": [
-        {
-          "path": "registry/new-york/blocks/ask-ai/index.tsx",
-          "type": "registry:component"
-        }
-      ]
-    },
-    {
       "name": "prompt-input",
       "type": "registry:component",
       "title": "Prompt Input",
@@ -113,7 +96,8 @@
         },
         {
           "path": "registry/new-york/blocks/sidekick-01/components/sidekick-standalone.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/ui/sidekick-01/components/sidekick-standalone.tsx"
         }
       ],
       "meta": {
@@ -143,7 +127,8 @@
         },
         {
           "path": "registry/new-york/blocks/sidekick-02/components/sidekick-chatbot.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/ui/sidekick-02/components/sidekick-chatbot.tsx"
         }
       ],
       "meta": {
@@ -173,7 +158,8 @@
         },
         {
           "path": "registry/new-york/blocks/sidekick-03/components/sidekick-floating.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/ui/sidekick-03/components/sidekick-floating.tsx"
         }
       ],
       "meta": {
@@ -200,7 +186,8 @@
         },
         {
           "path": "registry/new-york/blocks/prompt-input-01/components/agent-prompt-input.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/ui/prompt-input-01/components/agent-prompt-input.tsx"
         }
       ],
       "meta": {
@@ -227,7 +214,8 @@
         },
         {
           "path": "registry/new-york/blocks/prompt-input-02/components/cursor-prompt-input.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/ui/prompt-input-02/components/cursor-prompt-input.tsx"
         }
       ],
       "meta": {
@@ -254,7 +242,8 @@
         },
         {
           "path": "registry/new-york/blocks/prompt-input-03/components/claude-prompt-input.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/ui/prompt-input-03/components/claude-prompt-input.tsx"
         }
       ],
       "meta": {
@@ -312,39 +301,48 @@
         },
         {
           "path": "registry/new-york/blocks/dashboard-01/components/app-sidebar.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/ui/dashboard-01/components/app-sidebar.tsx"
         },
         {
           "path": "registry/new-york/blocks/dashboard-01/components/chart-area-interactive.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/ui/dashboard-01/components/chart-area-interactive.tsx"
         },
         {
           "path": "registry/new-york/blocks/dashboard-01/components/data-table.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/ui/dashboard-01/components/data-table.tsx"
         },
         {
           "path": "registry/new-york/blocks/dashboard-01/components/nav-documents.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/ui/dashboard-01/components/nav-documents.tsx"
         },
         {
           "path": "registry/new-york/blocks/dashboard-01/components/nav-main.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/ui/dashboard-01/components/nav-main.tsx"
         },
         {
           "path": "registry/new-york/blocks/dashboard-01/components/nav-secondary.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/ui/dashboard-01/components/nav-secondary.tsx"
         },
         {
           "path": "registry/new-york/blocks/dashboard-01/components/nav-user.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/ui/dashboard-01/components/nav-user.tsx"
         },
         {
           "path": "registry/new-york/blocks/dashboard-01/components/section-cards.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/ui/dashboard-01/components/section-cards.tsx"
         },
         {
           "path": "registry/new-york/blocks/dashboard-01/components/site-header.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/ui/dashboard-01/components/site-header.tsx"
         }
       ],
       "meta": {

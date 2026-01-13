@@ -66,8 +66,7 @@ export function AgentPromptInput() {
       <div className="space-y-8">
         <div className="mx-auto w-full max-w-3xl">
           <PromptInputCard
-            className={cn(isAgent && "rounded-[28px]")}
-            shape={isAgent ? "default" : "pill"}
+            className="rounded-[28px]"
             variant={isAgent ? "muted" : "default"}
           >
             <LayoutGroup>
