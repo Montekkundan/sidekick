@@ -5,21 +5,21 @@ import { fonts } from "@repo/design-system/lib/fonts";
 import { cn } from "@repo/design-system/lib/utils";
 
 export const metadata: Metadata = {
-  title: "shadturbo — Turborepo starter with shadcn/ui",
+  title: "Cursor Editor — Sidekick UI example",
   description:
-    "Minimal starter repo that includes a Next.js app and a shadcn design system.",
+    "Cursor-like editor UI showcasing Sidekick + PromptInput components.",
   openGraph: {
-    title: "shadturbo — Turborepo starter with shadcn/ui",
+    title: "Cursor Editor — Sidekick UI example",
     description:
-      "Minimal starter repo that includes a Next.js app and a shadcn design system.",
-    url: "https://shadturbo.vercel.app",
-    siteName: "shadturbo",
+      "Cursor-like editor UI showcasing Sidekick + PromptInput components.",
+    url: "https://sidekick.montek.dev/examples/cursor-editor",
+    siteName: "Cursor Editor",
     images: [
       {
         url: "/api/og",
         width: 1200,
         height: 630,
-        alt: "shadturbo — Turborepo starter with shadcn/ui",
+        alt: "Cursor Editor — Sidekick UI example",
       },
     ],
     locale: "en_US",
@@ -27,9 +27,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "shadturbo — Turborepo starter with shadcn/ui",
+    title: "Cursor Editor — Sidekick UI example",
     description:
-      "Minimal starter repo that includes a Next.js app and a shadcn design system.",
+      "Cursor-like editor UI showcasing Sidekick + PromptInput components.",
     creator: "@montekkundan",
     images: ["/api/og"],
   },
@@ -42,11 +42,11 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      className={cn(fonts, "scroll-smooth")}
+      className={cn(fonts, "dark scroll-smooth")}
       lang="en"
       suppressHydrationWarning
     >
-      <body>
+      <body className="h-svh overflow-hidden bg-background text-foreground">
         <DesignSystemProvider>{children}</DesignSystemProvider>
       </body>
     </html>

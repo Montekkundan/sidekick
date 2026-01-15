@@ -1,66 +1,104 @@
 ---
-title: Cursor Editor Page
-description: Build an editor layout with file tree, tabs, and Sidekick chat.
+title: Cursor Editor
+description: Build a Cursor-like editor UI with Sidekick and PromptInput.
 ---
 
 ## Overview
 
-This cookbook recreates a Cursor-like editor layout: a left file tree, a center editor, and an AI assistant panel on the right. The aim is to keep code and chat in the same workflow.
+This cookbook explains how the `cursor-editor` example is built: a Cursor-like layout with an Explorer (left), Monaco editor (center), Console (bottom), and Sidekick chat (right).
+
+The goal isn’t to ship a full IDE — it’s to show how **`Sidekick`** and **`PromptInput`** are flexible building blocks you can drop into any product layout.
+
+## Where To Look
+
+- Main UI layout: `apps/cursor-editor/src/app/cursor-like-editor.tsx`
+- Sidekick panel: `packages/design-system/components/ui/sidekick.tsx`
+- Prompt composer: `packages/design-system/components/ui/prompt-input.tsx`
+- File tree: `packages/design-system/components/ui/file-tree.tsx`
+- Resizable panels: `packages/design-system/components/ui/resizable.tsx`
 
 ## Page Structure
 
-- Left sidebar: file tree + search
-- Center: editor tabs + editor canvas
-- Right: `Sidekick` panel for AI help
-- Bottom: status bar
+- **Explorer (left)**: file tree using `Tree` / `Folder` / `File`
+- **Editor (center)**: `@monaco-editor/react` mounted client-side
+- **Console (bottom)**: terminal-style panel, resizable + collapsible
+- **Sidekick (right)**: standalone chat panel with a styled prompt composer
+- **Toggles**: buttons that collapse/expand panels
+- **Mobile**: the example intentionally shows a single placeholder message on small screens
 
-## Ingredients
+## Key Idea: Sidekick Is Just A Panel
 
-- `SidekickProvider` + `Sidekick`
-- Tabs for open files
-- Scrollable file tree
-- Editor surface (Monaco, CodeMirror, or placeholder)
-
-## Steps
-
-1. Create a 3-column layout with `SidekickProvider` and `SidekickInset`.
-2. Build a file tree in the left sidebar with a filter input.
-3. Add tabs and a code editor in the center.
-4. Add `Sidekick` on the right with a `PromptInput` footer.
-
-## Layout Example
+The example uses `Sidekick` in `standalone` mode so it behaves like a normal panel (not tied to provider state/cookies). This makes it easy to embed Sidekick into any layout system (resizable panels, tabs, drawers, etc.).
 
 ```tsx
-<SidekickProvider defaultOpen>
-  <SidekickInset className="grid grid-cols-[240px_1fr]">
-    <aside className="border-r p-4">File tree</aside>
-    <main className="p-4">Editor</main>
-  </SidekickInset>
-
-  <Sidekick>
-    <SidekickHeader>Assistant</SidekickHeader>
-    <SidekickContent>
-      <Conversation>
-        <ConversationContent>{/* messages */}</ConversationContent>
-      </Conversation>
-    </SidekickContent>
-    <SidekickFooter>
-      <PromptInput onSubmit={handleSubmit}>
-        <PromptInput.Body>
-          <PromptInput.Textarea placeholder="Ask about this file..." />
-        </PromptInput.Body>
-        <PromptInput.Footer>
-          <PromptInput.Tools />
-          <PromptInput.Submit />
-        </PromptInput.Footer>
-      </PromptInput>
-    </SidekickFooter>
-  </Sidekick>
-</SidekickProvider>
+<Sidekick standalone side="right" className="h-full">
+  {/* custom header + prompt + chat list */}
+</Sidekick>
 ```
 
-## Enhancements
+## File Tree: Use The Design-System Component
 
-- Add file context chips inside the prompt header
-- Stream answers with `useGatewayChat`
-- Persist conversations per file or project
+Instead of hand-rolling an Explorer list, the example uses the shared file tree primitive:
+
+- `Tree` handles selection + expanded state
+- `Folder` renders expandable nodes
+- `File` renders selectable leaves
+
+You can feed the tree with any structure (real filesystem, repo index, etc.) using the `TreeViewElement[]` shape.
+
+## PromptInput: Compose UI (And Style It)
+
+`PromptInput` is intentionally composable: you can place controls anywhere and style it via variants + class overrides.
+
+In the example, the composer is wrapped in `PromptInputCard` and configured with:
+
+- `PromptInput` with `variant="none"` and `focusRing={false}`
+- A minimal textarea (small font, reduced padding)
+- Left-side “mode” pills (Agent/Auto)
+- Right-side small action icons (@, globe, attach, mic) + submit
+
+Minimal pattern:
+
+```tsx
+<PromptInputCard className="rounded-xl border bg-muted/10 shadow-sm">
+  <PromptInput focusRing={false} variant="none" onSubmit={handleSubmit}>
+    <PromptInput.Body>
+      <PromptInput.Textarea
+        className="text-[11px] !px-0 !py-1"
+        placeholder="Plan, @ for context, / for commands"
+      />
+    </PromptInput.Body>
+    <PromptInput.Footer>
+      <PromptInput.Tools>{/* pills + icons */}</PromptInput.Tools>
+      <PromptInput.Submit size="icon-xs" />
+    </PromptInput.Footer>
+  </PromptInput>
+</PromptInputCard>
+```
+
+The key takeaway: **PromptInput is a layout system**, not just an input.
+
+## Resizable Layout + Collapsing Panels
+
+The editor shell uses `ResizablePanelGroup` to create the classic IDE layout:
+
+- Horizontal group: `Explorer | Editor | Sidekick`
+- Vertical group inside the editor: `Monaco | Console`
+
+Panels are marked `collapsible` and toggled via `ImperativePanelHandle.collapse()/expand()`.
+
+## Mobile Fallback
+
+The example intentionally does not try to cram an IDE UI into a phone layout.
+
+A simple (and very common) approach is used:
+
+- render a centered message on small screens (`md:hidden`)
+- render the full editor only on larger screens (`hidden md:flex`)
+
+## Enhancements (Optional)
+
+- Replace dummy chat content with streamed messages from your AI provider
+- Add “selected file(s)” chips above the prompt for context injection
+- Persist panel sizes in localStorage
+- Sync Monaco theme with your app theme
