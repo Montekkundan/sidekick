@@ -5,21 +5,19 @@ import { fonts } from "@repo/design-system/lib/fonts";
 import { cn } from "@repo/design-system/lib/utils";
 
 export const metadata: Metadata = {
-  title: "shadturbo — Turborepo starter with shadcn/ui",
-  description:
-    "Minimal starter repo that includes a Next.js app and a shadcn design system.",
+  title: "Help Page — Help Center UI",
+  description: "Visual help center demo with a Sidekick chatbot.",
   openGraph: {
-    title: "shadturbo — Turborepo starter with shadcn/ui",
-    description:
-      "Minimal starter repo that includes a Next.js app and a shadcn design system.",
-    url: "https://shadturbo.vercel.app",
-    siteName: "shadturbo",
+    title: "Help Page — Help Center UI",
+    description: "Visual help center demo with a Sidekick chatbot.",
+    url: "https://sidekick.montek.dev/examples/help-page",
+    siteName: "Help Page",
     images: [
       {
         url: "/api/og",
         width: 1200,
         height: 630,
-        alt: "shadturbo — Turborepo starter with shadcn/ui",
+        alt: "Help Page — Help Center UI",
       },
     ],
     locale: "en_US",
@@ -27,9 +25,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "shadturbo — Turborepo starter with shadcn/ui",
-    description:
-      "Minimal starter repo that includes a Next.js app and a shadcn design system.",
+    title: "Help Page — Help Center UI",
+    description: "Visual help center demo with a Sidekick chatbot.",
     creator: "@montekkundan",
     images: ["/api/og"],
   },
@@ -42,11 +39,11 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      className={cn(fonts, "scroll-smooth")}
+      className={cn(fonts, "dark scroll-smooth")}
       lang="en"
       suppressHydrationWarning
     >
-      <body>
+      <body className="min-h-svh bg-background text-foreground">
         <DesignSystemProvider>{children}</DesignSystemProvider>
       </body>
     </html>

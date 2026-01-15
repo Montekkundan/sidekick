@@ -1,59 +1,89 @@
 ---
 title: Help Center Page
-description: Build a searchable help center with categories, articles, and FAQ.
+description: Build a modern help center with PromptInput search and a floating Sidekick chatbot.
 ---
 
 ## Overview
 
-This recipe builds a help center experience with a prominent search bar, category cards, and a FAQ section. It works well for SaaS documentation and support portals.
+This recipe mirrors the `help-page` example: a dark help center landing page with a centered search input, a “Popular Articles” list, a grid of categories, and a support chat widget in the bottom-right.
+
+It’s intentionally **visual-first**: dummy content, no real search backend, and no real chat API. The goal is to show how far you can get with `@repo/design-system` building blocks.
+
+## Where To Look
+
+- App implementation: `apps/help-page/src/app/page.tsx`
+- Search composer: `packages/design-system/components/ui/prompt-input.tsx`
+- Floating chat panel: `packages/design-system/components/ui/sidekick.tsx`
+- Chat primitives: `packages/design-system/components/ai-elements/conversation.tsx`
 
 ## Page Structure
 
-- Hero search bar
-- Category cards (Getting Started, Billing, API)
-- Featured articles list
-- FAQ accordion
+- Top navigation (brand + links + CTA)
+- Hero heading + centered search
+- Popular articles list (simple rows)
+- Browse categories (card grid)
+- Footer
+- Floating Sidekick chatbot (bottom-right)
 
-## Ingredients
+## Search: Use PromptInput As A Search Bar
 
-- `Input` + `Button` for search
-- Card grid for categories
-- `Accordion` for FAQs
+Instead of a plain `Input`, the example uses `PromptInput` to get consistent shadcn styling, keyboard-friendly behavior, and easy composition.
 
-## Steps
+Pattern used:
 
-1. Create a hero section with a search input and short description.
-2. Add a grid of category cards with counts.
-3. Render featured articles with short summaries.
-4. Add a FAQ accordion for quick answers.
-
-## Example Layout
+- Wrap with `PromptInputCard` for a pill container
+- Use `PromptInputTextarea` in single-row mode (`rows={1}`) to mimic an input
+- Add left icon + right shortcut hints
 
 ```tsx
-<section className="space-y-8">
-  <header className="space-y-3 text-center">
-    <h1 className="text-3xl font-semibold">How can we help?</h1>
-    <div className="mx-auto flex max-w-xl gap-2">
-      <Input placeholder="Search docs, guides, and FAQs" />
-      <Button>Search</Button>
-    </div>
-  </header>
-
-  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-    {/* Category cards */}
-  </div>
-
-  <Accordion type="single" collapsible>
-    <AccordionItem value="faq-1">
-      <AccordionTrigger>How do I reset my API key?</AccordionTrigger>
-      <AccordionContent>Open settings and generate a new key.</AccordionContent>
-    </AccordionItem>
-  </Accordion>
-</section>
+<PromptInputCard className="rounded-full">
+  <PromptInput size="sm" variant="none" focusRing={false} onSubmit={onSearch}>
+    <PromptInput.Body className="items-center">
+      {/* search icon */}
+      <PromptInput.Textarea rows={1} placeholder="Search articles..." />
+      {/* ⌘K hint */}
+    </PromptInput.Body>
+  </PromptInput>
+</PromptInputCard>
 ```
 
-## Enhancements
+## Lists + Cards: Keep It Simple
 
-- Add search analytics (top queries)
-- Provide quick contact CTA
-- Add article feedback buttons
+- “Popular Articles” are buttons styled as rows
+- “Browse Categories” uses `Card` for consistent borders/radius/shadows
+
+This is a good place to later plug in real data (CMS, database, static JSON) without changing the UI structure.
+
+## Floating Chat Widget (Bottom Right)
+
+The example implements a familiar chat-launcher pattern:
+
+- A round button toggles open/close
+- When open, render a `Sidekick` panel inside a fixed container
+- Use `Conversation` + `Message` primitives for the transcript
+- Use `PromptInput` for the message composer
+
+Key idea: `Sidekick` can be used in `standalone` mode as a reusable panel.
+
+```tsx
+<div className="fixed bottom-6 right-6">
+  <Button size="icon" className="rounded-full" />
+
+  {open ? (
+    <div className="h-[560px] w-[360px] rounded-2xl border bg-background">
+      <Sidekick standalone>
+        {/* header */}
+        {/* conversation */}
+        {/* PromptInput composer */}
+      </Sidekick>
+    </div>
+  ) : null}
+</div>
+```
+
+## Enhancements (Optional)
+
+- Wire real search (Algolia / Meilisearch / your API)
+- Persist chat messages + “open” state
+- Add quick actions (“Report bug”, “Billing”, “Talk to sales”)
+- Add escalation: “Open a ticket” / “Email support”
