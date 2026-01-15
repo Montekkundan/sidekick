@@ -1,58 +1,72 @@
 ---
 title: ChatGPT Home Page
-description: Build a centered chat composer with prompt suggestions and model picker.
+description: Build a ChatGPT-like landing page with a sidebar and compact PromptInput.
 ---
 
 ## Overview
 
-This recipe captures the ChatGPT-style landing page: a calm hero, a central prompt input, and quick-start suggestions. The goal is to get the user into a conversation immediately.
+This cookbook matches the `chatgpt` example app: a ChatGPT-like landing page with a left sidebar, a top model selector, and a centered “Ask anything” prompt.
 
-## Page Structure
+It’s **UI-only** on purpose (no auth, no chat backend). The goal is to show how to compose an app shell using `@repo/design-system` primitives.
 
-- Minimal header (logo, settings, account)
-- Centered prompt composer
-- Suggestion tiles or chips
-- Footer with privacy or product links
+## Where To Look
 
-## Ingredients
+- App UI: `apps/chatgpt/src/app/page.tsx`
+- Sidebar primitives: `packages/design-system/components/ui/sidebar.tsx`
+- Prompt composer: `packages/design-system/components/ui/prompt-input.tsx`
 
-- `PromptInput` for the composer
-- Suggestion cards or chips
-- Optional model selector
+## Layout Structure
 
-## Steps
+- Left sidebar (collapsed “icon” mode)
+  - OpenAI logo button (toggles sidebar)
+  - New chat / Search / Library actions
+  - Avatar footer (bottom-left)
+- Main area
+  - Top-left model switcher (e.g. “ChatGPT 5.2”)
+  - Centered heading
+  - Compact prompt pill
 
-1. Center the layout vertically with a single-column container.
-2. Drop in `PromptInput` with a large textarea and submit button.
-3. Add 4-6 suggestion cards below the composer.
-4. Place a small model selector above or inside the input footer.
+## Sidebar: Use The Design-System Sidebar
 
-## Composer Example
+The example uses the built-in `SidebarProvider` + `Sidebar` components.
+
+- `collapsible="icon"` gives the small icon sidebar look
+- `SidebarMenu` + `SidebarMenuButton` builds the action list
+- Footer uses `Avatar` (your GitHub image) anchored at the bottom
+
+## Prompt: PromptInput As A Compact Pill
+
+The composer is built with `PromptInput` in a pill shape.
+
+Pattern used:
+
+- Wrap with `PromptInputProvider` so attachment actions can open a file dialog
+- Use `PromptInputCard` for the rounded container
+- Put buttons and textarea inside `PromptInputBody`
 
 ```tsx
-<PromptInput onSubmit={handleSubmit} size="lg" variant="outline">
-  <PromptInput.Body>
-    <PromptInput.Textarea placeholder="Message Sidekick" minRows={4} />
-  </PromptInput.Body>
-  <PromptInput.Footer>
-    <PromptInput.Tools>
-      <PromptInput.Select>
-        <PromptInput.SelectTrigger>
-          <PromptInput.SelectValue placeholder="Model" />
-        </PromptInput.SelectTrigger>
-        <PromptInput.SelectContent>
-          <PromptInput.SelectItem value="gpt-4o">GPT-4o</PromptInput.SelectItem>
-          <PromptInput.SelectItem value="gpt-4o-mini">GPT-4o mini</PromptInput.SelectItem>
-        </PromptInput.SelectContent>
-      </PromptInput.Select>
-    </PromptInput.Tools>
-    <PromptInput.Submit />
-  </PromptInput.Footer>
-</PromptInput>
+<PromptInputProvider>
+  <PromptInputCard className="rounded-full">
+    <PromptInput shape="pill" size="sm" variant="none" onSubmit={onSubmit}>
+      <PromptInput.Body className="items-center gap-2">
+        <PromptInput.Button size="icon-sm">+</PromptInput.Button>
+        <PromptInput.Textarea rows={1} placeholder="Ask anything" />
+        <PromptInput.Button size="icon-sm">{/* mic */}</PromptInput.Button>
+        <PromptInput.Submit size="icon-sm" />
+      </PromptInput.Body>
+    </PromptInput>
+  </PromptInputCard>
+</PromptInputProvider>
 ```
 
-## Enhancements
+## Notes
 
-- Remember last used model in local storage
-- Add a subtle gradient background
-- Include keyboard shortcuts in the footer
+- The OpenAI logo in the sidebar is just an inline SVG.
+- The model selector is a button (no real dropdown) to keep the demo focused on layout.
+
+## Enhancements (Optional)
+
+- Add recent chats list under the sidebar actions
+- Add a real model picker using `Select`
+- Add prompt suggestions under the composer
+- Wire to your chat API and stream messages
