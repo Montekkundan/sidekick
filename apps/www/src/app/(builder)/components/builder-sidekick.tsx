@@ -1,6 +1,7 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
+import { useUIStream } from "@json-render/react";
 import {
   Conversation,
   ConversationContent,
@@ -9,6 +10,7 @@ import {
   Message,
   MessageContent,
 } from "@repo/design-system/components/ai-elements/message";
+import { DefaultChatTransport } from "ai";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { useBuilder } from "@/app/(builder)/components/builder-provider";
@@ -58,30 +60,119 @@ function getChatIdFromPath(pathname: string) {
   return parts[builderIndex + 1] ?? null;
 }
 
+const GREETING_RE =
+  /^(hi|hello|hey|yo|sup|gm|good\s+morning|good\s+afternoon|good\s+evening)\b/i;
+const UI_INTENT_RE =
+  /\b(create|build|design|generate|make|add|update|change|improve|refactor)\b/i;
+
+function safeParseJson(value: string): Record<string, unknown> | undefined {
+  try {
+    const parsed = JSON.parse(value) as unknown;
+    if (!parsed || typeof parsed !== "object") {
+      return undefined;
+    }
+    return parsed as Record<string, unknown>;
+  } catch {
+    return undefined;
+  }
+}
+
 export function BuilderSidekick() {
-  const { activeSessionId } = useBuilder();
+  const { activeSessionId, sessions, updateSession } = useBuilder();
   const pathname = usePathname() ?? "";
   const chatIdFromPath = React.useMemo(
     () => getChatIdFromPath(pathname),
     [pathname]
   );
   const chatId = chatIdFromPath ?? activeSessionId ?? "builder";
+  const currentSession = sessions.find((session) => session.id === chatId);
+
+  const chatTransport = React.useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/chat",
+        body: {
+          gateway: { modelId: "anthropic/claude-sonnet-4" },
+          system:
+            "You are Sidekick Builder, a helpful UI builder assistant.\n" +
+            "- If the user greets (e.g. 'hi'), respond normally and ask what UI they want to build.\n" +
+            "- If the user asks to create/build/design UI, ask 1-2 clarifying questions only when essential.\n" +
+            "- Do NOT output JSON patches or raw UI tree in chat.",
+        },
+      }),
+    []
+  );
 
   const { messages, sendMessage, status } = useChat({
     id: chatId,
+    transport: chatTransport,
   });
+
+  const uiStream = useUIStream({
+    api: "/api/builder/generate",
+    onComplete: (tree) => {
+      updateSession(chatId, {
+        uiTree: JSON.stringify(tree, null, 2),
+      });
+    },
+  });
+
+  // Apply streamed tree to builder in real-time.
+  React.useEffect(() => {
+    if (!uiStream.tree) {
+      return;
+    }
+
+    updateSession(chatId, {
+      uiTree: JSON.stringify(uiStream.tree, null, 2),
+    });
+  }, [chatId, uiStream.tree, updateSession]);
+
+  const shouldGenerateUI = React.useCallback((text: string) => {
+    const trimmed = text.trim();
+    if (!trimmed) {
+      return false;
+    }
+
+    if (GREETING_RE.test(trimmed)) {
+      return false;
+    }
+
+    return UI_INTENT_RE.test(trimmed);
+  }, []);
 
   const handleSubmit = React.useCallback(
     async (message: PromptInputMessage) => {
-      if (!message.text.trim()) {
+      const text = message.text.trim();
+      if (!text) {
         return;
       }
-      await sendMessage({ text: message.text });
+
+      // Chat transcript (natural language).
+      await sendMessage({ text });
+
+      // Stream UI only when the user is asking for UI generation.
+      if (!shouldGenerateUI(text)) {
+        return;
+      }
+
+      const currentTree = currentSession?.uiTree
+        ? safeParseJson(currentSession.uiTree)
+        : undefined;
+
+      // `useUIStream` posts { prompt, context, currentTree }.
+      // We pass `currentTree` via `context` so the server can apply edits.
+      uiStream
+        .send(text, {
+          currentTree: currentTree ?? {},
+          gateway: { modelId: "anthropic/claude-sonnet-4" },
+        })
+        .catch(() => undefined);
     },
-    [sendMessage]
+    [currentSession?.uiTree, sendMessage, shouldGenerateUI, uiStream]
   );
 
-  const isLoading = status === "streaming";
+  const isLoading = status === "streaming" || uiStream.isStreaming;
 
   return (
     <Sidekick className="h-full" side="right">
@@ -102,7 +193,18 @@ export function BuilderSidekick() {
                     <button
                       className="w-full rounded-md border px-3 py-2 text-left text-sm transition hover:border-muted-foreground/40 hover:bg-muted/40"
                       key={suggestion}
-                      onClick={() => sendMessage({ text: suggestion })}
+                      onClick={() => {
+                        sendMessage({ text: suggestion });
+                        const currentTree = currentSession?.uiTree
+                          ? safeParseJson(currentSession.uiTree)
+                          : undefined;
+                        uiStream
+                          .send(suggestion, {
+                            currentTree: currentTree ?? {},
+                            gateway: { modelId: "anthropic/claude-sonnet-4" },
+                          })
+                          .catch(() => undefined);
+                      }}
                       type="button"
                     >
                       {suggestion}
@@ -138,6 +240,11 @@ export function BuilderSidekick() {
                 disabled={isLoading}
                 placeholder="Describe the UI you want..."
               />
+              {uiStream.error && (
+                <div className="px-3 pt-2 text-destructive text-xs">
+                  {uiStream.error.message}
+                </div>
+              )}
             </PromptInputBody>
             <PromptInputFooter>
               <PromptInputTools />
