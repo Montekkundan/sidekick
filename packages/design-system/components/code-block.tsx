@@ -174,27 +174,50 @@ export function CodeBlock({ code, lang }: CodeBlockProps) {
             dark: "vercel-dark",
           },
           defaultColor: false,
-        }),
+        })
       );
     });
   }, [code, lang]);
 
   if (!html) {
-    return null;
+    return (
+      <div className="group relative">
+        <div className="sticky top-0 z-10 float-right">
+          <CopyButton
+            className="text-neutral-400 opacity-0 group-hover:opacity-100"
+            text={code}
+          />
+        </div>
+        <pre className="whitespace-pre-wrap break-words text-[11px] leading-relaxed">
+          {code}
+        </pre>
+      </div>
+    );
   }
 
+  const highlightedHtmlProps = {
+    // eslint-disable-next-line react/no-dangerouslySetInnerHTML
+    dangerouslySetInnerHTML: { __html: html },
+  };
+
+  const highlighted = (
+    // eslint-disable-next-line react/no-danger
+    // biome-ignore lint/security/noDangerouslySetInnerHtml: shiki output is trusted
+    <div
+      className="text-[11px] leading-relaxed [&_code]:rounded-none! [&_code]:bg-transparent! [&_code]:p-0! [&_code]:text-[11px]! [&_pre]:m-0! [&_pre]:rounded-none! [&_pre]:border-none! [&_pre]:bg-transparent! [&_pre]:p-0! [&_pre]:text-[11px]!"
+      {...highlightedHtmlProps}
+    />
+  );
+
   return (
-    <div className="relative group">
-      <div className="sticky top-0 float-right z-10">
+    <div className="group relative">
+      <div className="sticky top-0 z-10 float-right">
         <CopyButton
+          className="text-neutral-400 opacity-0 group-hover:opacity-100"
           text={code}
-          className="opacity-0 group-hover:opacity-100 text-neutral-400"
         />
       </div>
-      <div
-        className="text-[11px] leading-relaxed [&_pre]:bg-transparent! [&_pre]:p-0! [&_pre]:m-0! [&_pre]:border-none! [&_pre]:rounded-none! [&_pre]:text-[11px]! [&_code]:bg-transparent! [&_code]:p-0! [&_code]:rounded-none! [&_code]:text-[11px]!"
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+      {highlighted}
     </div>
   );
 }
