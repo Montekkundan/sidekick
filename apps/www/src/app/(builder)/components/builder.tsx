@@ -1,16 +1,21 @@
 "use client";
 
-import React, { useEffect, useState, useCallback, useRef } from "react";
-import { Renderer, useUIStream, JSONUIProvider } from "@json-render/react";
 import type { UITree } from "@json-render/core";
-import { toast, Toaster } from "sonner";
-import { CodeBlock } from "@repo/design-system/components/code-block";
-
+import { JSONUIProvider, Renderer, useUIStream } from "@json-render/react";
 import {
   demoRegistry,
   fallbackComponent,
   useInteractiveState,
 } from "@repo/design-system/components/builder/index";
+import { CodeBlock } from "@repo/design-system/components/code-block";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Toaster, toast } from "sonner";
+import {
+  PromptInput,
+  type PromptInputMessage,
+  PromptInputProvider,
+  usePromptInputController,
+} from "@/registry/new-york/blocks/prompt-input";
 
 const SIMULATION_PROMPT = "Create a contact form with name, email, and message";
 
@@ -167,17 +172,124 @@ type Mode = "simulation" | "interactive";
 type Phase = "typing" | "streaming" | "complete";
 type Tab = "stream" | "json" | "code";
 
+interface BuilderPromptApi {
+  clear: () => void;
+  set: (text: string) => void;
+}
+
+function BuilderPromptInputInner({
+  inputRef,
+  isTypingSimulation,
+  isStreaming,
+  onActivateInteractive,
+  onStop,
+  onSubmit,
+  setApi,
+}: {
+  inputRef: React.RefObject<HTMLTextAreaElement | null>;
+  isTypingSimulation: boolean;
+  isStreaming: boolean;
+  onActivateInteractive: () => void;
+  onStop: () => void;
+  onSubmit: (text: string) => void;
+  setApi: (api: BuilderPromptApi) => void;
+}) {
+  const controller = usePromptInputController();
+
+  useEffect(() => {
+    setApi({
+      clear: controller.textInput.clear,
+      set: controller.textInput.setInput,
+    });
+  }, [controller.textInput.clear, controller.textInput.setInput, setApi]);
+
+  const hasText = controller.textInput.value.trim().length > 0;
+
+  return (
+    <PromptInput
+      className="font-mono text-sm"
+      onSubmit={({ text }: PromptInputMessage) => {
+        onSubmit(text);
+      }}
+      variant="outline"
+    >
+      <PromptInput.Body className="px-3">
+        {isTypingSimulation ? (
+          <div className="flex flex-1 items-center py-2 text-base">
+            <span className="inline-flex h-5 items-center">
+              {controller.textInput.value}
+            </span>
+            <span className="ml-0.5 inline-block h-4 w-2 animate-pulse bg-foreground" />
+          </div>
+        ) : (
+          <PromptInput.Textarea
+            className="min-h-0 py-2 text-base"
+            disabled={isStreaming}
+            maxLength={140}
+            placeholder="Describe what you want to build..."
+            ref={inputRef}
+          />
+        )}
+      </PromptInput.Body>
+      <PromptInput.Footer align="inline-end">
+        {isStreaming ? (
+          <PromptInput.Button
+            aria-label="Stop"
+            onClick={(event) => {
+              event.preventDefault();
+              onStop();
+            }}
+            variant="default"
+          >
+            <svg fill="currentColor" height="16" viewBox="0 0 24 24" width="16">
+              <title>Stop</title>
+              <rect height="12" width="12" x="6" y="6" />
+            </svg>
+          </PromptInput.Button>
+        ) : (
+          <PromptInput.Submit disabled={!hasText}>
+            <svg
+              fill="none"
+              height="16"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              width="16"
+            >
+              <title>Submit</title>
+              <path d="M12 5v14" />
+              <path d="M19 12l-7 7-7-7" />
+            </svg>
+          </PromptInput.Submit>
+        )}
+      </PromptInput.Footer>
+    </PromptInput>
+  );
+}
+
+// eslint-disable-next-line complexity -- demo builder includes UI + simulation
 export function Builder() {
   const [mode, setMode] = useState<Mode>("simulation");
   const [phase, setPhase] = useState<Phase>("typing");
-  const [typedPrompt, setTypedPrompt] = useState("");
-  const [userPrompt, setUserPrompt] = useState("");
+  const [, setTypedPrompt] = useState("");
   const [stageIndex, setStageIndex] = useState(-1);
   const [streamLines, setStreamLines] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<Tab>("json");
   const [simulationTree, setSimulationTree] = useState<UITree | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const promptApiRef = useRef<BuilderPromptApi | null>(null);
+
+  const activateInteractive = useCallback(() => {
+    if (mode === "simulation") {
+      setMode("interactive");
+      setPhase("complete");
+      promptApiRef.current?.clear();
+    }
+    setTimeout(() => inputRef.current?.focus?.(), 0);
+  }, [mode]);
 
   // Use the library's useUIStream hook for real API calls
   const {
@@ -207,32 +319,41 @@ export function Builder() {
       setMode("interactive");
       setPhase("complete");
       setTypedPrompt(SIMULATION_PROMPT);
-      setUserPrompt("");
+      promptApiRef.current?.clear();
     }
     clear();
-  }, [mode, clear]);
+  }, [clear, mode]);
 
   // Typing effect for simulation
   useEffect(() => {
-    if (mode !== "simulation" || phase !== "typing") return;
+    if (mode !== "simulation" || phase !== "typing") {
+      return;
+    }
 
     let i = 0;
     const interval = setInterval(() => {
       if (i < SIMULATION_PROMPT.length) {
-        setTypedPrompt(SIMULATION_PROMPT.slice(0, i + 1));
+        const nextValue = SIMULATION_PROMPT.slice(0, i + 1);
+        setTypedPrompt(nextValue);
+        promptApiRef.current?.set(nextValue);
         i++;
-      } else {
-        clearInterval(interval);
-        setTimeout(() => setPhase("streaming"), 500);
+        return;
       }
+
+      clearInterval(interval);
+      setTimeout(() => setPhase("streaming"), 500);
     }, 20);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+    };
   }, [mode, phase]);
 
   // Streaming effect for simulation
   useEffect(() => {
-    if (mode !== "simulation" || phase !== "streaming") return;
+    if (mode !== "simulation" || phase !== "streaming") {
+      return;
+    }
 
     let i = 0;
     const interval = setInterval(() => {
@@ -244,17 +365,20 @@ export function Builder() {
           setSimulationTree(stage.tree);
         }
         i++;
-      } else {
-        clearInterval(interval);
-        setTimeout(() => {
-          setPhase("complete");
-          setMode("interactive");
-          setUserPrompt("");
-        }, 500);
+        return;
       }
+
+      clearInterval(interval);
+      setTimeout(() => {
+        setPhase("complete");
+        setMode("interactive");
+        promptApiRef.current?.clear();
+      }, 500);
     }, 600);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+    };
   }, [mode, phase]);
 
   // Track stream lines from real API
@@ -267,7 +391,7 @@ export function Builder() {
         Object.keys(apiTree.elements).length > 0
       ) {
         setStreamLines((prev) => {
-          const lastLine = prev[prev.length - 1];
+          const lastLine = prev.at(-1);
           if (lastLine !== streamLine) {
             return [...prev, streamLine];
           }
@@ -277,22 +401,26 @@ export function Builder() {
     }
   }, [mode, apiTree, streamLines]);
 
-  const handleSubmit = useCallback(async () => {
-    if (!userPrompt.trim() || isStreaming) return;
-    setStreamLines([]);
-    await send(userPrompt);
-  }, [userPrompt, isStreaming, send]);
+  const handleSubmit = useCallback(
+    async (prompt: string) => {
+      if (!prompt.trim() || isStreaming) {
+        return;
+      }
+      setStreamLines([]);
+      await send(prompt);
+    },
+    [isStreaming, send]
+  );
 
   // Expose action handler for registry components - shows toast with text
   useEffect(() => {
-    (
-      window as unknown as { __demoAction?: (text: string) => void }
-    ).__demoAction = (text: string) => {
+    const w = window as unknown as { __demoAction?: (text: string) => void };
+    w.__demoAction = (text: string) => {
       toast(text);
     };
+
     return () => {
-      delete (window as unknown as { __demoAction?: (text: string) => void })
-        .__demoAction;
+      w.__demoAction = undefined;
     };
   }, []);
 
@@ -300,135 +428,55 @@ export function Builder() {
     ? JSON.stringify(currentTree, null, 2)
     : "// waiting...";
 
-  const isTypingSimulation = mode === "simulation" && phase === "typing";
   const isStreamingSimulation = mode === "simulation" && phase === "streaming";
   const showLoadingDots = isStreamingSimulation || isStreaming;
 
   return (
-    <div className="w-full max-w-4xl mx-auto text-left">
+    <div className="mx-auto w-full max-w-4xl text-left">
       {/* Prompt input */}
-      <div className="mb-6">
-        <div
-          className="border border-border rounded p-3 bg-background font-mono text-sm min-h-[44px] flex items-center justify-between cursor-text"
-          onClick={() => {
-            if (mode === "simulation") {
-              setMode("interactive");
-              setPhase("complete");
-              setUserPrompt("");
-              setTimeout(() => inputRef.current?.focus(), 0);
-            } else {
-              inputRef.current?.focus();
-            }
+      <PromptInputProvider>
+        <BuilderPromptInputInner
+          inputRef={inputRef}
+          isStreaming={isStreaming}
+          isTypingSimulation={mode === "simulation" && phase === "typing"}
+          onActivateInteractive={activateInteractive}
+          onStop={stopGeneration}
+          onSubmit={handleSubmit}
+          setApi={(api) => {
+            promptApiRef.current = api;
           }}
-        >
-          {mode === "simulation" ? (
-            <div className="flex items-center flex-1">
-              <span className="inline-flex items-center h-5">
-                {typedPrompt}
-              </span>
-              {isTypingSimulation && (
-                <span className="inline-block w-2 h-4 bg-foreground ml-0.5 animate-pulse" />
-              )}
-            </div>
-          ) : (
-            <form
-              className="flex items-center flex-1"
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSubmit();
-              }}
-            >
-              <input
-                ref={inputRef}
-                type="text"
-                value={userPrompt}
-                onChange={(e) => setUserPrompt(e.target.value)}
-                placeholder="Describe what you want to build..."
-                className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground/50 text-base"
-                disabled={isStreaming}
-                maxLength={140}
-              />
-            </form>
-          )}
-          {mode === "simulation" || isStreaming ? (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                stopGeneration();
-              }}
-              className="ml-2 w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors"
-              aria-label="Stop"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                stroke="none"
-              >
-                <rect x="6" y="6" width="12" height="12" />
-              </svg>
-            </button>
-          ) : (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleSubmit();
-              }}
-              disabled={!userPrompt.trim()}
-              className="ml-2 w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors disabled:opacity-30"
-              aria-label="Submit"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M12 5v14" />
-                <path d="M19 12l-7 7-7-7" />
-              </svg>
-            </button>
-          )}
-        </div>
-        <div className="mt-2 text-xs text-muted-foreground text-center">
-          Try: &quot;Create a login form&quot; or &quot;Build a feedback form
-          with rating&quot;
-        </div>
-      </div>
+        />
+      </PromptInputProvider>
 
-      <div className="grid lg:grid-cols-2 gap-4">
+      <div className="grid gap-4 lg:grid-cols-2">
         {/* Tabbed code/stream/json panel */}
         <div>
-          <div className="flex items-center gap-4 mb-2 h-6">
+          <div className="mb-2 flex h-6 items-center gap-4">
             {(["json", "stream", "code"] as const).map((tab) => (
               <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`text-xs font-mono transition-colors ${
+                className={`font-mono text-xs transition-colors ${
                   activeTab === tab
                     ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                type="button"
               >
                 {tab}
               </button>
             ))}
           </div>
-          <div className="border border-border rounded p-3 bg-background font-mono text-xs h-96 overflow-auto text-left">
+          <div className="h-96 overflow-auto rounded border border-border bg-background p-3 text-left font-mono text-xs">
             <div className={activeTab === "stream" ? "" : "hidden"}>
               {streamLines.length > 0 ? (
                 <>
                   <CodeBlock code={streamLines.join("\n")} lang="json" />
                   {showLoadingDots && (
-                    <div className="flex gap-1 mt-2">
-                      <span className="w-1 h-1 bg-muted-foreground rounded-full animate-pulse" />
-                      <span className="w-1 h-1 bg-muted-foreground rounded-full animate-pulse [animation-delay:75ms]" />
-                      <span className="w-1 h-1 bg-muted-foreground rounded-full animate-pulse [animation-delay:150ms]" />
+                    <div className="mt-2 flex gap-1">
+                      <span className="h-1 w-1 animate-pulse rounded-full bg-muted-foreground" />
+                      <span className="h-1 w-1 animate-pulse rounded-full bg-muted-foreground [animation-delay:75ms]" />
+                      <span className="h-1 w-1 animate-pulse rounded-full bg-muted-foreground [animation-delay:150ms]" />
                     </div>
                   )}
                 </>
@@ -449,25 +497,27 @@ export function Builder() {
 
         {/* Rendered output using json-render */}
         <div>
-          <div className="flex items-center justify-between mb-2 h-6">
-            <div className="text-xs text-muted-foreground font-mono">
+          <div className="mb-2 flex h-6 items-center justify-between">
+            <div className="font-mono text-muted-foreground text-xs">
               render
             </div>
             <button
-              onClick={() => setIsFullscreen(true)}
-              className="text-muted-foreground hover:text-foreground transition-colors"
               aria-label="Maximize"
+              className="text-muted-foreground transition-colors hover:text-foreground"
+              onClick={() => setIsFullscreen(true)}
+              type="button"
             >
               <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
                 fill="none"
+                height="14"
                 stroke="currentColor"
-                strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                width="14"
               >
+                <title>Maximize</title>
                 <path d="M8 3H5a2 2 0 0 0-2 2v3" />
                 <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
                 <path d="M3 16v3a2 2 0 0 0 2 2h3" />
@@ -475,9 +525,9 @@ export function Builder() {
               </svg>
             </button>
           </div>
-          <div className="border border-border rounded p-3 bg-background h-96 overflow-auto">
-            {currentTree && currentTree.root ? (
-              <div className="animate-in fade-in duration-200 w-full min-h-full flex items-center justify-center py-4">
+          <div className="h-96 overflow-auto rounded border border-border bg-background p-3">
+            {currentTree?.root ? (
+              <div className="fade-in flex min-h-full w-full animate-in items-center justify-center py-4 duration-200">
                 <JSONUIProvider
                   registry={
                     demoRegistry as Parameters<
@@ -486,21 +536,21 @@ export function Builder() {
                   }
                 >
                   <Renderer
-                    tree={currentTree}
-                    registry={
-                      demoRegistry as Parameters<typeof Renderer>[0]["registry"]
-                    }
-                    loading={isStreaming || isStreamingSimulation}
                     fallback={
                       fallbackComponent as Parameters<
                         typeof Renderer
                       >[0]["fallback"]
                     }
+                    loading={isStreaming || isStreamingSimulation}
+                    registry={
+                      demoRegistry as Parameters<typeof Renderer>[0]["registry"]
+                    }
+                    tree={currentTree}
                   />
                 </JSONUIProvider>
               </div>
             ) : (
-              <div className="h-full flex items-center justify-center text-muted-foreground/50 text-sm">
+              <div className="flex h-full items-center justify-center text-muted-foreground/50 text-sm">
                 {isStreaming ? "generating..." : "waiting..."}
               </div>
             )}
@@ -511,32 +561,34 @@ export function Builder() {
 
       {/* Fullscreen modal */}
       {isFullscreen && (
-        <div className="fixed inset-0 z-50 bg-background flex flex-col">
-          <div className="flex items-center justify-between px-6 h-14 border-b border-border">
-            <div className="text-sm font-mono">render</div>
+        <div className="fixed inset-0 z-50 flex flex-col bg-background">
+          <div className="flex h-14 items-center justify-between border-border border-b px-6">
+            <div className="font-mono text-sm">render</div>
             <button
-              onClick={() => setIsFullscreen(false)}
-              className="text-muted-foreground hover:text-foreground transition-colors p-1"
               aria-label="Close"
+              className="p-1 text-muted-foreground transition-colors hover:text-foreground"
+              onClick={() => setIsFullscreen(false)}
+              type="button"
             >
               <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
                 fill="none"
+                height="20"
                 stroke="currentColor"
-                strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                width="20"
               >
+                <title>Close</title>
                 <path d="M18 6L6 18" />
                 <path d="M6 6l12 12" />
               </svg>
             </button>
           </div>
           <div className="flex-1 overflow-auto p-6">
-            {currentTree && currentTree.root ? (
-              <div className="w-full min-h-full flex items-center justify-center">
+            {currentTree?.root ? (
+              <div className="flex min-h-full w-full items-center justify-center">
                 <JSONUIProvider
                   registry={
                     demoRegistry as Parameters<
@@ -545,21 +597,21 @@ export function Builder() {
                   }
                 >
                   <Renderer
-                    tree={currentTree}
-                    registry={
-                      demoRegistry as Parameters<typeof Renderer>[0]["registry"]
-                    }
-                    loading={isStreaming || isStreamingSimulation}
                     fallback={
                       fallbackComponent as Parameters<
                         typeof Renderer
                       >[0]["fallback"]
                     }
+                    loading={isStreaming || isStreamingSimulation}
+                    registry={
+                      demoRegistry as Parameters<typeof Renderer>[0]["registry"]
+                    }
+                    tree={currentTree}
                   />
                 </JSONUIProvider>
               </div>
             ) : (
-              <div className="h-full flex items-center justify-center text-muted-foreground/50 text-sm">
+              <div className="flex h-full items-center justify-center text-muted-foreground/50 text-sm">
                 {isStreaming ? "generating..." : "waiting..."}
               </div>
             )}
