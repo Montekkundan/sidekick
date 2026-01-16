@@ -11,7 +11,6 @@ import {
   SidebarTrigger,
 } from "@/registry/new-york/ui/sidebar"
 import { AppSidebar } from "./components/app-sidebar"
-import { BuilderProvider } from "./components/builder-provider"
 import { BuilderHeaderActions } from "./components/builder-header-actions"
 import {
   SidekickInset,
@@ -25,7 +24,6 @@ export default function WidgetLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <BuilderProvider>
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset className="overflow-x-hidden">
@@ -55,6 +53,5 @@ export default function WidgetLayout({
           </SidekickProvider>
         </SidebarInset>
       </SidebarProvider>
-    </BuilderProvider>
   )
 }
