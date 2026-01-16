@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     siteName: "ChatGPT Home",
     images: [
       {
-        url: "/api/og",
+        url: "/examples/chatgpt/chatgpt.jpeg",
         width: 1200,
         height: 630,
         alt: "ChatGPT Home — UI example",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: "ChatGPT Home — UI example",
     description: "ChatGPT-like landing UI built with design-system components.",
     creator: "@montekkundan",
-    images: ["/api/og"],
+    images: ["/examples/chatgpt/chatgpt.jpeg"],
   },
 };
 

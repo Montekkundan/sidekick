@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     siteName: "Cursor Editor",
     images: [
       {
-        url: "/api/og",
+        url: "/examples/cursor-editor/cursor-editor.jpeg",
         width: 1200,
         height: 630,
         alt: "Cursor Editor — Sidekick UI example",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     description:
       "Cursor-like editor UI showcasing Sidekick + PromptInput components.",
     creator: "@montekkundan",
-    images: ["/api/og"],
+    images: ["/examples/cursor-editor/cursor-editor.jpeg"],
   },
 };
 

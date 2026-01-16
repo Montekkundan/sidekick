@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     siteName: "Help Page",
     images: [
       {
-        url: "/api/og",
+        url: "/examples/help-page/help-page.jpeg",
         width: 1200,
         height: 630,
         alt: "Help Page — Help Center UI",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: "Help Page — Help Center UI",
     description: "Visual help center demo with a Sidekick chatbot.",
     creator: "@montekkundan",
-    images: ["/api/og"],
+    images: ["/examples/help-page/help-page.jpeg"],
   },
 };
 

@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     siteName: "Sidekick Examples",
     images: [
       {
-        url: "/api/og",
+        url: "/examples/fuma-mdx/fuma-mdx.jpeg",
         width: 1200,
         height: 630,
         alt: "Sidekick Examples - Fumadocs MDX",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     description:
       "Documentation and examples for using Sidekick with Fumadocs MDX, demonstrating powerful AI-assisted documentation features.",
     creator: "@montekkundan",
-    images: ["/api/og"],
+    images: ["/examples/fuma-mdx/fuma-mdx.jpeg"],
   },
 };
 

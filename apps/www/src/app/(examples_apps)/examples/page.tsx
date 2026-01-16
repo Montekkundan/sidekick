@@ -1,16 +1,16 @@
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
 import { ArrowUpRightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
 
-type ExampleCard = {
+interface ExampleCard {
   title: string;
   description: string;
   href: string;
   imageSrc: string;
   external?: boolean;
-};
+}
 
 const examples: ExampleCard[] = [
   // {
@@ -23,25 +23,25 @@ const examples: ExampleCard[] = [
     title: "Fuma-MDX",
     description: "Examples served from the MDX microfrontend.",
     href: "/examples/fuma-mdx",
-    imageSrc: "/file.svg",
+    imageSrc: "/examples/fuma-mdx/fuma-mdx.jpeg",
   },
   {
     title: "Help Page",
     description: "Examples served from the Help Page microfrontend.",
     href: "/examples/help-page",
-    imageSrc: "/help-circle.svg",
+    imageSrc: "/examples/help-page/help-page.jpeg",
   },
   {
     title: "ChatGPT",
     description: "Examples served from the ChatGPT microfrontend.",
     href: "/examples/chatgpt",
-    imageSrc: "/chatgpt-logo.png",
+    imageSrc: "/examples/chatgpt/chatgpt.jpeg",
   },
   {
     title: "Cursor Editor",
     description: "Examples served from the Cursor Editor microfrontend.",
     href: "/examples/cursor-editor",
-    imageSrc: "/cursor-icon.png",
+    imageSrc: "/examples/cursor-editor/cursor-editor.jpeg",
   },
 ];
 
@@ -92,27 +92,28 @@ function ExampleGridCard({
 
 export default function Page() {
   return (
-     <div
-          className="relative z-10 flex min-h-svh flex-col bg-background"
-          data-slot="layout"
-        >
-          <SiteHeader />
-          <main className="flex flex-1 flex-col">
-    <div className="mx-auto w-full max-w-6xl px-6 py-10">
-      <div className="mb-8 space-y-2">
-        <h1 className="font-semibold text-3xl">Examples</h1>
-        <p className="max-w-2xl text-muted-foreground">
-          Small example apps mounted under your microfrontend routes.
-        </p>
-      </div>
+    <div
+      className="relative z-10 flex min-h-svh flex-col bg-background"
+      data-slot="layout"
+    >
+      <SiteHeader />
+      <main className="flex flex-1 flex-col">
+        <div className="mx-auto w-full max-w-6xl px-6 py-10">
+          <div className="mb-8 space-y-2">
+            <h1 className="font-semibold text-3xl">Examples</h1>
+            <p className="max-w-2xl text-muted-foreground">
+              Small example apps mounted under your microfrontend routes.
+            </p>
+          </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {examples.map((example) => (
-          <ExampleGridCard key={example.href} {...example} />
-        ))}
-      </div>
-    </div></main>
-          <SiteFooter />
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {examples.map((example) => (
+              <ExampleGridCard key={example.href} {...example} />
+            ))}
+          </div>
         </div>
+      </main>
+      <SiteFooter />
+    </div>
   );
 }
