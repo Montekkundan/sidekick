@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Book } from "@/components/book";
+import { Icons } from "./icons";
 
 const cookbookItems = [
   // {
@@ -18,6 +19,7 @@ const cookbookItems = [
     color: "#0F2E2E",
     textColor: "#E8F2F0",
     textured: true,
+    illustraion: <Icons.openai className="size-8" />
   },
   {
     title: "Cursor Editor Page",
@@ -26,6 +28,7 @@ const cookbookItems = [
     textColor: "#E6ECF5",
     textured: true,
     variant: "simple" as const,
+    illustraion: <Icons.cursor className="size-8" />
   },
   {
     title: "Help Center Page",
@@ -66,6 +69,7 @@ export function CookbookBooksItems() {
             textured={item.textured}
             title={item.title}
             variant={item.variant}
+            illustration={item.illustraion}
           />
         </Link>
       ))}

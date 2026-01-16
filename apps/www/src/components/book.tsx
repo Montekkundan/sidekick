@@ -84,11 +84,11 @@ export const Book = ({
             )}
             style={{ background: _color }}
           >
-            {variant === "stripe" && illustration && (
+            {/* {variant === "stripe" && illustration && (
               <div className="absolute h-full w-full">
                 {_illustration}
               </div>
-            )}
+            )} */}
             <div className="absolute h-full w-[8.2%] mix-blend-overlay" style={{ background: "var(--ds-book-bind)" }} />
           </div>
           <div
