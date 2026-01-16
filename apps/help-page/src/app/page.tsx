@@ -295,7 +295,6 @@ export default function Home() {
         </nav>
       </header>
 
-      <main className="relative mx-auto w-full max-w-5xl px-6 pb-28">
         <section className="mx-auto flex max-w-3xl flex-col items-center gap-4 pt-14 text-center">
           <h1 className="font-semibold text-4xl tracking-tight">
             How can we help you today?
@@ -355,7 +354,6 @@ export default function Home() {
             />
           </div>
         </section>
-      </main>
 
       <footer className="relative border-t px-6 py-12">
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-5">

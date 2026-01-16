@@ -13,17 +13,35 @@ type ExampleCard = {
 };
 
 const examples: ExampleCard[] = [
+  // {
+  //   title: "Next Navigation",
+  //   description: "Examples served from the navigation microfrontend.",
+  //   href: "/examples/next-navigation",
+  //   imageSrc: "/next.svg",
+  // },
   {
-    title: "Next Navigation",
-    description: "Examples served from the navigation microfrontend.",
-    href: "/examples/next-navigation",
-    imageSrc: "/next.svg",
+    title: "Fuma-MDX",
+    description: "Examples served from the MDX microfrontend.",
+    href: "/examples/fuma-mdx",
+    imageSrc: "/file.svg",
   },
   {
-    title: "MDX",
-    description: "Examples served from the MDX microfrontend.",
-    href: "/examples/mdx",
-    imageSrc: "/file.svg",
+    title: "Help Page",
+    description: "Examples served from the Help Page microfrontend.",
+    href: "/examples/help-page",
+    imageSrc: "/help-circle.svg",
+  },
+  {
+    title: "ChatGPT",
+    description: "Examples served from the ChatGPT microfrontend.",
+    href: "/examples/chatgpt",
+    imageSrc: "/chatgpt-logo.png",
+  },
+  {
+    title: "Cursor Editor",
+    description: "Examples served from the Cursor Editor microfrontend.",
+    href: "/examples/cursor-editor",
+    imageSrc: "/cursor-icon.png",
   },
 ];
 
