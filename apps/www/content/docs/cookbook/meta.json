@@ -1,0 +1,9 @@
+{
+  "root": true,
+  "pages": [
+    "chatgpt-home",
+    "fuma-docs-mdx",
+    "cursor-editor",
+    "help-center"
+]
+}
