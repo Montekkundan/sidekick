@@ -1,54 +1,68 @@
 "use client";
 
-import * as React from "react";
-import dynamic from "next/dynamic";
 import type { OnMount } from "@monaco-editor/react";
+import { cn } from "@repo/design-system/lib/utils";
 import type * as Monaco from "monaco-editor";
+import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
-
-import { cn } from "@repo/design-system/lib/utils";;
+import * as React from "react";
+import {
+  BUILDER_ACTION_NAMES,
+  BUILDER_COMPONENT_TYPES,
+} from "@/app/(builder)/lib/json-render/catalog";
 import * as RegistryComponents from "@/registry/new-york/ui";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
 });
 
-const A2UI_COMPONENTS = [
-  "Card",
-  "Column",
-  "Row",
-  "Text",
-  "Button",
-  "Divider",
-  "Image",
-  "List",
-  "ListItem",
-];
-
-const A2UI_FIELDS = [
-  "id",
-  "component",
+const JSON_RENDER_FIELDS = [
+  "root",
+  "elements",
+  "key",
+  "type",
+  "props",
   "children",
-  "child",
+  "className",
+  "visible",
+  "validation",
+  "checks",
+  "validateOn",
+  "fn",
+  "args",
+  "message",
   "text",
-  "path",
-  "variant",
-  "gap",
-  "alignment",
-  "src",
-  "alt",
-  "ordered",
+  "valuePath",
   "label",
+  "variant",
+  "size",
+  "action",
+  "name",
+  "params",
+  "confirm",
+  "title",
+  "description",
+  "url",
+  "path",
+  "value",
+  "gap",
+  "align",
+  "orientation",
+  "rows",
+  "placeholder",
 ];
 
 let completionRegistered = false;
 let jsonDefaultsConfigured = false;
 let tsDefaultsConfigured = false;
-const jsonSchemaRegistry = new Map<string, {
-  uri: string;
-  schema: Record<string, unknown>;
-  fileMatch?: string[];
-}>();
+const jsonSchemaRegistry = new Map<
+  string,
+  {
+    uri: string;
+    schema: Record<string, unknown>;
+    fileMatch?: string[];
+  }
+>();
 const registryComponentNames = Object.keys(RegistryComponents).filter(
   (name) => name[0] === name[0]?.toUpperCase()
 );
@@ -71,14 +85,21 @@ function registerCompletions(monaco: Parameters<OnMount>[1]) {
         endColumn: word.endColumn,
       };
 
-      const componentSuggestions = A2UI_COMPONENTS.map((label) => ({
+      const componentSuggestions = BUILDER_COMPONENT_TYPES.map((label) => ({
         label,
         kind: monaco.languages.CompletionItemKind.Keyword,
         insertText: label,
         range,
       }));
 
-      const fieldSuggestions = A2UI_FIELDS.map((label) => ({
+      const actionSuggestions = BUILDER_ACTION_NAMES.map((label) => ({
+        label,
+        kind: monaco.languages.CompletionItemKind.Function,
+        insertText: label,
+        range,
+      }));
+
+      const fieldSuggestions = JSON_RENDER_FIELDS.map((label) => ({
         label,
         kind: monaco.languages.CompletionItemKind.Field,
         insertText: label,
@@ -86,7 +107,11 @@ function registerCompletions(monaco: Parameters<OnMount>[1]) {
       }));
 
       return {
-        suggestions: [...componentSuggestions, ...fieldSuggestions],
+        suggestions: [
+          ...componentSuggestions,
+          ...actionSuggestions,
+          ...fieldSuggestions,
+        ],
       };
     },
   });
@@ -117,7 +142,8 @@ function configureTypeScriptDefaults(monaco: Parameters<OnMount>[1]) {
     languageDefaults.setCompilerOptions({
       allowNonTsExtensions: true,
       module: monaco.languages.typescript.ModuleKind.ESNext,
-      moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeNext,
+      moduleResolution:
+        monaco.languages.typescript.ModuleResolutionKind.NodeNext,
       target: monaco.languages.typescript.ScriptTarget.ES2022,
       jsx: monaco.languages.typescript.JsxEmit.ReactJSX,
     });
@@ -223,7 +249,7 @@ export function CodeEditor({
   };
 
   React.useEffect(() => {
-    if (!monacoRef.current || !jsonSchema) return undefined;
+    if (!(monacoRef.current && jsonSchema)) return undefined;
     const fileMatch = jsonSchema.fileMatch ?? (path ? [path] : undefined);
     jsonSchemaRegistry.set(jsonSchema.uri, {
       ...jsonSchema,
@@ -269,7 +295,9 @@ export function CodeEditor({
     ];
 
     return () => {
-      globalsDisposableRef.current.forEach((disposable) => disposable.dispose());
+      globalsDisposableRef.current.forEach((disposable) =>
+        disposable.dispose()
+      );
       globalsDisposableRef.current = [];
     };
   }, [globals, editorId]);

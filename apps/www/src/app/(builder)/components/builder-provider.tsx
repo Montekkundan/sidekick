@@ -1,29 +1,14 @@
 "use client";
 
-import * as React from "react";
 import { nanoid } from "nanoid";
+import React from "react";
 
 export type BuilderSession = {
   id: string;
   title: string;
   createdAt: number;
   updatedAt: number;
-  jsx: string;
-  states: BuilderState[];
-  activeStateId: string;
-  stateSchema: BuilderStateSchema;
-};
-
-export type BuilderState = {
-  id: string;
-  name: string;
-  data: string;
-};
-
-export type BuilderStateSchema = {
-  mode: "zod" | "json";
-  zod: string;
-  json: string;
+  uiTree: string;
 };
 
 type BuilderContextValue = {
@@ -39,53 +24,61 @@ type BuilderContextValue = {
 const STORAGE_KEY = "sidekick.builder.sessions";
 const ACTIVE_SESSION_KEY = "sidekick.builder.active";
 
-export const DEFAULT_WIDGET_JSX = `<Card>
-  <CardContent className="space-y-4">
-    <h3 className="text-lg font-semibold">{title}</h3>
-    <p className="text-sm text-muted-foreground">
-      Build an interface from shadcn UI components.
-    </p>
-    <Button>Continue</Button>
-  </CardContent>
-</Card>`;
-
-export const DEFAULT_A2UI_DATA = `{
-  "title": "Hello World"
-}`;
-
-export const DEFAULT_STATE_SCHEMA_ZOD = `import { z } from "zod";
-
-const WidgetState = z.strictObject({
-  title: z.string(),
-});
-
-export default WidgetState;`;
-
-export const DEFAULT_STATE_SCHEMA_JSON = `{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object",
-  "properties": {
+export const DEFAULT_WIDGET_UITREE = `{
+  "root": "root",
+  "elements": {
+    "root": {
+      "key": "root",
+      "type": "Card",
+      "props": {
+        "className": "w-full"
+      },
+      "children": ["content"],
+      "parentKey": null
+    },
+    "content": {
+      "key": "content",
+      "type": "CardContent",
+      "props": {
+        "className": "space-y-4"
+      },
+      "children": ["title", "subtitle", "cta"],
+      "parentKey": "root"
+    },
     "title": {
-      "type": "string"
+      "key": "title",
+      "type": "Text",
+      "props": {
+        "variant": "h3",
+        "text": "Hello World"
+      },
+      "parentKey": "content"
+    },
+    "subtitle": {
+      "key": "subtitle",
+      "type": "Text",
+      "props": {
+        "text": "Build an interface from shadcn UI components.",
+        "variant": "caption"
+      },
+      "parentKey": "content"
+    },
+    "cta": {
+      "key": "cta",
+      "type": "Button",
+      "props": {
+        "label": "Continue",
+        "action": {
+          "name": "toast",
+          "params": {
+            "title": "Clicked"
+          }
+        }
+      },
+      "parentKey": "content"
     }
-  },
-  "required": [
-    "title"
-  ],
-  "additionalProperties": false
+  }
 }`;
-
-const DEFAULT_STATE: BuilderState = {
-  id: "default",
-  name: "Default",
-  data: DEFAULT_A2UI_DATA,
-};
-
-const DEFAULT_STATE_SCHEMA: BuilderStateSchema = {
-  mode: "json",
-  zod: DEFAULT_STATE_SCHEMA_ZOD,
-  json: DEFAULT_STATE_SCHEMA_JSON,
-};
 
 const BuilderContext = React.createContext<BuilderContextValue | null>(null);
 
@@ -96,43 +89,21 @@ function buildSession(overrides: Partial<BuilderSession> = {}): BuilderSession {
     title: "Untitled chat",
     createdAt: now,
     updatedAt: now,
-    jsx: DEFAULT_WIDGET_JSX,
-    states: [DEFAULT_STATE],
-    activeStateId: DEFAULT_STATE.id,
-    stateSchema: { ...DEFAULT_STATE_SCHEMA },
+    uiTree: DEFAULT_WIDGET_UITREE,
     ...overrides,
   };
 }
 
 function normalizeSession(session: BuilderSession): BuilderSession {
-  const jsx =
-    session.jsx && typeof session.jsx === "string"
-      ? session.jsx
-      : DEFAULT_WIDGET_JSX;
-  const states = session.states?.length
-    ? session.states
-    : [
-        {
-          id: "default",
-          name: "Default",
-          data:
-            (session as unknown as { data?: string }).data ?? DEFAULT_A2UI_DATA,
-        },
-      ];
-  const stateSchema = session.stateSchema
-    ? {
-        mode: session.stateSchema.mode ?? DEFAULT_STATE_SCHEMA.mode,
-        zod: session.stateSchema.zod ?? DEFAULT_STATE_SCHEMA.zod,
-        json: session.stateSchema.json ?? DEFAULT_STATE_SCHEMA.json,
-      }
-    : DEFAULT_STATE_SCHEMA;
+  // Legacy sessions stored JSX; we intentionally reset those to the default UI tree.
+  let uiTree = DEFAULT_WIDGET_UITREE;
+  if (typeof session.uiTree === "string" && session.uiTree.length > 0) {
+    uiTree = session.uiTree;
+  }
 
   return {
     ...session,
-    jsx,
-    states,
-    activeStateId: session.activeStateId ?? states[0]?.id ?? "default",
-    stateSchema,
+    uiTree,
   };
 }
 
@@ -142,12 +113,14 @@ function safeParseSessions(raw: string | null): BuilderSession[] {
     const parsed = JSON.parse(raw) as BuilderSession[];
     if (!Array.isArray(parsed)) return [];
     const seen = new Set<string>();
-    return parsed.filter((session) => {
-      if (typeof session?.id !== "string") return false;
-      if (seen.has(session.id)) return false;
-      seen.add(session.id);
-      return true;
-    }).map(normalizeSession);
+    return parsed
+      .filter((session) => {
+        if (typeof session?.id !== "string") return false;
+        if (seen.has(session.id)) return false;
+        seen.add(session.id);
+        return true;
+      })
+      .map(normalizeSession);
   } catch {
     return [];
   }
@@ -161,9 +134,7 @@ export function BuilderProvider({ children }: { children: React.ReactNode }) {
   const [isReady, setIsReady] = React.useState(false);
 
   React.useEffect(() => {
-    const storedSessions = safeParseSessions(
-      localStorage.getItem(STORAGE_KEY)
-    );
+    const storedSessions = safeParseSessions(localStorage.getItem(STORAGE_KEY));
     const storedActive = localStorage.getItem(ACTIVE_SESSION_KEY);
     const initialSessions =
       storedSessions.length > 0 ? storedSessions : [buildSession()];
@@ -171,7 +142,7 @@ export function BuilderProvider({ children }: { children: React.ReactNode }) {
       storedActive &&
       initialSessions.some((session) => session.id === storedActive)
         ? storedActive
-        : initialSessions[0]?.id ?? null;
+        : (initialSessions[0]?.id ?? null);
 
     setSessions(initialSessions);
     setActiveSessionId(initialActive);
@@ -262,9 +233,7 @@ export function BuilderProvider({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <BuilderContext.Provider value={value}>
-      {children}
-    </BuilderContext.Provider>
+    <BuilderContext.Provider value={value}>{children}</BuilderContext.Provider>
   );
 }
 
