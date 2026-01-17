@@ -11,7 +11,7 @@ export const siteConfig = {
   description:
     "An open-source library of pre-built components and templates for building developer tools.",
   links: {
-    twitter: "https://twitter.com/montekkundan",
+    twitter: "https://x.com/montekkundan",
     github: "https://github.com/montekkundan/sidekick",
   },
   navItems: [
