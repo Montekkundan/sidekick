@@ -1,7 +1,7 @@
 "use client";
 
-import type { ComponentRenderProps } from "./types";
-import { baseClass, getCustomClass } from "./utils";
+import type { ComponentRenderProps } from "@repo/design-system/lib/types";
+import { baseClass, getCustomClass } from "@repo/design-system/lib/registry_utils";
 
 export function Fallback({ element }: ComponentRenderProps) {
   const customClass = getCustomClass(element.props);

@@ -2,12 +2,12 @@
 
 import type { UITree } from "@json-render/core";
 import { JSONUIProvider, Renderer, useUIStream } from "@json-render/react";
+import { CodeBlock } from "@repo/design-system/components/code-block";
 import {
-  demoRegistry,
+  builderRegistry,
   fallbackComponent,
   useInteractiveState,
-} from "@repo/design-system/components/builder/index";
-import { CodeBlock } from "@repo/design-system/components/code-block";
+} from "@repo/design-system/lib/registry";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Toaster, toast } from "sonner";
 import {
@@ -151,22 +151,135 @@ const SIMULATION_STAGES: SimulationStage[] = [
   },
 ];
 
-const CODE_EXAMPLE = `import { Renderer, useUIStream } from '@json-render/react';
-import { registry } from './registry';
+function toJsxPropValue(value: unknown): string {
+  if (value === null) {
+    return "null";
+  }
+  if (value === undefined) {
+    return "undefined";
+  }
+  if (typeof value === "string") {
+    return JSON.stringify(value);
+  }
+  if (typeof value === "number" || typeof value === "boolean") {
+    return String(value);
+  }
 
-function App() {
-  const { tree, isStreaming, send } = useUIStream({
-    api: '/api/generate',
-  });
+  if (Array.isArray(value)) {
+    return `[${value.map((v) => toJsxPropValue(v)).join(", ")}]`;
+  }
 
-  return (
-    <Renderer
-      tree={tree}
-      registry={registry}
-      loading={isStreaming}
-    />
-  );
-}`;
+  if (typeof value === "object") {
+    return JSON.stringify(value);
+  }
+
+  return JSON.stringify(String(value));
+}
+
+function propsToJsx(props: Record<string, unknown> | undefined): string {
+  if (!props) {
+    return "";
+  }
+
+  const entries = Object.entries(props).filter(([, v]) => v !== undefined);
+  if (entries.length === 0) {
+    return "";
+  }
+
+  return entries
+    .map(([k, v]) => {
+      if (k === "className" && Array.isArray(v)) {
+        return ` className={${JSON.stringify(v.join(" "))}}`;
+      }
+
+      if (typeof v === "string") {
+        return ` ${k}=${JSON.stringify(v)}`;
+      }
+
+      return ` ${k}={${toJsxPropValue(v)}}`;
+    })
+    .join("");
+}
+
+function treeToTsx(tree: UITree): string {
+  const elements = tree.elements ?? {};
+
+  function renderNode(nodeKey: string, depth: number): string {
+    const el = elements[nodeKey];
+    if (!el) {
+      return "";
+    }
+
+    // Special-case our builder Text wrapper: prefer rendering its content as plain text.
+    if (el.type === "Text") {
+      const props = el.props as unknown as { content?: unknown };
+      const content = props?.content;
+      return typeof content === "string" ? JSON.stringify(content) : "";
+    }
+
+    const indent = "  ".repeat(depth);
+    const jsxProps = propsToJsx(el.props as Record<string, unknown>);
+    const childKeys = Array.isArray(el.children) ? el.children : [];
+    const renderedChildren = childKeys
+      .map((childKey) => renderNode(childKey, depth + 1))
+      .filter(Boolean);
+
+    if (renderedChildren.length === 0) {
+      return `${indent}<${el.type}${jsxProps} />`;
+    }
+
+    const childrenBlock = renderedChildren.join("\n");
+
+    return `${indent}<${el.type}${jsxProps}>\n${childrenBlock}\n${indent}</${el.type}>`;
+  }
+
+  const rootKey = tree.root;
+  if (!(rootKey && elements[rootKey])) {
+    return "// waiting...";
+  }
+
+  const used = new Set<string>();
+  for (const el of Object.values(elements)) {
+    used.add(el.type);
+  }
+
+  // Native HTML elements that shouldn't be imported
+  const nativeElements = new Set([
+    "div",
+    "span",
+    "p",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "a",
+    "img",
+    "ul",
+    "ol",
+    "li",
+    "section",
+    "article",
+    "header",
+    "footer",
+    "nav",
+    "main",
+    "aside",
+  ]);
+
+  const importNames = Array.from(used)
+    .filter((t) => t !== "Text" && !nativeElements.has(t))
+    .sort();
+
+  const importsLine = importNames.length
+    ? `import { ${importNames.join(", ")} } from "@repo/design-system/lib/registry";\n\n`
+    : "";
+
+  const body = renderNode(rootKey, 2);
+
+  return `${importsLine}export function Generated() {\n  return (\n${body}\n  );\n}\n`;
+}
 
 type Mode = "simulation" | "interactive";
 type Phase = "typing" | "streaming" | "complete";
@@ -428,6 +541,10 @@ export function Builder() {
     ? JSON.stringify(currentTree, null, 2)
     : "// waiting...";
 
+  const generatedTsxCode = currentTree
+    ? treeToTsx(currentTree)
+    : "// waiting...";
+
   const isStreamingSimulation = mode === "simulation" && phase === "streaming";
   const showLoadingDots = isStreamingSimulation || isStreaming;
 
@@ -490,7 +607,7 @@ export function Builder() {
               <CodeBlock code={jsonCode} lang="json" />
             </div>
             <div className={activeTab === "code" ? "" : "hidden"}>
-              <CodeBlock code={CODE_EXAMPLE} lang="tsx" />
+              <CodeBlock code={generatedTsxCode} lang="tsx" />
             </div>
           </div>
         </div>
@@ -530,7 +647,7 @@ export function Builder() {
               <div className="fade-in flex min-h-full w-full animate-in items-center justify-center py-4 duration-200">
                 <JSONUIProvider
                   registry={
-                    demoRegistry as Parameters<
+                    builderRegistry as Parameters<
                       typeof JSONUIProvider
                     >[0]["registry"]
                   }
@@ -543,7 +660,9 @@ export function Builder() {
                     }
                     loading={isStreaming || isStreamingSimulation}
                     registry={
-                      demoRegistry as Parameters<typeof Renderer>[0]["registry"]
+                      builderRegistry as Parameters<
+                        typeof Renderer
+                      >[0]["registry"]
                     }
                     tree={currentTree}
                   />
@@ -591,7 +710,7 @@ export function Builder() {
               <div className="flex min-h-full w-full items-center justify-center">
                 <JSONUIProvider
                   registry={
-                    demoRegistry as Parameters<
+                    builderRegistry as Parameters<
                       typeof JSONUIProvider
                     >[0]["registry"]
                   }
@@ -604,7 +723,9 @@ export function Builder() {
                     }
                     loading={isStreaming || isStreamingSimulation}
                     registry={
-                      demoRegistry as Parameters<typeof Renderer>[0]["registry"]
+                      builderRegistry as Parameters<
+                        typeof Renderer
+                      >[0]["registry"]
                     }
                     tree={currentTree}
                   />
