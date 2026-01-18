@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import {
   PromptInput,
   PromptInputProvider,
+  usePromptInputController,
 } from "@/registry/new-york/blocks/prompt-input";
 
 function toJsxPropValue(value: unknown): string {
@@ -341,54 +342,63 @@ function treeToTsx(tree: UITree): string {
   return `${importsLine}export function Generated() {\n  return (\n${body}\n  );\n}\n`;
 }
 
-function BuilderInput({
-  isLoading,
-  onSubmit,
-}: {
+interface PresetsInputProps {
   isLoading: boolean;
   onSubmit: (text: string) => void;
-}) {
+}
+
+function PresetRow() {
+  const controller = usePromptInputController();
+  const presets = [
+    { label: "Summary", value: "Summarize this in three bullets." },
+    { label: "Rewrite", value: "Rewrite with a confident tone." },
+    { label: "Plan", value: "Create a 3-step plan." },
+  ];
+
   return (
-    <PromptInput
-      className="font-mono text-sm"
-      onSubmit={(msg) => {
-        // Handle both string and object messages if PromptInputMessage type varies
-        const text = typeof msg === "string" ? msg : msg.text;
-        if (text) onSubmit(text);
-      }}
-      variant="outline"
-    >
-      <PromptInput.Body className="px-3">
-        <PromptInput.Textarea
-          className="min-h-0 py-2 text-base"
-          disabled={isLoading}
-          maxLength={140}
-          placeholder="Describe what you want to build..."
-        />
-      </PromptInput.Body>
-      <PromptInput.Footer align="inline-end">
-        <PromptInput.Button
-          disabled={isLoading}
-          type="submit"
-          variant="default"
+    <div className="flex flex-wrap gap-3 text-muted-foreground text-xs">
+      {presets.map((preset) => (
+        <button
+          className="whitespace-nowrap underline-offset-4 transition hover:text-foreground hover:underline"
+          key={preset.label}
+          onClick={() => controller.textInput.setInput(preset.value)}
+          type="button"
         >
-          <svg
-            fill="none"
-            height="16"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            width="16"
-          >
-            <title>Submit</title>
-            <path d="M12 5v14" />
-            <path d="M19 12l-7 7-7-7" />
-          </svg>
-        </PromptInput.Button>
-      </PromptInput.Footer>
-    </PromptInput>
+          {preset.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function BuilderInput({ isLoading, onSubmit }: PresetsInputProps) {
+  return (
+    <PromptInputProvider initialInput="Create a stack of 3 cards with movie titles and ratings">
+          <div className="space-y-3">
+            <PresetRow />
+             <PromptInput
+        className="font-mono text-sm"
+        onSubmit={(msg) => {
+          const text = typeof msg === "string" ? msg : msg.text;
+          if (text) onSubmit(text);
+        }}
+        >
+              <PromptInput.Body>
+                <PromptInput.Textarea
+                disabled={isLoading}
+                maxLength={140}
+                placeholder="Describe what you want to build..." />
+              </PromptInput.Body>
+              <PromptInput.Footer>
+                <PromptInput.Tools />
+                <PromptInput.Submit
+                disabled={isLoading}
+            status={isLoading ? "streaming" : "ready"}
+                />
+              </PromptInput.Footer>
+            </PromptInput>
+          </div>
+        </PromptInputProvider>
   );
 }
 
