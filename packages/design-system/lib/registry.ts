@@ -533,6 +533,7 @@ import {
 } from "@repo/design-system/components/ui/sidebar";
 import { Skeleton } from "@repo/design-system/components/ui/skeleton";
 import { Slider } from "@repo/design-system/components/ui/slider";
+import { Toaster } from "@repo/design-system/components/ui/sonner";
 import { Spinner } from "@repo/design-system/components/ui/spinner";
 import { Switch } from "@repo/design-system/components/ui/switch";
 import {
@@ -601,19 +602,25 @@ function fromElementProps(
       return createElement(Comp, {
         ...rest,
         className: mergedClassName.length ? mergedClassName : undefined,
-        children,
+        children: children ?? rawProps.children,
       } as any);
     }
 
     if (key === "Input" || key === "Textarea") {
       const { label, ...rest } = rawProps;
-      return createElement(Comp, { ...rest, children } as any);
+      return createElement(Comp, {
+        ...rest,
+        children: children ?? rawProps.children,
+      } as any);
     }
 
     if (key === "Button") {
       const { label, variant, actionText, ...rest } = rawProps;
+      // Prefer structural children, then props.children (Shadcn pattern), then legacy label prop
       const resolvedChildren =
-        children ?? (typeof label === "string" ? label : undefined);
+        children ??
+        rawProps.children ??
+        (typeof label === "string" ? label : undefined);
       return createElement(Comp, {
         ...rest,
         children: resolvedChildren,
@@ -630,9 +637,10 @@ function fromElementProps(
       } as any);
     }
 
+    // Default case: Allow props.children to work if structural children are not provided
     return createElement(Comp, {
       ...rawProps,
-      children,
+      children: children ?? rawProps.children,
     } as any);
   };
 }
@@ -828,6 +836,7 @@ const rawRegistry = {
   Skeleton,
   Slider,
   Spinner,
+  Sonner: Toaster,
   Switch,
   Table,
   TableBody,

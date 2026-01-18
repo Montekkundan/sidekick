@@ -17,140 +17,6 @@ import {
   usePromptInputController,
 } from "@/registry/new-york/blocks/prompt-input";
 
-const SIMULATION_PROMPT = "Create a contact form with name, email, and message";
-
-interface SimulationStage {
-  tree: UITree;
-  stream: string;
-}
-
-const SIMULATION_STAGES: SimulationStage[] = [
-  {
-    tree: {
-      root: "card",
-      elements: {
-        card: {
-          key: "card",
-          type: "Card",
-          props: { title: "Contact Us", maxWidth: "md" },
-          children: [],
-        },
-      },
-    },
-    stream: '{"op":"set","path":"/root","value":"card"}',
-  },
-  {
-    tree: {
-      root: "card",
-      elements: {
-        card: {
-          key: "card",
-          type: "Card",
-          props: { title: "Contact Us", maxWidth: "md" },
-          children: ["name"],
-        },
-        name: {
-          key: "name",
-          type: "Input",
-          props: { label: "Name", name: "name" },
-        },
-      },
-    },
-    stream:
-      '{"op":"add","path":"/elements/card","value":{"key":"card","type":"Card","props":{"title":"Contact Us","maxWidth":"md"},"children":["name"]}}',
-  },
-  {
-    tree: {
-      root: "card",
-      elements: {
-        card: {
-          key: "card",
-          type: "Card",
-          props: { title: "Contact Us", maxWidth: "md" },
-          children: ["name", "email"],
-        },
-        name: {
-          key: "name",
-          type: "Input",
-          props: { label: "Name", name: "name" },
-        },
-        email: {
-          key: "email",
-          type: "Input",
-          props: { label: "Email", name: "email" },
-        },
-      },
-    },
-    stream:
-      '{"op":"add","path":"/elements/email","value":{"key":"email","type":"Input","props":{"label":"Email","name":"email"}}}',
-  },
-  {
-    tree: {
-      root: "card",
-      elements: {
-        card: {
-          key: "card",
-          type: "Card",
-          props: { title: "Contact Us", maxWidth: "md" },
-          children: ["name", "email", "message"],
-        },
-        name: {
-          key: "name",
-          type: "Input",
-          props: { label: "Name", name: "name" },
-        },
-        email: {
-          key: "email",
-          type: "Input",
-          props: { label: "Email", name: "email" },
-        },
-        message: {
-          key: "message",
-          type: "Textarea",
-          props: { label: "Message", name: "message" },
-        },
-      },
-    },
-    stream:
-      '{"op":"add","path":"/elements/message","value":{"key":"message","type":"Textarea","props":{"label":"Message","name":"message"}}}',
-  },
-  {
-    tree: {
-      root: "card",
-      elements: {
-        card: {
-          key: "card",
-          type: "Card",
-          props: { title: "Contact Us", maxWidth: "md" },
-          children: ["name", "email", "message", "submit"],
-        },
-        name: {
-          key: "name",
-          type: "Input",
-          props: { label: "Name", name: "name" },
-        },
-        email: {
-          key: "email",
-          type: "Input",
-          props: { label: "Email", name: "email" },
-        },
-        message: {
-          key: "message",
-          type: "Textarea",
-          props: { label: "Message", name: "message" },
-        },
-        submit: {
-          key: "submit",
-          type: "Button",
-          props: { label: "Send Message", variant: "primary" },
-        },
-      },
-    },
-    stream:
-      '{"op":"add","path":"/elements/submit","value":{"key":"submit","type":"Button","props":{"label":"Send Message","variant":"primary"}}}',
-  },
-];
-
 function toJsxPropValue(value: unknown): string {
   if (value === null) {
     return "null";
@@ -281,8 +147,6 @@ function treeToTsx(tree: UITree): string {
   return `${importsLine}export function Generated() {\n  return (\n${body}\n  );\n}\n`;
 }
 
-type Mode = "simulation" | "interactive";
-type Phase = "typing" | "streaming" | "complete";
 type Tab = "stream" | "json" | "code";
 
 interface BuilderPromptApi {
@@ -292,17 +156,13 @@ interface BuilderPromptApi {
 
 function BuilderPromptInputInner({
   inputRef,
-  isTypingSimulation,
   isStreaming,
-  onActivateInteractive,
   onStop,
   onSubmit,
   setApi,
 }: {
   inputRef: React.RefObject<HTMLTextAreaElement | null>;
-  isTypingSimulation: boolean;
   isStreaming: boolean;
-  onActivateInteractive: () => void;
   onStop: () => void;
   onSubmit: (text: string) => void;
   setApi: (api: BuilderPromptApi) => void;
@@ -327,22 +187,13 @@ function BuilderPromptInputInner({
       variant="outline"
     >
       <PromptInput.Body className="px-3">
-        {isTypingSimulation ? (
-          <div className="flex flex-1 items-center py-2 text-base">
-            <span className="inline-flex h-5 items-center">
-              {controller.textInput.value}
-            </span>
-            <span className="ml-0.5 inline-block h-4 w-2 animate-pulse bg-foreground" />
-          </div>
-        ) : (
-          <PromptInput.Textarea
-            className="min-h-0 py-2 text-base"
-            disabled={isStreaming}
-            maxLength={140}
-            placeholder="Describe what you want to build..."
-            ref={inputRef}
-          />
-        )}
+        <PromptInput.Textarea
+          className="min-h-0 py-2 text-base"
+          disabled={isStreaming}
+          maxLength={140}
+          placeholder="Describe what you want to build..."
+          ref={inputRef}
+        />
       </PromptInput.Body>
       <PromptInput.Footer align="inline-end">
         {isStreaming ? (
@@ -383,25 +234,11 @@ function BuilderPromptInputInner({
 }
 
 export function Builder() {
-  const [mode, setMode] = useState<Mode>("simulation");
-  const [phase, setPhase] = useState<Phase>("typing");
-  const [, setTypedPrompt] = useState("");
-  const [stageIndex, setStageIndex] = useState(-1);
   const [streamLines, setStreamLines] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<Tab>("json");
-  const [simulationTree, setSimulationTree] = useState<UITree | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const promptApiRef = useRef<BuilderPromptApi | null>(null);
-
-  const activateInteractive = useCallback(() => {
-    if (mode === "simulation") {
-      setMode("interactive");
-      setPhase("complete");
-      promptApiRef.current?.clear();
-    }
-    setTimeout(() => inputRef.current?.focus?.(), 0);
-  }, [mode]);
 
   // Use the library's useUIStream hook for real API calls
   const {
@@ -417,101 +254,30 @@ export function Builder() {
   // Initialize interactive state for Select components
   useInteractiveState();
 
-  const currentSimulationStage =
-    stageIndex >= 0 ? SIMULATION_STAGES[stageIndex] : null;
-
-  // Determine which tree to display - keep simulation tree until new API response
-  const currentTree =
-    mode === "simulation"
-      ? currentSimulationStage?.tree || simulationTree
-      : apiTree || simulationTree;
-
   const stopGeneration = useCallback(() => {
-    if (mode === "simulation") {
-      setMode("interactive");
-      setPhase("complete");
-      setTypedPrompt(SIMULATION_PROMPT);
-      promptApiRef.current?.clear();
-    }
     clear();
-  }, [clear, mode]);
-
-  // Typing effect for simulation
-  useEffect(() => {
-    if (mode !== "simulation" || phase !== "typing") {
-      return;
-    }
-
-    let i = 0;
-    const interval = setInterval(() => {
-      if (i < SIMULATION_PROMPT.length) {
-        const nextValue = SIMULATION_PROMPT.slice(0, i + 1);
-        setTypedPrompt(nextValue);
-        promptApiRef.current?.set(nextValue);
-        i++;
-        return;
-      }
-
-      clearInterval(interval);
-      setTimeout(() => setPhase("streaming"), 500);
-    }, 20);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [mode, phase]);
-
-  // Streaming effect for simulation
-  useEffect(() => {
-    if (mode !== "simulation" || phase !== "streaming") {
-      return;
-    }
-
-    let i = 0;
-    const interval = setInterval(() => {
-      if (i < SIMULATION_STAGES.length) {
-        const stage = SIMULATION_STAGES[i];
-        if (stage) {
-          setStageIndex(i);
-          setStreamLines((prev) => [...prev, stage.stream]);
-          setSimulationTree(stage.tree);
-        }
-        i++;
-        return;
-      }
-
-      clearInterval(interval);
-      setTimeout(() => {
-        setPhase("complete");
-        setMode("interactive");
-        promptApiRef.current?.clear();
-      }, 500);
-    }, 600);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [mode, phase]);
+  }, [clear]);
 
   // Track stream lines from real API
   useEffect(() => {
-    if (mode === "interactive" && apiTree) {
+    if (apiTree && Object.keys(apiTree.elements || {}).length > 0) {
       // Convert tree to stream line for display
       const streamLine = JSON.stringify({ tree: apiTree });
-      if (
-        !streamLines.includes(streamLine) &&
-        Object.keys(apiTree.elements).length > 0
-      ) {
-        setStreamLines((prev) => {
-          const lastLine = prev.at(-1);
-          if (lastLine !== streamLine) {
-            return [...prev, streamLine];
-          }
-          return prev;
-        });
-      }
+
+      setStreamLines((prev) => {
+        const lastLine = prev.at(-1);
+        // Avoid duplicate consecutive lines
+        if (lastLine !== streamLine) {
+          return [...prev, streamLine];
+        }
+        return prev;
+      });
+    } else if (!apiTree || Object.keys(apiTree.elements || {}).length === 0) {
+      // Only reset if we are explicitly cleared or starting fresh?
+      // Actually send() triggers state reset in useUIStream usually?
+      // But we handle setStreamLines([]) in handleSubmit
     }
-  }, [mode, apiTree, streamLines]);
+  }, [apiTree]);
 
   const handleSubmit = useCallback(
     async (prompt: string) => {
@@ -536,6 +302,8 @@ export function Builder() {
     };
   }, []);
 
+  const currentTree = apiTree;
+
   const jsonCode = currentTree
     ? JSON.stringify(currentTree, null, 2)
     : "// waiting...";
@@ -544,9 +312,6 @@ export function Builder() {
     ? treeToTsx(currentTree)
     : "// waiting...";
 
-  const isStreamingSimulation = mode === "simulation" && phase === "streaming";
-  const showLoadingDots = isStreamingSimulation || isStreaming;
-
   return (
     <div className="mx-auto w-full max-w-4xl text-left">
       {/* Prompt input */}
@@ -554,8 +319,6 @@ export function Builder() {
         <BuilderPromptInputInner
           inputRef={inputRef}
           isStreaming={isStreaming}
-          isTypingSimulation={mode === "simulation" && phase === "typing"}
-          onActivateInteractive={activateInteractive}
           onStop={stopGeneration}
           onSubmit={handleSubmit}
           setApi={(api) => {
@@ -588,7 +351,7 @@ export function Builder() {
               {streamLines.length > 0 ? (
                 <>
                   <CodeBlock code={streamLines.join("\n")} lang="json" />
-                  {showLoadingDots && (
+                  {isStreaming && (
                     <div className="mt-2 flex gap-1">
                       <span className="h-1 w-1 animate-pulse rounded-full bg-muted-foreground" />
                       <span className="h-1 w-1 animate-pulse rounded-full bg-muted-foreground [animation-delay:75ms]" />
@@ -598,7 +361,7 @@ export function Builder() {
                 </>
               ) : (
                 <div className="text-muted-foreground/50">
-                  {showLoadingDots ? "streaming..." : "waiting..."}
+                  {isStreaming ? "streaming..." : "waiting..."}
                 </div>
               )}
             </div>
@@ -657,7 +420,7 @@ export function Builder() {
                         typeof Renderer
                       >[0]["fallback"]
                     }
-                    loading={isStreaming || isStreamingSimulation}
+                    loading={isStreaming}
                     registry={
                       builderRegistry as Parameters<
                         typeof Renderer
@@ -720,7 +483,7 @@ export function Builder() {
                         typeof Renderer
                       >[0]["fallback"]
                     }
-                    loading={isStreaming || isStreamingSimulation}
+                    loading={isStreaming}
                     registry={
                       builderRegistry as Parameters<
                         typeof Renderer

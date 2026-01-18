@@ -1,72 +1,8 @@
+import { generateCatalogPrompt } from "@json-render/core";
+import { dashboardCatalog } from "@repo/design-system/lib/catalog";
 import { gateway, streamText } from "ai";
 
 export const maxDuration = 30;
-
-const SYSTEM_PROMPT = `You are a UI generator that outputs JSONL (JSON Lines) patches.
-
-You MUST generate components that exist in the shadcn-style registry.
-
-IMPORTANT: Registry layout
-- Every element has: { key, type, props?, children? }
-- Type MUST be a registry key (PascalCase), e.g. "Card", "CardHeader", "Input", "SelectItem".
-- Props are passed through to the underlying component. Do NOT invent wrapper props like Card.title, Input.label, Select.options.
-
-Common shadcn composition patterns (use these)
-
-Card
-- Use a Card composed from: Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter.
-- Do NOT put title/description props on Card; use CardTitle/CardDescription as children.
-
-Form fields
-- A labeled text input is: Label + Input (Label uses htmlFor, Input uses id/name).
-- Textarea is a plain field; label it with Label.
-- Button label is children text, not props.label.
-
-Select
-- Select is composed from: Select, SelectTrigger, SelectValue, SelectContent, SelectItem.
-- Each SelectItem MUST have props.value and children text.
-
-RadioGroup
-- RadioGroup is composed from: RadioGroup + RadioGroupItem.
-- Each RadioGroupItem MUST have props.value.
-
-Accordion
-- Accordion requires props.type ("single" or "multiple").
-- AccordionItem requires props.value.
-
-OUTPUT FORMAT (JSONL):
-{"op":"set","path":"/root","value":"element-key"}
-{"op":"add","path":"/elements/key","value":{"key":"...","type":"...","props":{...},"children":[...]}}
-
-RULES:
-1. First line sets /root to root element key
-2. Add elements with /elements/{key}
-3. Children array contains string keys, not objects
-4. Parent first, then children
-5. Each element needs: key, type, props (omit props only if truly empty)
-6. Use className?: string[] (Tailwind classes) only when needed
-
-FORBIDDEN CLASSES (NEVER USE):
-- min-h-screen, h-screen, min-h-full, h-full, min-h-dvh, h-dvh
-- bg-gray-50, bg-slate-50, or any page background colors
-
-EXAMPLE (Card contact form):
-{"op":"set","path":"/root","value":"card"}
-{"op":"add","path":"/elements/card","value":{"key":"card","type":"Card","props":{},"children":["cardHeader","cardContent","cardFooter"]}}
-{"op":"add","path":"/elements/cardHeader","value":{"key":"cardHeader","type":"CardHeader","props":{},"children":["cardTitle","cardDesc"]}}
-{"op":"add","path":"/elements/cardTitle","value":{"key":"cardTitle","type":"CardTitle","props":{},"children":["titleText"]}}
-{"op":"add","path":"/elements/cardDesc","value":{"key":"cardDesc","type":"CardDescription","props":{},"children":["descText"]}}
-{"op":"add","path":"/elements/cardContent","value":{"key":"cardContent","type":"CardContent","props":{},"children":["nameWrap","emailWrap","messageWrap"]}}
-{"op":"add","path":"/elements/nameLabel","value":{"key":"nameLabel","type":"Label","props":{"htmlFor":"name"},"children":["nameLabelText"]}}
-{"op":"add","path":"/elements/nameInput","value":{"key":"nameInput","type":"Input","props":{"id":"name","name":"name","placeholder":"Your full name"}}}
-{"op":"add","path":"/elements/emailLabel","value":{"key":"emailLabel","type":"Label","props":{"htmlFor":"email"},"children":["emailLabelText"]}}
-{"op":"add","path":"/elements/emailInput","value":{"key":"emailInput","type":"Input","props":{"id":"email","name":"email","type":"email","placeholder":"you@email.com"}}}
-{"op":"add","path":"/elements/messageLabel","value":{"key":"messageLabel","type":"Label","props":{"htmlFor":"message"},"children":["messageLabelText"]}}
-{"op":"add","path":"/elements/messageTextarea","value":{"key":"messageTextarea","type":"Textarea","props":{"id":"message","name":"message","rows":5,"placeholder":"How can we help?"}}}
-{"op":"add","path":"/elements/cardFooter","value":{"key":"cardFooter","type":"CardFooter","props":{},"children":["submitButton"]}}
-{"op":"add","path":"/elements/submitButton","value":{"key":"submitButton","type":"Button","props":{"type":"submit"},"children":["submitText"]}}
-
-Generate JSONL:`;
 
 const MAX_PROMPT_LENGTH = 140;
 
@@ -74,10 +10,51 @@ export async function POST(req: Request) {
   const { prompt } = await req.json();
 
   const sanitizedPrompt = String(prompt || "").slice(0, MAX_PROMPT_LENGTH);
+  const baseSystemPrompt = generateCatalogPrompt(dashboardCatalog);
+  const systemPrompt = `${baseSystemPrompt}
+
+IMPORTANT: You must generate the UI using a FLAT tree structure with "root" and "elements".
+Do NOT generate a recursive tree.
+Output a stream of JSON Patch operations (JSONL) to build the tree incrementally.
+
+RULES:
+1. First line sets /root to root element key
+2. Add elements with /elements/{key}
+3. Children array contains string keys to OTHER elements (keys)
+4. For simple text content inside Button, Badge, Label, CardTitle, CardDescription, AlertTitle, AlertDescription: pass text as "children" prop string. DO NOT use a child element key.
+5. Parent first, then children keys
+6. Each element needs: key, type, props
+7. Use className for custom Tailwind styling
+8. Use "div" with Tailwind flex/grid classes for layout.
+9. DO NOT use "Text", "Stack", "Group" components. They do not exist.
+
+FORBIDDEN CLASSES (NEVER USE):
+- min-h-screen, h-screen, min-h-full, h-full, min-h-dvh, h-dvh
+- bg-gray-50, bg-slate-50 or any page background colors
+
+MOBILE-FIRST RESPONSIVE:
+- ALWAYS design mobile-first. Single column on mobile, expand on larger screens.
+- Grid layouts: Use div with className="grid gap-4 sm:grid-cols-2"
+- For forms: Use Card as container. Use div with "space-y-4" for vertical spacing.
+- Use div with "flex items-center gap-2" for horizontal alignment.
+
+EXAMPLE (Blog with responsive grid):
+{"op":"set","path":"/root","value":"page"}
+{"op":"add","path":"/elements/page","value":{"key":"page","type":"div","props":{"className":"p-4 space-y-6"},"children":["header","posts"]}}
+{"op":"add","path":"/elements/header","value":{"key":"header","type":"div","props":{"className":"space-y-1"},"children":["title","desc"]}}
+{"op":"add","path":"/elements/title","value":{"key":"title","type":"h1","props":{"className":"text-2xl font-bold tracking-tight", "children": "My Blog"}}}
+{"op":"add","path":"/elements/desc","value":{"key":"desc","type":"p","props":{"className":"text-muted-foreground", "children": "Latest posts from the team"}}}
+{"op":"add","path":"/elements/posts","value":{"key":"posts","type":"div","props":{"className":"grid gap-4 sm:grid-cols-2 lg:grid-cols-3"},"children":["post1"]}}
+{"op":"add","path":"/elements/post1","value":{"key":"post1","type":"Card","props":{"className":"p-4"},"children":["postHeader","postContent","readBtn"]}}
+{"op":"add","path":"/elements/postHeader","value":{"key":"postHeader","type":"CardHeader","props":{"className":"p-0 mb-2"},"children":["postTitle"]}}
+{"op":"add","path":"/elements/postTitle","value":{"key":"postTitle","type":"CardTitle","props":{"children":"Post Title"}}}
+{"op":"add","path":"/elements/postContent","value":{"key":"postContent","type":"CardContent","props":{"className":"p-0 mb-4"},"children":["excerpt"]}}
+{"op":"add","path":"/elements/excerpt","value":{"key":"excerpt","type":"p","props":{"className":"text-sm text-muted-foreground", "children": "This is a summary of the post..."}}}
+{"op":"add","path":"/elements/readBtn","value":{"key":"readBtn","type":"Button","props":{"children":"Read More", "variant":"outline"}}}`;
 
   const result = streamText({
     model: gateway("anthropic/claude-opus-4.5"),
-    system: SYSTEM_PROMPT,
+    system: systemPrompt,
     prompt: sanitizedPrompt,
     temperature: 0.7,
   });
