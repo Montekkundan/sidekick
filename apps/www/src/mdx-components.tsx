@@ -33,6 +33,7 @@ import {
 } from "@/registry/new-york/ui/tabs";
 import { ComponentsList } from "./components/component-list";
 import { CookbookBooksGrid } from "@/components/cookbook-books-grid";
+import { Builder } from "./components/builder";
 
 export const mdxComponents = {
   h1: ({ className, ...props }: React.ComponentProps<"h1">) => (
@@ -342,6 +343,7 @@ export const mdxComponents = {
   CookbookBooksGrid,
   CodeCollapsibleWrapper,
   RegistryCommand,
+  Builder,
   Link: ({ className, ...props }: React.ComponentProps<typeof Link>) => (
     <Link
       className={cn("font-medium underline underline-offset-4", className)}

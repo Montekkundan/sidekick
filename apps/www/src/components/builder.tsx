@@ -382,7 +382,6 @@ function BuilderPromptInputInner({
   );
 }
 
-// eslint-disable-next-line complexity -- demo builder includes UI + simulation
 export function Builder() {
   const [mode, setMode] = useState<Mode>("simulation");
   const [phase, setPhase] = useState<Phase>("typing");
@@ -565,7 +564,7 @@ export function Builder() {
         />
       </PromptInputProvider>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="flex flex-col">
         {/* Tabbed code/stream/json panel */}
         <div>
           <div className="mb-2 flex h-6 items-center gap-4">
