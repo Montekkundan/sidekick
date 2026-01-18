@@ -40,17 +40,18 @@ MOBILE-FIRST RESPONSIVE:
 
 EXAMPLE (Blog with responsive grid):
 {"op":"set","path":"/root","value":"page"}
-{"op":"add","path":"/elements/page","value":{"key":"page","type":"div","props":{"className":"p-4 space-y-6"},"children":["header","posts"]}}
-{"op":"add","path":"/elements/header","value":{"key":"header","type":"div","props":{"className":"space-y-1"},"children":["title","desc"]}}
-{"op":"add","path":"/elements/title","value":{"key":"title","type":"h1","props":{"className":"text-2xl font-bold tracking-tight", "children": "My Blog"}}}
-{"op":"add","path":"/elements/desc","value":{"key":"desc","type":"p","props":{"className":"text-muted-foreground", "children": "Latest posts from the team"}}}
-{"op":"add","path":"/elements/posts","value":{"key":"posts","type":"div","props":{"className":"grid gap-4 sm:grid-cols-2 lg:grid-cols-3"},"children":["post1"]}}
-{"op":"add","path":"/elements/post1","value":{"key":"post1","type":"Card","props":{"className":"p-4"},"children":["postHeader","postContent","readBtn"]}}
-{"op":"add","path":"/elements/postHeader","value":{"key":"postHeader","type":"CardHeader","props":{"className":"p-0 mb-2"},"children":["postTitle"]}}
+{"op":"add","path":"/elements/page","value":{"key":"page","type":"div","props":{"className":"p-6 max-w-4xl mx-auto space-y-8"},"children":["header","posts"]}}
+{"op":"add","path":"/elements/header","value":{"key":"header","type":"div","props":{"className":"space-y-2"},"children":["title","desc"]}}
+{"op":"add","path":"/elements/title","value":{"key":"title","type":"h1","props":{"className":"text-3xl font-bold tracking-tight", "children": "My Blog"}}}
+{"op":"add","path":"/elements/desc","value":{"key":"desc","type":"p","props":{"className":"text-muted-foreground text-lg", "children": "Latest posts from the team"}}}
+{"op":"add","path":"/elements/posts","value":{"key":"posts","type":"div","props":{"className":"grid gap-6 sm:grid-cols-2 lg:grid-cols-3"},"children":["post1"]}}
+{"op":"add","path":"/elements/post1","value":{"key":"post1","type":"Card","props":{"className":"flex flex-col"},"children":["postHeader","postContent","cardFooter"]}}
+{"op":"add","path":"/elements/postHeader","value":{"key":"postHeader","type":"CardHeader","props":{},"children":["postTitle"]}}
 {"op":"add","path":"/elements/postTitle","value":{"key":"postTitle","type":"CardTitle","props":{"children":"Post Title"}}}
-{"op":"add","path":"/elements/postContent","value":{"key":"postContent","type":"CardContent","props":{"className":"p-0 mb-4"},"children":["excerpt"]}}
+{"op":"add","path":"/elements/postContent","value":{"key":"postContent","type":"CardContent","props":{"className":"flex-1"},"children":["excerpt"]}}
 {"op":"add","path":"/elements/excerpt","value":{"key":"excerpt","type":"p","props":{"className":"text-sm text-muted-foreground", "children": "This is a summary of the post..."}}}
-{"op":"add","path":"/elements/readBtn","value":{"key":"readBtn","type":"Button","props":{"children":"Read More", "variant":"outline"}}}`;
+{"op":"add","path":"/elements/cardFooter","value":{"key":"cardFooter","type":"CardFooter","props":{},"children":["readBtn"]}}
+{"op":"add","path":"/elements/readBtn","value":{"key":"readBtn","type":"Button","props":{"children":"Read More", "variant":"outline", "className":"w-full"}}}`;
 
   const result = streamText({
     model: gateway("anthropic/claude-opus-4.5"),
