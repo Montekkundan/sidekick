@@ -25,3 +25,4 @@
 - https://ucp.dev/specification/checkout-rest/
 - add copy ai prompt button like https://vercel.com/sandbox
 - add gateway docs back
+- make builder in the docs as minimal stuff.

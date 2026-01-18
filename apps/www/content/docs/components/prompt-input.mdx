@@ -171,6 +171,48 @@ export function ProviderExample() {
 }
 ```
 
+### Sleeves for Top/Bottom Sections
+
+Use `Sleeve` components to create styled top or bottom sections that wrap around your prompt input, perfect for context chips, suggestions, or related UI.
+
+```tsx
+import { PromptInput } from "@/components/ui/prompt-input";
+
+export function SleeveExample() {
+  return (
+    <div className="mx-auto max-w-2xl">
+      <PromptInput.TopSleeve className="bg-muted/50 p-3">
+        <div className="flex flex-wrap gap-2">
+          <span className="text-muted-foreground text-xs">Suggested:</span>
+          <button className="rounded-full border px-2 py-1 text-xs hover:bg-accent">
+            Explain this code
+          </button>
+          <button className="rounded-full border px-2 py-1 text-xs hover:bg-accent">
+            Add tests
+          </button>
+        </div>
+      </PromptInput.TopSleeve>
+
+      <PromptInput variant="outline" onSubmit={handleSubmit}>
+        <PromptInput.Body>
+          <PromptInput.Textarea placeholder="What would you like to know?" />
+        </PromptInput.Body>
+        <PromptInput.Footer>
+          <PromptInput.Tools />
+          <PromptInput.Submit />
+        </PromptInput.Footer>
+      </PromptInput>
+
+      <PromptInput.BottomSleeve className="bg-muted/30 p-2">
+        <p className="text-center text-muted-foreground text-xs">
+          Press Enter to send, Shift+Enter for new line
+        </p>
+      </PromptInput.BottomSleeve>
+    </div>
+  );
+}
+```
+
 ## Behavior
 
 - **Enter to submit** (Shift+Enter for a new line).
@@ -235,3 +277,4 @@ Optional context provider that lifts text + attachment state outside of `PromptI
 - **PromptInput.Select / SelectTrigger / SelectContent / SelectItem / SelectValue**: Select primitives styled for toolbars.
 - **PromptInput.HoverCard / HoverCardTrigger / HoverCardContent**: Hover card primitives for attachment previews.
 - **PromptInput.TabsList / Tab / TabLabel / TabBody / TabItem**: Lightweight tab primitives for quick presets.
+- **PromptInput.Sleeve / TopSleeve / BottomSleeve**: Decorative wrapper components for top/bottom sections around the input.
