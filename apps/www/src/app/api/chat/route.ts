@@ -1,6 +1,8 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { kv } from "@vercel/kv";
 import { streamText } from "ai";
+import { checkBotId } from "botid/server";
+import { NextResponse } from "next/server";
 
 import {
   createGatewayModel,
@@ -15,6 +17,15 @@ const ratelimit = new Ratelimit({
 });
 
 export async function POST(req: Request) {
+  const verification = await checkBotId();
+
+  if (verification.isBot) {
+    return NextResponse.json(
+      { error: "Bot detected. Access denied." },
+      { status: 403 }
+    );
+  }
+
   const ip = req.headers.get("x-forwarded-for") ?? "ip";
   const { success } = await ratelimit.limit(ip);
 

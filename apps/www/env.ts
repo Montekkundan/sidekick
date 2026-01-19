@@ -10,6 +10,8 @@ export const env = createEnv({
     CURSOR_EDITOR_APP_URL: z.string().min(1).default("http://localhost:3003"),
     CHATGPT_APP_URL: z.string().min(1).default("http://localhost:3004"),
     HELP_PAGE_APP_URL: z.string().min(1).default("http://localhost:3005"),
+    UPSTASH_REDIS_REST_URL: z.string().url(),
+    UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
   },
   client: {},
   runtimeEnv: {
@@ -18,5 +20,7 @@ export const env = createEnv({
     CURSOR_EDITOR_APP_URL: process.env.CURSOR_EDITOR_APP_URL,
     CHATGPT_APP_URL: process.env.CHATGPT_APP_URL,
     HELP_PAGE_APP_URL: process.env.HELP_PAGE_APP_URL,
+    UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
+    UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
   },
 });

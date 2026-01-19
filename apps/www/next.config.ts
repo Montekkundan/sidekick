@@ -1,4 +1,5 @@
 import { config, withAnalyzer } from "@repo/next-config";
+import { withBotId } from "botid/next/config";
 import { createMDX } from "fumadocs-mdx/next";
 import type { NextConfig } from "next";
 import { env } from "./env";
@@ -61,4 +62,4 @@ if (env.ANALYZE === "true") {
 
 const withMDX = createMDX();
 
-export default withMDX(nextConfig);
+export default withMDX(withBotId(nextConfig));
