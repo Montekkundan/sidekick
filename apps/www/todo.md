@@ -1,6 +1,4 @@
 - components/blocks with full drizzle and prisma gateway setup
-- cookbook for netflix search page, chatgpt home page, cursor editor page and help center page
-- fuma docs + mdx + basehub + AI chat docs
 - tools rendering with widgets https://widgets.chatkit.studio/, https://platform.openai.com/docs/guides/chatkit-widgets
 - playground view https://chatkit.studio/playground
 - https://developers.openai.com/blog/what-makes-a-great-chatgpt-app
@@ -15,9 +13,7 @@
 - remove themes and go with just normal blocks
 - floating and full screen sidekick
 - universal search component https://threadreaderapp.com/thread/1937259475599261713.html
-- fix prompt input 01, 02, 03 blocks
 - add ai search in cmdk
-- update docs for sidekick and prompt input based on new changes
 - fix bunx --bun shadcn@latest add https://sidekick.montek.dev/r/prompt-input.json and siekick to not install as index files
 - make sidekick slide animation faster
 - fix prompt input padding and margin
@@ -25,4 +21,3 @@
 - https://ucp.dev/specification/checkout-rest/
 - add copy ai prompt button like https://vercel.com/sandbox
 - add gateway docs back
-- make builder in the docs as minimal stuff.
