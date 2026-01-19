@@ -5,6 +5,7 @@ import { JSONUIProvider, Renderer } from "@json-render/react";
 import {
   builderRegistry,
   fallbackComponent,
+  TooltipProvider,
   useInteractiveState,
 } from "@repo/design-system/lib/registry";
 import { useEffect, useState } from "react";
@@ -12,10 +13,12 @@ import { useEffect, useState } from "react";
 export function BuilderPreviewClient() {
   const [tree, setTree] = useState<UITree | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useInteractiveState();
 
   useEffect(() => {
+    setMounted(true);
     const handleMessage = (event: MessageEvent) => {
       // Only accept messages from same origin
       if (event.origin !== window.location.origin) {
@@ -50,24 +53,30 @@ export function BuilderPreviewClient() {
     );
   }
 
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <div className="fade-in flex min-h-full w-full animate-in items-center justify-center p-4 duration-200">
-      <JSONUIProvider
-        registry={
-          builderRegistry as Parameters<typeof JSONUIProvider>[0]["registry"]
-        }
-      >
-        <Renderer
-          fallback={
-            fallbackComponent as Parameters<typeof Renderer>[0]["fallback"]
-          }
-          loading={isLoading}
+      <TooltipProvider>
+        <JSONUIProvider
           registry={
-            builderRegistry as Parameters<typeof Renderer>[0]["registry"]
+            builderRegistry as Parameters<typeof JSONUIProvider>[0]["registry"]
           }
-          tree={tree}
-        />
-      </JSONUIProvider>
+        >
+          <Renderer
+            fallback={
+              fallbackComponent as Parameters<typeof Renderer>[0]["fallback"]
+            }
+            loading={isLoading}
+            registry={
+              builderRegistry as Parameters<typeof Renderer>[0]["registry"]
+            }
+            tree={tree}
+          />
+        </JSONUIProvider>
+      </TooltipProvider>
     </div>
   );
 }

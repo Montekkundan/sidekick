@@ -281,6 +281,7 @@ export {
 export {
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from "@repo/design-system/components/ui/tooltip";
 export { toast } from "sonner";
@@ -559,6 +560,7 @@ import {
 import {
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from "@repo/design-system/components/ui/tooltip";
 import type { ElementType, FC } from "react";
@@ -572,7 +574,12 @@ function fromElementProps(
   Comp: ElementType
 ): FC<ComponentRenderProps> {
   return function Render({ element, children }) {
-    const rawProps = (element.props ?? {}) as Record<string, unknown>;
+    const {
+      onAction: _onAction,
+      loading: _loading,
+      element: _element,
+      ...rawProps
+    } = (element.props ?? {}) as Record<string, unknown>;
 
     // Allow legacy "builder" props to not leak onto DOM elements when using
     // shadcn primitives (Card/Input/Button/etc).
@@ -855,6 +862,7 @@ const rawRegistry = {
   ToggleGroupItem,
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } as const;
 

@@ -67,6 +67,10 @@ RESPONSIVE DESIGN (ALL BREAKPOINTS):
 - For forms: Use FieldGroup wrapper, Field for each input, FieldLabel and FieldDescription
 - Use div with "space-y-4" or FieldGroup for vertical spacing
 
+TOOLTIPS:
+- Tooltips are self-contained. Use Tooltip, TooltipTrigger, and TooltipContent without a separate provider.
+- TooltipTrigger already renders a button. DO NOT put a Button component inside TooltipTrigger; instead, pass children directly (text, icons, etc.) to TooltipTrigger.
+
 GRID LISTS & COLLECTIONS (CRITICAL):
 - Multiple similar items (Cards, Badges, etc.) SHOULD use a responsive grid.
 - Pattern: className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"

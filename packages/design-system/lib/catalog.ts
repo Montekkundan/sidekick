@@ -591,6 +591,16 @@ export const dashboardCatalog = createCatalog({
       hasChildren: true,
       description: "Popup that displays information related to an element.",
     },
+    TooltipProvider: {
+      props: z.object({
+        delayDuration: z.number().nullable(),
+        skipDelayDuration: z.number().nullable(),
+        disableHoverableContent: z.boolean().nullable(),
+      }),
+      hasChildren: true,
+      description:
+        "Global provider for tooltips. Wrap your app or section in this.",
+    },
     TooltipTrigger: {
       props: z.object({}),
       hasChildren: true,
