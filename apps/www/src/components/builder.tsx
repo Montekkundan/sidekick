@@ -409,10 +409,7 @@ function BuilderInput({ isLoading, onSubmit }: PresetsInputProps) {
           </PromptInput.Body>
           <PromptInput.Footer>
             <PromptInput.Tools />
-            <PromptInput.Submit
-              disabled={isLoading}
-              status={isLoading ? "streaming" : "ready"}
-            />
+            <PromptInput.Submit status={isLoading ? "streaming" : "ready"} />
           </PromptInput.Footer>
         </PromptInput>
       </div>

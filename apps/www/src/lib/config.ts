@@ -1,5 +1,3 @@
-import { Box, Grid2x2, PencilRuler, SquarePlus } from "lucide-react";
-
 export const APP_URL = (
   process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
 ).replace(/\/$/, "");
@@ -24,38 +22,16 @@ export const siteConfig = {
       label: "Blocks",
     },
     {
+      href: "/docs/builder/widget-builder",
+      label: "Builder",
+    },
+    {
       href: "/docs/cookbook",
       label: "Cookbook",
     },
     {
       href: "/examples",
       label: "Examples",
-    }
-    // {
-    //   href: "/builder",
-    //   label: "Builder",
-    // }
-  ],
-  widgetNavItems: [
-    {
-      href: "/builder",
-      label: "New Widget",
-      icon: SquarePlus,
-    },
-    {
-      href: "/builder/gallery",
-      label: "Gallery",
-      icon: Grid2x2,
-    },
-    {
-      href: "/builder/components",
-      label: "Components",
-      icon: Box,
-    },
-    {
-      href: "/builder/icons",
-      label: "Icons",
-      icon: PencilRuler,
     },
   ],
 };
