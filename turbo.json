@@ -14,9 +14,8 @@
     "VERCEL_CLIENT_SECRET",
     "DATABASE_URL",
     "DATABASE_AUTH_TOKEN",
-    "REDIS_URL",
-    "UPSTASH_REDIS_REST_URL",
-    "UPSTASH_REDIS_REST_TOKEN"
+    "KV_REST_API_URL",
+    "KV_REST_API_TOKEN"
   ],
   "tasks": {
     "build": {
