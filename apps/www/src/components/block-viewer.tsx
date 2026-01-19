@@ -20,6 +20,7 @@ import Link from "next/link";
 import * as React from "react";
 import { getIconForLanguageExtension } from "@/components/icons";
 import { OpenInV0Button } from "@/components/open-in-v0-button";
+import { APP_URL } from "@/lib/config";
 import { trackEvent } from "@/lib/events";
 import type {
   createFileTreeForRegistryItemFiles,
@@ -240,7 +241,9 @@ function BlockViewerToolbar() {
         <Button
           className="w-fit gap-1 px-2 shadow-none"
           onClick={() => {
-            copyToClipboard(`npx shadcn@latest add ${item.name}`);
+            copyToClipboard(
+              `npx shadcn@latest add ${APP_URL}/r/${item.name}.json`
+            );
           }}
           size="sm"
           variant="outline"
