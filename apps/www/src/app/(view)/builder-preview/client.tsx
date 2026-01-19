@@ -5,6 +5,8 @@ import { JSONUIProvider, Renderer } from "@json-render/react";
 import {
   builderRegistry,
   fallbackComponent,
+  SidebarProvider,
+  Toaster,
   TooltipProvider,
   useInteractiveState,
 } from "@repo/design-system/lib/registry";
@@ -60,22 +62,27 @@ export function BuilderPreviewClient() {
   return (
     <div className="fade-in flex min-h-full w-full animate-in items-center justify-center p-4 duration-200">
       <TooltipProvider>
-        <JSONUIProvider
-          registry={
-            builderRegistry as Parameters<typeof JSONUIProvider>[0]["registry"]
-          }
-        >
-          <Renderer
-            fallback={
-              fallbackComponent as Parameters<typeof Renderer>[0]["fallback"]
-            }
-            loading={isLoading}
+        <SidebarProvider>
+          <JSONUIProvider
             registry={
-              builderRegistry as Parameters<typeof Renderer>[0]["registry"]
+              builderRegistry as Parameters<
+                typeof JSONUIProvider
+              >[0]["registry"]
             }
-            tree={tree}
-          />
-        </JSONUIProvider>
+          >
+            <Renderer
+              fallback={
+                fallbackComponent as Parameters<typeof Renderer>[0]["fallback"]
+              }
+              loading={isLoading}
+              registry={
+                builderRegistry as Parameters<typeof Renderer>[0]["registry"]
+              }
+              tree={tree}
+            />
+          </JSONUIProvider>
+        </SidebarProvider>
+        <Toaster />
       </TooltipProvider>
     </div>
   );

@@ -1,7 +1,11 @@
 "use client";
 
-// export { Stack } from "@repo/design-system/components/builder/stack";
-// export { Text } from "@repo/design-system/components/builder/text";
+import type { ElementType, FC, ReactElement } from "react";
+import { createElement } from "react";
+import { Fallback } from "../components/ui/fallback";
+import type { ComponentRegistry, ComponentRenderProps } from "./types";
+
+// Re-export all components
 export {
   Accordion,
   AccordionContent,
@@ -251,11 +255,23 @@ export {
   SidebarFooter,
   SidebarGroup,
   SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSkeleton,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarProvider,
+  SidebarRail,
   SidebarTrigger,
 } from "@repo/design-system/components/ui/sidebar";
 export { Skeleton } from "@repo/design-system/components/ui/skeleton";
 export { Slider } from "@repo/design-system/components/ui/slider";
+export { Toaster } from "@repo/design-system/components/ui/sonner";
 export { Spinner } from "@repo/design-system/components/ui/spinner";
 export { Switch } from "@repo/design-system/components/ui/switch";
 export {
@@ -286,10 +302,8 @@ export {
 } from "@repo/design-system/components/ui/tooltip";
 export { toast } from "sonner";
 export { useInteractiveState } from "./registry_utils";
-export type { ComponentRegistry, ComponentRenderProps } from "./types";
 
-// import { Stack } from "@repo/design-system/components/builder/stack";
-// import { Text } from "@repo/design-system/components/builder/text";
+// Internal imports for mapping
 import {
   Accordion,
   AccordionContent,
@@ -530,7 +544,18 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSkeleton,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarProvider,
+  SidebarRail,
   SidebarTrigger,
 } from "@repo/design-system/components/ui/sidebar";
 import { Skeleton } from "@repo/design-system/components/ui/skeleton";
@@ -563,89 +588,86 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@repo/design-system/components/ui/tooltip";
-import type { ElementType, FC } from "react";
-import { createElement } from "react";
-import { Fallback } from "../components/ui/fallback";
 
-import type { ComponentRegistry, ComponentRenderProps } from "./types";
+function sanitizeProps(props: Record<string, unknown>) {
+  return Object.keys(props).reduce(
+    (acc, key) => {
+      if (
+        !(
+          key.startsWith("_") ||
+          ["onAction", "loading", "element", "actionText"].includes(key)
+        )
+      ) {
+        acc[key] = props[key];
+      }
+      return acc;
+    },
+    {} as Record<string, unknown>
+  );
+}
+
+const componentTransforms: Record<
+  string,
+  (Comp: ElementType, props: any, children: any) => ReactElement
+> = {
+  Card: (Comp, props, children) => {
+    const { maxWidth, centered, title: _t, description: _d, ...rest } = props;
+    const widthClass = maxWidth ? `max-w-${maxWidth}` : undefined;
+    const className = [
+      ...(Array.isArray(rest.className) ? rest.className : []),
+      "w-full",
+      widthClass,
+      centered ? "mx-auto" : undefined,
+    ].filter(Boolean);
+
+    return createElement(Comp, {
+      ...rest,
+      className: className.length ? className : undefined,
+      children: children ?? props.children,
+    });
+  },
+  Input: (Comp, props, children) => {
+    const { label: _l, ...rest } = props;
+    return createElement(Comp, {
+      ...rest,
+      children: children ?? props.children,
+    });
+  },
+  Textarea: (Comp, props, children) => {
+    const { label: _l, ...rest } = props;
+    return createElement(Comp, {
+      ...rest,
+      children: children ?? props.children,
+    });
+  },
+  Button: (Comp, props, children) => {
+    const { label, variant: _v, actionText: _at, ...rest } = props;
+    const resolvedChildren =
+      children ??
+      props.children ??
+      (typeof label === "string" ? label : undefined);
+    return createElement(Comp, { ...rest, children: resolvedChildren });
+  },
+  Text: (Comp, props, children) => {
+    const { content, ...rest } = props;
+    const resolvedChildren =
+      children ?? (typeof content === "string" ? content : undefined);
+    return createElement(Comp, { ...rest, children: resolvedChildren });
+  },
+};
 
 function fromElementProps(
   key: string,
   Comp: ElementType
 ): FC<ComponentRenderProps> {
   return function Render({ element, children }) {
-    const {
-      onAction: _onAction,
-      loading: _loading,
-      element: _element,
-      ...rawProps
-    } = (element.props ?? {}) as Record<string, unknown>;
+    const rawProps = sanitizeProps((element.props ?? {}) as any);
+    const transform = componentTransforms[key];
 
-    // Allow legacy "builder" props to not leak onto DOM elements when using
-    // shadcn primitives (Card/Input/Button/etc).
-    if (key === "Card") {
-      const { maxWidth, centered, title, description, ...rest } = rawProps;
-      const widthClass =
-        maxWidth === "sm"
-          ? "max-w-sm"
-          : maxWidth === "md"
-            ? "max-w-md"
-            : maxWidth === "lg"
-              ? "max-w-lg"
-              : maxWidth === "full"
-                ? "max-w-full"
-                : undefined;
-
-      const className = Array.isArray(rest.className)
-        ? (rest.className as string[])
-        : [];
-
-      const mergedClassName = [
-        ...className,
-        "w-full",
-        widthClass,
-        centered ? "mx-auto" : undefined,
-      ].filter(Boolean);
-
-      return createElement(Comp, {
-        ...rest,
-        className: mergedClassName.length ? mergedClassName : undefined,
-        children: children ?? rawProps.children,
-      } as any);
+    if (transform) {
+      return transform(Comp, rawProps, children);
     }
 
-    if (key === "Input" || key === "Textarea") {
-      const { label, ...rest } = rawProps;
-      return createElement(Comp, {
-        ...rest,
-        children: children ?? rawProps.children,
-      } as any);
-    }
-
-    if (key === "Button") {
-      const { label, variant, actionText, ...rest } = rawProps;
-      // Prefer structural children, then props.children (Shadcn pattern), then legacy label prop
-      const resolvedChildren =
-        children ??
-        rawProps.children ??
-        (typeof label === "string" ? label : undefined);
-      return createElement(Comp, {
-        ...rest,
-        children: resolvedChildren,
-      } as any);
-    }
-
-    if (key === "Text") {
-      const { content, ...rest } = rawProps;
-      const resolvedChildren =
-        children ?? (typeof content === "string" ? content : undefined);
-      return createElement(Comp, {
-        ...rest,
-        children: resolvedChildren,
-      } as any);
-    }
-
-    // Default case: Allow props.children to work if structural children are not provided
     return createElement(Comp, {
       ...rawProps,
       children: children ?? rawProps.children,
@@ -654,8 +676,6 @@ function fromElementProps(
 }
 
 const rawRegistry = {
-  // Stack,
-  // Text,
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -842,6 +862,17 @@ const rawRegistry = {
   SidebarFooter,
   SidebarGroup,
   SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSkeleton,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarRail,
   Skeleton,
   Slider,
   Spinner,
@@ -868,7 +899,6 @@ const rawRegistry = {
 
 const builderComponents = new Set(["Stack", "Text"]);
 
-// Native HTML elements that can be used in JSON-render trees
 const nativeElements = {
   div: "div",
   span: "span",
@@ -902,7 +932,6 @@ export const builderRegistry: ComponentRegistry = {
         : fromElementProps(key, Comp),
     ])
   ),
-  // Add native HTML elements
   ...Object.fromEntries(
     Object.entries(nativeElements).map(([key, element]) => [
       key,

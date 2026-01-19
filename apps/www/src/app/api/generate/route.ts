@@ -68,13 +68,19 @@ RESPONSIVE DESIGN (ALL BREAKPOINTS):
 - Use div with "space-y-4" or FieldGroup for vertical spacing
 
 COMPONENT HIERARCHY & CHILDREN:
-- TEXT-ONLY (use "children" prop): Button, Badge, Label, CardTitle, CardDescription, AlertTitle, AlertDescription.
-- NESTED ELEMENTS (use "children" array of keys): Card, CardHeader, CardContent, CardFooter, Table, TableHeader, TableBody, TableRow, TableCell, Tooltip, TooltipTrigger, TooltipContent, div.
+- TEXT-ONLY (use "children" prop): Button, Badge, Label, CardTitle, CardDescription, AlertTitle, AlertDescription, TableHead, TableCell.
+- NESTED ELEMENTS (use "children" array of keys): div, Card, CardHeader, CardContent, CardFooter, Table, TableHeader, TableBody, TableRow, Tooltip, TooltipTrigger, TooltipContent, Accordion, AccordionItem, AccordionContent, Tabs, TabsList, TabsTrigger, TabsContent, SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarFooter, SidebarGroup, SidebarMenu, SidebarMenuItem.
 - CRITICAL: Every element (except /root) MUST be listed in exactly one parent's "children" array. Do NOT generate disconnected elements.
 
-TOOLTIPS:
-- Tooltips are self-contained. Use Tooltip, TooltipTrigger, and TooltipContent without a separate provider.
-- TooltipTrigger already renders a button. DO NOT put a Button component inside TooltipTrigger; instead, pass children directly (text, icons, etc.) to TooltipTrigger.
+INVALID NESTING (FORBIDDEN):
+- NO Button inside ANY Trigger (TooltipTrigger, AccordionTrigger, SelectTrigger, SheetTrigger, etc.).
+- Triggers are interactive elements themselves. Use icons or text directly inside them.
+- Sidebar components MUST be wrapped in a SidebarProvider.
+
+TOOLTIPS & TRIGGERS:
+- Tooltips are self-contained. Use Tooltip, TooltipTrigger, and TooltipContent directly.
+- TRIGGERS (TooltipTrigger, AccordionTrigger, TabsTrigger, DialogTrigger, SheetTrigger, PopoverTrigger, etc.) MUST NOT contain Buttons.
+- Instead of <TooltipTrigger><Button>Text</Button></TooltipTrigger>, use <TooltipTrigger>Text</TooltipTrigger> or <TooltipTrigger><span className="...">Text</span></TooltipTrigger>.
 
 GRID LISTS & COLLECTIONS (CRITICAL):
 - Multiple similar items (Cards, Badges, etc.) SHOULD use a responsive grid.
