@@ -13,7 +13,10 @@
     "VERCEL_CLIENT_ID",
     "VERCEL_CLIENT_SECRET",
     "DATABASE_URL",
-    "DATABASE_AUTH_TOKEN"
+    "DATABASE_AUTH_TOKEN",
+    "REDIS_URL",
+    "UPSTASH_REDIS_REST_URL",
+    "UPSTASH_REDIS_REST_TOKEN"
   ],
   "tasks": {
     "build": {
