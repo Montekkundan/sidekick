@@ -316,6 +316,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@repo/design-system/components/ui/avatar";
+import { Badge } from "@repo/design-system/components/ui/badge";
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -664,6 +665,7 @@ const rawRegistry = {
   Alert,
   AlertDescription,
   AlertTitle,
+  Badge,
   Avatar,
   AvatarFallback,
   AvatarImage,

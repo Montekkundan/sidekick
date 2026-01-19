@@ -1,6 +1,6 @@
-import { Button } from "@/registry/new-york/ui/button"
-import { Separator } from "@/registry/new-york/ui/separator"
-import { SidebarTrigger } from "@/registry/new-york/ui/sidebar"
+import { SidekickTrigger } from "@/registry/new-york/blocks/sidekick";
+import { Separator } from "@/registry/new-york/ui/separator";
+import { SidebarTrigger } from "@/registry/new-york/ui/sidebar";
 
 export function SiteHeader() {
   return (
@@ -8,23 +8,20 @@ export function SiteHeader() {
       <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
         <SidebarTrigger className="-ml-1" />
         <Separator
-          orientation="vertical"
           className="mx-2 data-[orientation=vertical]:h-4"
+          orientation="vertical"
         />
-        <h1 className="text-base font-medium">Documents</h1>
+        <h1 className="font-medium text-base">Documents</h1>
         <div className="ml-auto flex items-center gap-2">
-          <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
-            <a
-              href="https://github.com/shadcn-ui/ui/tree/main/apps/v4/app/(examples)/dashboard"
-              rel="noopener noreferrer"
-              target="_blank"
-              className="dark:text-foreground"
-            >
-              GitHub
-            </a>
-          </Button>
+          <SidekickTrigger
+            className="hidden h-8 w-fit px-3 sm:flex"
+            size="sm"
+            variant="ghost"
+          >
+            GitHub
+          </SidekickTrigger>
         </div>
       </div>
     </header>
-  )
+  );
 }
