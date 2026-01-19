@@ -67,6 +67,11 @@ RESPONSIVE DESIGN (ALL BREAKPOINTS):
 - For forms: Use FieldGroup wrapper, Field for each input, FieldLabel and FieldDescription
 - Use div with "space-y-4" or FieldGroup for vertical spacing
 
+COMPONENT HIERARCHY & CHILDREN:
+- TEXT-ONLY (use "children" prop): Button, Badge, Label, CardTitle, CardDescription, AlertTitle, AlertDescription.
+- NESTED ELEMENTS (use "children" array of keys): Card, CardHeader, CardContent, CardFooter, Table, TableHeader, TableBody, TableRow, TableCell, Tooltip, TooltipTrigger, TooltipContent, div.
+- CRITICAL: Every element (except /root) MUST be listed in exactly one parent's "children" array. Do NOT generate disconnected elements.
+
 TOOLTIPS:
 - Tooltips are self-contained. Use Tooltip, TooltipTrigger, and TooltipContent without a separate provider.
 - TooltipTrigger already renders a button. DO NOT put a Button component inside TooltipTrigger; instead, pass children directly (text, icons, etc.) to TooltipTrigger.
@@ -95,8 +100,25 @@ EXAMPLE (Responsive Card Grid):
 {"op":"add","path":"/elements/content1","value":{"key":"content1","type":"CardContent","props":{"className":"flex items-center gap-2"},"children":["badge1","ratingText1"]}}
 {"op":"add","path":"/elements/badge1","value":{"key":"badge1","type":"Badge","props":{"variant":"default","children":"⭐ 9.3"}}}
 {"op":"add","path":"/elements/ratingText1","value":{"key":"ratingText1","type":"span","props":{"className":"text-sm text-muted-foreground","children":"IMDb"}}}
-{"op":"add","path":"/elements/card2","value":{"key":"card2","type":"Card","props":{},"children":["header2","content2"]}}
-{"op":"add","path":"/elements/card3","value":{"key":"card3","type":"Card","props":{},"children":["header3","content3"]}}`;
+
+EXAMPLE (Table inside Card):
+{"op":"set","path":"/root","value":"container"}
+{"op":"add","path":"/elements/container","value":{"key":"container","type":"div","props":{"className":"p-6 md:p-8"},"children":["mainCard"]}}
+{"op":"add","path":"/elements/mainCard","value":{"key":"mainCard","type":"Card","props":{},"children":["cardHeader","cardContent"]}}
+{"op":"add","path":"/elements/cardHeader","value":{"key":"cardHeader","type":"CardHeader","props":{},"children":["cardTitle","cardDesc"]}}
+{"op":"add","path":"/elements/cardTitle","value":{"key":"cardTitle","type":"CardTitle","props":{"children":"Inventory"}}}
+{"op":"add","path":"/elements/cardDesc","value":{"key":"cardDesc","type":"CardDescription","props":{"children":"Manage your products."}}}
+{"op":"add","path":"/elements/cardContent","value":{"key":"cardContent","type":"CardContent","props":{},"children":["inventoryTable"]}}
+{"op":"add","path":"/elements/inventoryTable","value":{"key":"inventoryTable","type":"Table","props":{},"children":["tableHeader","tableBody"]}}
+{"op":"add","path":"/elements/tableHeader","value":{"key":"tableHeader","type":"TableHeader","props":{},"children":["headerRow"]}}
+{"op":"add","path":"/elements/headerRow","value":{"key":"headerRow","type":"TableRow","props":{},"children":["th1","th2"]}}
+{"op":"add","path":"/elements/th1","value":{"key":"th1","type":"TableHead","props":{"children":"Product"}}}
+{"op":"add","path":"/elements/th2","value":{"key":"th2","type":"TableHead","props":{"children":"Stock"}}}
+{"op":"add","path":"/elements/tableBody","value":{"key":"tableBody","type":"TableBody","props":{},"children":["row1"]}}
+{"op":"add","path":"/elements/row1","value":{"key":"row1","type":"TableRow","props":{},"children":["cell1","cell2"]}}
+{"op":"add","path":"/elements/cell1","value":{"key":"cell1","type":"TableCell","props":{"children":"Widget A"}}}
+{"op":"add","path":"/elements/cell2","value":{"key":"cell2","type":"TableCell","props":{"children":"10 Units"}}}
+`;
 
   const result = streamText({
     model: gateway("anthropic/claude-opus-4.5"),
