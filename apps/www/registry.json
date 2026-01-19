@@ -246,6 +246,8 @@
         "@tabler/icons-react"
       ],
       "registryDependencies": [
+        "https://sidekick.montek.dev/r/sidekick.json",
+        "https://sidekick.montek.dev/r/prompt-input.json",
         "sidebar",
         "breadcrumb",
         "separator",
