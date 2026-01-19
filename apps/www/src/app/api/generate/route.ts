@@ -57,15 +57,17 @@ FORBIDDEN CLASSES (NEVER USE):
 - min-h-screen, h-screen, min-h-full, h-full, min-h-dvh, h-dvh
 - bg-gray-50, bg-slate-50 or any page background colors
 
-RESPONSIVE DESIGN (ALL BREAKPOINTS):
+RESPONSIVE DESIGN & WIDTH (CRITICAL):
 - Design for ALL screen sizes: mobile (default), tablet (md:), desktop (lg:)
-- Two-column layouts: className="grid p-0 md:grid-cols-2"
-- Grid layouts: className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
-- Hide on mobile: className="hidden md:block"
-- Responsive padding: className="p-6 md:p-8"
-- Responsive text: className="text-2xl md:text-3xl"
+- PREFER EXPANSIVE LAYOUTS: Do NOT use small restrictive widths like "max-w-md" or "max-w-2xl" on main containers.
+- Root elements MUST use "w-full" or "max-w-6xl mx-auto" to occupy the desktop screen properly. Components should breathe!
+- Use grid with 2 or 3 columns on desktop for better space utilization.
+- Grid layouts: className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+- Two-column layouts: className="grid gap-6 md:grid-cols-2"
+- Responsive padding: className="p-6 md:p-8 lg:p-12"
+- Responsive text: className="text-2xl md:text-3xl lg:text-4xl"
 - For forms: Use FieldGroup wrapper, Field for each input, FieldLabel and FieldDescription
-- Use div with "space-y-4" or FieldGroup for vertical spacing
+- Use div with "space-y-6" or FieldGroup for vertical spacing
 
 COMPONENT HIERARCHY & CHILDREN:
 - TEXT-ONLY (use "children" prop): Button, Badge, Label, CardTitle, CardDescription, AlertTitle, AlertDescription, TableHead, TableCell.
