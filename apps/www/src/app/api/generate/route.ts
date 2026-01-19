@@ -1,12 +1,26 @@
 import { generateCatalogPrompt } from "@json-render/core";
 import { dashboardCatalog } from "@repo/design-system/lib/catalog";
+import { Ratelimit } from "@upstash/ratelimit";
+import { kv } from "@vercel/kv";
 import { gateway, streamText } from "ai";
 
 export const maxDuration = 30;
 
 const MAX_PROMPT_LENGTH = 140;
 
+const ratelimit = new Ratelimit({
+  redis: kv,
+  limiter: Ratelimit.fixedWindow(5, "30s"),
+});
+
 export async function POST(req: Request) {
+  const ip = req.headers.get("x-forwarded-for") ?? "ip";
+  const { success } = await ratelimit.limit(ip);
+
+  if (!success) {
+    return new Response("Ratelimited!", { status: 429 });
+  }
+
   const { prompt } = await req.json();
 
   const sanitizedPrompt = String(prompt || "").slice(0, MAX_PROMPT_LENGTH);

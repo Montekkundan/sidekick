@@ -1,3 +1,5 @@
+import { Ratelimit } from "@upstash/ratelimit";
+import { kv } from "@vercel/kv";
 import { streamText } from "ai";
 
 import {
@@ -7,7 +9,19 @@ import {
 
 export const runtime = "edge";
 
+const ratelimit = new Ratelimit({
+  redis: kv,
+  limiter: Ratelimit.fixedWindow(5, "30s"),
+});
+
 export async function POST(req: Request) {
+  const ip = req.headers.get("x-forwarded-for") ?? "ip";
+  const { success } = await ratelimit.limit(ip);
+
+  if (!success) {
+    return new Response("Ratelimited!", { status: 429 });
+  }
+
   try {
     const { messages, gateway, system } = await req.json();
 

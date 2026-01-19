@@ -361,9 +361,13 @@ interface PresetsInputProps {
 function PresetRow() {
   const controller = usePromptInputController();
   const presets = [
-    { label: "Summary", value: "Summarize this in three bullets." },
-    { label: "Rewrite", value: "Rewrite with a confident tone." },
-    { label: "Plan", value: "Create a 3-step plan." },
+    {
+      label: "Card",
+      value: "Create a stack of 3 cards with movie titles and ratings.",
+    },
+    { label: "Form", value: "Create a form with 3 fields." },
+    { label: "Table", value: "Create a table with 3 columns." },
+    { label: "Tooltip", value: "Create a tooltip with 3 columns." },
   ];
 
   return (
