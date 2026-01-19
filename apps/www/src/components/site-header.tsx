@@ -39,6 +39,15 @@ export function SiteHeader() {
             <div className="hidden w-full flex-1 md:flex md:w-auto md:flex-none">
               <CommandMenu navItems={siteConfig.navItems} tree={pageTree} />
             </div>
+            <Button asChild className="hidden md:flex" variant="outline">
+              <Link
+                href="https://github.com/Montekkundan/sidekick/issues"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Feedback
+              </Link>
+            </Button>
             <Separator
               className="ml-2 hidden lg:block"
               orientation="vertical"

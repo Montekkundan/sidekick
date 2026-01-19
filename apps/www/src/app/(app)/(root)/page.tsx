@@ -15,7 +15,7 @@ import { CookbookBooks, RootComponents } from "./components";
 
 const title = "The Foundation for your AI System";
 const description =
-  "A set of beautifully designed components that you can customize, extend, and build on. Start here then make it your own. Open Source. Open Code.";
+  "A set of beautifully designed components, tools, examples that you can customize, extend, and build on. Start here then make it your own. Open Source. Open Code.";
 
 export const dynamic = "force-static";
 export const revalidate = false;
@@ -105,7 +105,7 @@ export default function IndexPage() {
         <PageHeaderHeading className="max-w-4xl">{title}</PageHeaderHeading>
         <PageHeaderDescription>{description}</PageHeaderDescription>
         <PageActions>
-          <Button asChild className="rounded-lg" size="sm" variant="ghost">
+          <Button asChild className="rounded-lg" size="sm">
             <Link href="/docs/components">View Components</Link>
           </Button>
         </PageActions>
@@ -115,24 +115,6 @@ export default function IndexPage() {
       </PageNav>
       <div className="container-wrapper section-soft flex-1 pb-6">
         <div className="container overflow-hidden">
-          <section className="-mx-4 w-[160vw] overflow-hidden rounded-lg border border-border/50 md:hidden md:w-[150vw]">
-            <Image
-              alt="Dashboard"
-              className="block dark:hidden"
-              height={875}
-              priority
-              src="/r/styles/new-york-v4/dashboard-01-light.png"
-              width={1400}
-            />
-            <Image
-              alt="Dashboard"
-              className="hidden dark:block"
-              height={875}
-              priority
-              src="/r/styles/new-york-v4/dashboard-01-dark.png"
-              width={1400}
-            />
-          </section>
           <section className="theme-container hidden md:block">
             <RootComponents />
           </section>

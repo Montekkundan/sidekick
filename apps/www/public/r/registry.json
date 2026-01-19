@@ -70,10 +70,6 @@
         {
           "path": "registry/new-york/lib/gateway.ts",
           "type": "registry:lib"
-        },
-        {
-          "path": "registry/new-york/hooks/use-gateway-chat.ts",
-          "type": "registry:hook"
         }
       ]
     },
@@ -268,6 +264,8 @@
         "@tabler/icons-react"
       ],
       "registryDependencies": [
+        "https://sidekick.montek.dev/r/sidekick.json",
+        "https://sidekick.montek.dev/r/prompt-input.json",
         "sidebar",
         "breadcrumb",
         "separator",
