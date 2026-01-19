@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Announcement } from "@/components/announcement";
 import { ExamplesNav } from "@/components/examples-nav";
 import {
   PageActions,
@@ -100,7 +101,7 @@ export default function IndexPage() {
   return (
     <div className="flex flex-1 flex-col">
       <PageHeader>
-        {/* <Announcement /> */}
+        <Announcement />
         <PageHeaderHeading className="max-w-4xl">{title}</PageHeaderHeading>
         <PageHeaderDescription>{description}</PageHeaderDescription>
         <PageActions>

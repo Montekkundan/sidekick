@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Announcement } from "@/components/announcement";
 import { ExamplesNav } from "@/components/examples-nav";
 import {
   PageActions,
@@ -49,7 +50,7 @@ export default function ExamplesLayout({
   return (
     <>
       <PageHeader>
-        {/* <Announcement /> */}
+        <Announcement />
         <PageHeaderHeading className="max-w-4xl">{title}</PageHeaderHeading>
         <PageHeaderDescription>{description}</PageHeaderDescription>
         <PageActions>
