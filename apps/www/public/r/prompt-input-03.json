@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "prompt-input-03",
   "title": "Prompt Input Claude Upgrade Banner",
-  "description": "A prompt input with a secondary upgrade banner below the composer.",
+  "description": "A Claude style prompt input with upgrade banner.",
   "dependencies": [],
   "registryDependencies": [
     "https://sidekick.montek.dev/r/prompt-input.json"

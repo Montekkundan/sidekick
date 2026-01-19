@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "prompt-input-02",
   "title": "Prompt Input Compact Cursor Style",
-  "description": "A compact prompt input with minimal chrome and tiny action icons inspired by Cursor.",
+  "description": "A Cursor cloud agent style prompt input.",
   "dependencies": [],
   "registryDependencies": [
     "https://sidekick.montek.dev/r/prompt-input.json"

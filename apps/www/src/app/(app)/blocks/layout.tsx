@@ -67,7 +67,7 @@ export default function BlocksLayout({
           size="sm"
           variant="secondary"
         >
-          <Link href="/blocks/sidebar">Browse all blocks</Link>
+          <Link href="/blocks/sidekick">Browse all blocks</Link>
         </Button>
       </PageNav>
       <div className="container-wrapper section-soft flex-1 md:py-12">

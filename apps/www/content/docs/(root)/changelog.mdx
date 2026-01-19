@@ -4,6 +4,79 @@ description: Latest updates and announcements.
 toc: false
 ---
 
-## December 2025 - npx shadcn create
+## January 2026
 
-From the very first commit, the goal of shadcn/ui was to make it customizable.
+### New Features & Enhancements
+
+- **AI-Driven UI Builder**: Implemented comprehensive builder system with `BuilderPreviewClient` and `BuilderPreviewPage` components for dynamic tree updates and responsive design
+- **Component Catalog**: Added dynamic system prompt generation from component catalog with enhanced Shadcn UI component import mapping
+- **Bot Detection**: Implemented bot detection for `/api/chat` and `/api/generate` routes using `botid` with Upstash Redis configuration
+- **API Rate Limiting**: Added rate limiting to generation and chat endpoints
+- **Documentation Routing**: Implemented LLM text retrieval functionality with new documentation endpoints
+
+### Component Updates
+
+- Added `Sidebar`, `Toaster`, `TooltipProvider`, `Sidekick block`, and `trigger` components
+- Integrated `PromptInput` into `SidekickFooter` with simplified `Submit` component
+- Enhanced `CodeBlock` component with copy button and improved rendering
+- Registered `Badge` component in design system
+- Updated `PromptInput` component to support shape prop
+
+### Registry & Dependencies
+
+- Updated `shadcn add` command to use full registry URL with `APP_URL` and `.json` extension
+- Enhanced post-processing script for V0
+- Added `input-group` dependencies to registry
+- Updated to `react-resizable-panels v3.0.6`
+
+### Documentation & Examples
+
+- Added cookbook meta.json file with root and pages definition
+- Created base template for all cookbooks with `SidekickProvider` integration
+- Added examples page with new illustrations for ChatGPT, Cursor Editor, and Fuma-MDX
+- Updated image URLs across layout files for better asset management
+
+### Navigation & Tools
+
+- Added AI Navigation Tool with Next.js support
+- Updated `ChatGPT`, `Cursor Editor`, and help page layouts with enhanced functionality
+- Added quick action buttons to prompt inputs
+
+### Infrastructure & Fixes
+
+- Updated environment variables and restructured base paths for applications
+- Fixed CSS variable syntax for height in docs page
+- Fixed responsive design guidelines in generate API route
+- Removed unused Open Graph route files from multiple applications
+- Added clean script and Biome configuration
+
+## December 2025
+
+### New Features
+
+- **AI Gateway Integration**: Added multi-provider support with chat components
+- **AI Assistant Sidekick**: Implemented conversation-based AI assistant with mobile enhancements
+- **Dashboard Components**: Added new dashboard hooks and components
+- **Compact Prompt Input**: Introduced compact variant of PromptInput component
+- **Themed Components**: Implemented cursor theme with AI assistant features
+
+### Component Library
+
+- Added `Avatar`, `ComponentsList`, `Dialog`, `Field`, `Popover`, `ScrollArea`, `Sidebar`, `Skeleton`, and `Spinner` components
+- Updated dependencies to latest versions
+
+### Documentation
+
+- Added comprehensive docs and examples for Ask AI block
+- Enhanced block page structure with better organization
+- Added prompt input demo
+
+### Infrastructure
+
+- Migrated app directory to src/app layout
+- Updated build configurations
+- Fixed Biome linting issues
+
+### December 14 - Initial Commit
+
+Project inception with core infrastructure setup.

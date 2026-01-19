@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "prompt-input-01",
   "title": "Prompt Input Agent Mode",
-  "description": "A prompt input with an action menu that expands into agent mode and reveals footer controls.",
+  "description": "A prompt input clone of Chatgpt home page page.",
   "dependencies": [],
   "registryDependencies": [
     "https://sidekick.montek.dev/r/prompt-input.json"

@@ -387,8 +387,23 @@ function PresetRow() {
 }
 
 function BuilderInput({ isLoading, onSubmit }: PresetsInputProps) {
+  const initialText = "Create a stack of 3 cards with movie titles and ratings";
+  const [charCount, setCharCount] = useState(initialText.length);
+  const controller = usePromptInputController();
+
+  useEffect(() => {
+    const updateCharCount = () => {
+      const value = controller.textInput.value;
+      setCharCount(value?.length || 0);
+    };
+
+    const interval = setInterval(updateCharCount, 100);
+    updateCharCount();
+    return () => clearInterval(interval);
+  }, [controller]);
+
   return (
-    <PromptInputProvider initialInput="Create a stack of 3 cards with movie titles and ratings">
+    <PromptInputProvider initialInput={initialText}>
       <div className="space-y-3">
         <PresetRow />
         <PromptInput
@@ -408,6 +423,9 @@ function BuilderInput({ isLoading, onSubmit }: PresetsInputProps) {
             />
           </PromptInput.Body>
           <PromptInput.Footer>
+            <span className="mr-auto text-muted-foreground text-xs">
+              {charCount}/140
+            </span>
             <PromptInput.Tools />
             <PromptInput.Submit status={isLoading ? "streaming" : "ready"} />
           </PromptInput.Footer>

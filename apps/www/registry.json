@@ -157,7 +157,7 @@
       "name": "prompt-input-01",
       "type": "registry:block",
       "title": "Prompt Input Agent Mode",
-      "description": "A prompt input with an action menu that expands into agent mode and reveals footer controls.",
+      "description": "A prompt input clone of Chatgpt home page page.",
       "dependencies": [],
       "registryDependencies": [
         "https://sidekick.montek.dev/r/prompt-input.json"
@@ -183,7 +183,7 @@
       "name": "prompt-input-02",
       "type": "registry:block",
       "title": "Prompt Input Compact Cursor Style",
-      "description": "A compact prompt input with minimal chrome and tiny action icons inspired by Cursor.",
+      "description": "A Cursor cloud agent style prompt input.",
       "dependencies": [],
       "registryDependencies": [
         "https://sidekick.montek.dev/r/prompt-input.json"
@@ -209,7 +209,7 @@
       "name": "prompt-input-03",
       "type": "registry:block",
       "title": "Prompt Input Claude Upgrade Banner",
-      "description": "A prompt input with a secondary upgrade banner below the composer.",
+      "description": "A Claude style prompt input with upgrade banner.",
       "dependencies": [],
       "registryDependencies": [
         "https://sidekick.montek.dev/r/prompt-input.json"
