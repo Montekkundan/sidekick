@@ -1,20 +1,31 @@
 "use client";
 
 import type { UITree } from "@json-render/core";
-import { JSONUIProvider, Renderer, useUIStream } from "@json-render/react";
+import { useUIStream } from "@json-render/react";
 import { CodeBlock } from "@repo/design-system/components/code-block";
+import { Button } from "@repo/design-system/components/ui/button";
 import {
-  builderRegistry,
-  fallbackComponent,
-  useInteractiveState,
-} from "@repo/design-system/lib/registry";
-import { useCallback, useEffect, useState } from "react";
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@repo/design-system/components/ui/resizable";
+import { Separator } from "@repo/design-system/components/ui/separator";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@repo/design-system/components/ui/toggle-group";
+import { useInteractiveState } from "@repo/design-system/lib/registry";
+import { Fullscreen, Monitor, Smartphone, Tablet } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
   PromptInput,
   PromptInputProvider,
   usePromptInputController,
 } from "@/registry/new-york/blocks/prompt-input";
+
+// Define ImperativePanelHandle type for ResizablePanel ref
+type ImperativePanelHandle = React.ElementRef<typeof ResizablePanel>;
 
 function toJsxPropValue(value: unknown): string {
   if (value === null) {
@@ -374,31 +385,34 @@ function PresetRow() {
 function BuilderInput({ isLoading, onSubmit }: PresetsInputProps) {
   return (
     <PromptInputProvider initialInput="Create a stack of 3 cards with movie titles and ratings">
-          <div className="space-y-3">
-            <PresetRow />
-             <PromptInput
-        className="font-mono text-sm"
-        onSubmit={(msg) => {
-          const text = typeof msg === "string" ? msg : msg.text;
-          if (text) onSubmit(text);
-        }}
+      <div className="space-y-3">
+        <PresetRow />
+        <PromptInput
+          className="font-mono text-sm"
+          onSubmit={(msg) => {
+            const text = typeof msg === "string" ? msg : msg.text;
+            if (text) {
+              onSubmit(text);
+            }
+          }}
         >
-              <PromptInput.Body>
-                <PromptInput.Textarea
-                disabled={isLoading}
-                maxLength={140}
-                placeholder="Describe what you want to build..." />
-              </PromptInput.Body>
-              <PromptInput.Footer>
-                <PromptInput.Tools />
-                <PromptInput.Submit
-                disabled={isLoading}
-            status={isLoading ? "streaming" : "ready"}
-                />
-              </PromptInput.Footer>
-            </PromptInput>
-          </div>
-        </PromptInputProvider>
+          <PromptInput.Body>
+            <PromptInput.Textarea
+              disabled={isLoading}
+              maxLength={140}
+              placeholder="Describe what you want to build..."
+            />
+          </PromptInput.Body>
+          <PromptInput.Footer>
+            <PromptInput.Tools />
+            <PromptInput.Submit
+              disabled={isLoading}
+              status={isLoading ? "streaming" : "ready"}
+            />
+          </PromptInput.Footer>
+        </PromptInput>
+      </div>
+    </PromptInputProvider>
   );
 }
 
@@ -407,6 +421,11 @@ export function Builder() {
   const [activeTab, setActiveTab] = useState<"json" | "stream">("json");
   const [renderView, setRenderView] = useState<"dynamic" | "static">("dynamic");
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [viewSize, setViewSize] = useState<string>("100");
+  const resizablePanelRef = useRef<ImperativePanelHandle>(null);
+  const fullscreenPanelRef = useRef<ImperativePanelHandle>(null);
+  const previewIframeRef = useRef<HTMLIFrameElement>(null);
+  const fullscreenIframeRef = useRef<HTMLIFrameElement>(null);
 
   const {
     tree: apiTree,
@@ -419,13 +438,65 @@ export function Builder() {
 
   useInteractiveState();
 
+  // Sync tree to iframes
+  useEffect(() => {
+    const message = {
+      type: "BUILDER_TREE_UPDATE",
+      payload: {
+        tree: apiTree || null, // Use apiTree directly from useUIStream or currentTree if derived
+        isLoading: isStreaming,
+      },
+    };
+
+    previewIframeRef.current?.contentWindow?.postMessage(message, "*");
+    fullscreenIframeRef.current?.contentWindow?.postMessage(message, "*");
+  }, [apiTree, isStreaming]);
+
+  // Handle iframe ready message
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // Security check: ensure origin matches
+      if (event.origin !== window.location.origin) return;
+
+      if (event.data?.type === "BUILDER_PREVIEW_READY") {
+        const message = {
+          type: "BUILDER_TREE_UPDATE",
+          payload: {
+            tree: apiTree || null,
+            isLoading: isStreaming,
+          },
+        };
+
+        // Send to whichever iframe is ready
+        if (
+          previewIframeRef.current &&
+          event.source === previewIframeRef.current.contentWindow
+        ) {
+          previewIframeRef.current.contentWindow?.postMessage(message, "*");
+        }
+        if (
+          fullscreenIframeRef.current &&
+          event.source === fullscreenIframeRef.current.contentWindow
+        ) {
+          fullscreenIframeRef.current.contentWindow?.postMessage(message, "*");
+        }
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [apiTree, isStreaming]);
+
   useEffect(() => {
     // Expose action handler for registry components
-    (window as any).__demoAction = (text: string) => {
+    const win = window as unknown as {
+      __demoAction?: (text: string) => void;
+    };
+    win.__demoAction = (text: string) => {
       toast(text);
     };
     return () => {
-      delete (window as any).__demoAction;
+      delete win.__demoAction;
     };
   }, []);
 
@@ -542,78 +613,86 @@ export function Builder() {
               ))}
             </div>
             <div className="flex items-center gap-4">
-              <button
-                className="font-mono text-muted-foreground text-xs transition-colors hover:text-foreground disabled:opacity-50"
-                onClick={() => toast("TODO: add shadcn export")}
-                type="button"
-              >
-                export
-              </button>
-              <button
-                aria-label="Maximize"
-                className="text-muted-foreground transition-colors hover:text-foreground"
-                onClick={() => setIsFullscreen(true)}
-                type="button"
-              >
-                <svg
-                  fill="none"
-                  height="14"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  width="14"
+              <div className="h-8 items-center gap-1.5 rounded-md border p-1 shadow-none">
+                <ToggleGroup
+                  className="*:data-[slot=toggle-group-item]:!size-6 *:data-[slot=toggle-group-item]:!rounded-sm gap-1"
+                  defaultValue="100"
+                  onValueChange={(value) => {
+                    if (!value) {
+                      return;
+                    }
+                    setViewSize(value);
+                    setRenderView("dynamic");
+                    if (resizablePanelRef?.current) {
+                      const panel = resizablePanelRef.current;
+                      const size = Number.parseInt(value, 10);
+                      if (
+                        "resize" in panel &&
+                        typeof panel.resize === "function"
+                      ) {
+                        panel.resize(size);
+                      }
+                    }
+                  }}
+                  type="single"
+                  value={viewSize}
                 >
-                  <title>Maximize</title>
-                  <path d="M8 3H5a2 2 0 0 0-2 2v3" />
-                  <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
-                  <path d="M3 16v3a2 2 0 0 0 2 2h3" />
-                  <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
-                </svg>
-              </button>
+                  <ToggleGroupItem title="Desktop" value="100">
+                    <Monitor />
+                  </ToggleGroupItem>
+                  <ToggleGroupItem title="Tablet" value="60">
+                    <Tablet />
+                  </ToggleGroupItem>
+                  <ToggleGroupItem title="Mobile" value="30">
+                    <Smartphone />
+                  </ToggleGroupItem>
+                  <Separator className="!h-4" orientation="vertical" />
+                  <Button
+                    className="size-6 rounded-sm p-0"
+                    onClick={() => setIsFullscreen(true)}
+                    size="icon"
+                    title="Open as fullscreen"
+                    variant="ghost"
+                  >
+                    <span className="sr-only">Open as fullscreen</span>
+                    <Fullscreen />
+                  </Button>
+                </ToggleGroup>
+              </div>
             </div>
           </div>
 
-          <div className="relative grid h-96 overflow-hidden rounded border border-border bg-background">
-            {renderView === "dynamic" ? (
-              <div className="h-full overflow-auto p-4">
-                {currentTree?.root ? (
-                  <div className="fade-in flex min-h-full w-full animate-in items-center justify-center duration-200">
-                    <JSONUIProvider
-                      registry={
-                        builderRegistry as Parameters<
-                          typeof JSONUIProvider
-                        >[0]["registry"]
-                      }
-                    >
-                      <Renderer
-                        fallback={
-                          fallbackComponent as Parameters<
-                            typeof Renderer
-                          >[0]["fallback"]
-                        }
-                        loading={isStreaming}
-                        registry={
-                          builderRegistry as Parameters<
-                            typeof Renderer
-                          >[0]["registry"]
-                        }
-                        tree={currentTree}
-                      />
-                    </JSONUIProvider>
+          <div className="relative h-96 overflow-hidden rounded border border-border">
+            {/* Dotted background pattern */}
+            <div className="absolute inset-0 [background-image:radial-gradient(#d4d4d4_1px,transparent_1px)] [background-size:20px_20px] dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]" />
+            <ResizablePanelGroup
+              className="relative z-10 h-full"
+              direction="horizontal"
+            >
+              <ResizablePanel
+                className="relative overflow-hidden rounded-lg bg-background"
+                defaultSize={100}
+                minSize={30}
+                ref={resizablePanelRef}
+              >
+                {renderView === "dynamic" ? (
+                  <div className="h-full w-full overflow-hidden bg-background">
+                    <iframe
+                      className="h-full w-full border-none bg-background"
+                      ref={previewIframeRef}
+                      src="/builder-preview"
+                      title="Preview"
+                    />
                   </div>
                 ) : (
-                  <div className="flex h-full items-center justify-center text-muted-foreground/50 text-sm">
-                    {isStreaming ? "generating..." : "waiting..."}
+                  <div className="h-full w-full overflow-auto">
+                    <CodeBlock code={generatedTsxCode} lang="tsx" />
                   </div>
                 )}
-              </div>
-            ) : (
-              <div className="h-full w-full overflow-auto">
-                <CodeBlock code={generatedTsxCode} lang="tsx" />
-              </div>
-            )}
+              </ResizablePanel>
+              <ResizableHandle className="relative hidden w-3 bg-transparent p-0 after:absolute after:top-1/2 after:right-0 after:h-8 after:w-[6px] after:translate-x-[-1px] after:-translate-y-1/2 after:rounded-full after:bg-border after:transition-all after:hover:h-10 md:block" />
+              <ResizablePanel defaultSize={0} minSize={0} />
+            </ResizablePanelGroup>
           </div>
         </div>
       </div>
@@ -623,59 +702,89 @@ export function Builder() {
         <div className="fixed inset-0 z-50 flex flex-col bg-background">
           <div className="flex h-14 items-center justify-between border-border border-b px-6">
             <div className="font-mono text-sm">render</div>
-            <button
-              aria-label="Close"
-              className="p-1 text-muted-foreground transition-colors hover:text-foreground"
-              onClick={() => setIsFullscreen(false)}
-              type="button"
-            >
-              <svg
-                fill="none"
-                height="20"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                width="20"
-              >
-                <title>Close</title>
-                <path d="M18 6L6 18" />
-                <path d="M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-          <div className="flex-1 overflow-auto p-6">
-            {currentTree?.root ? (
-              <div className="flex min-h-full w-full items-center justify-center">
-                <JSONUIProvider
-                  registry={
-                    builderRegistry as Parameters<
-                      typeof JSONUIProvider
-                    >[0]["registry"]
-                  }
+            <div className="flex items-center gap-4">
+              <div className="h-8 items-center gap-1.5 rounded-md border p-1 shadow-none">
+                <ToggleGroup
+                  className="*:data-[slot=toggle-group-item]:!size-6 *:data-[slot=toggle-group-item]:!rounded-sm gap-1"
+                  defaultValue="100"
+                  onValueChange={(value) => {
+                    if (!value) {
+                      return;
+                    }
+                    setViewSize(value);
+                    if (fullscreenPanelRef?.current) {
+                      const panel = fullscreenPanelRef.current;
+                      const size = Number.parseInt(value, 10);
+                      if (
+                        "resize" in panel &&
+                        typeof panel.resize === "function"
+                      ) {
+                        panel.resize(size);
+                      }
+                    }
+                  }}
+                  type="single"
+                  value={viewSize}
                 >
-                  <Renderer
-                    fallback={
-                      fallbackComponent as Parameters<
-                        typeof Renderer
-                      >[0]["fallback"]
-                    }
-                    loading={isStreaming}
-                    registry={
-                      builderRegistry as Parameters<
-                        typeof Renderer
-                      >[0]["registry"]
-                    }
-                    tree={currentTree}
+                  <ToggleGroupItem title="Desktop" value="100">
+                    <Monitor />
+                  </ToggleGroupItem>
+                  <ToggleGroupItem title="Tablet" value="60">
+                    <Tablet />
+                  </ToggleGroupItem>
+                  <ToggleGroupItem title="Mobile" value="30">
+                    <Smartphone />
+                  </ToggleGroupItem>
+                </ToggleGroup>
+              </div>
+              <button
+                aria-label="Close"
+                className="p-1 text-muted-foreground transition-colors hover:text-foreground"
+                onClick={() => setIsFullscreen(false)}
+                type="button"
+              >
+                <svg
+                  fill="none"
+                  height="20"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  width="20"
+                >
+                  <title>Close</title>
+                  <path d="M18 6L6 18" />
+                  <path d="M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div className="relative flex-1 overflow-hidden p-6">
+            {/* Dotted background pattern */}
+            <div className="absolute inset-0 [background-image:radial-gradient(#d4d4d4_1px,transparent_1px)] [background-size:20px_20px] dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]" />
+            <ResizablePanelGroup
+              className="relative z-10 h-full"
+              direction="horizontal"
+            >
+              <ResizablePanel
+                className="relative overflow-hidden rounded-lg bg-background"
+                defaultSize={100}
+                minSize={30}
+                ref={fullscreenPanelRef}
+              >
+                <div className="h-full w-full overflow-hidden bg-background">
+                  <iframe
+                    className="h-full w-full border-none bg-background"
+                    ref={fullscreenIframeRef}
+                    src="/builder-preview"
+                    title="Fullscreen Preview"
                   />
-                </JSONUIProvider>
-              </div>
-            ) : (
-              <div className="flex h-full items-center justify-center text-muted-foreground/50 text-sm">
-                {isStreaming ? "generating..." : "waiting..."}
-              </div>
-            )}
+                </div>
+              </ResizablePanel>
+              <ResizableHandle className="relative hidden w-3 bg-transparent p-0 after:absolute after:top-1/2 after:right-0 after:h-8 after:w-[6px] after:translate-x-[-1px] after:-translate-y-1/2 after:rounded-full after:bg-border after:transition-all after:hover:h-10 md:block" />
+              <ResizablePanel defaultSize={0} minSize={0} />
+            </ResizablePanelGroup>
           </div>
         </div>
       )}

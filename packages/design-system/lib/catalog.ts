@@ -1008,6 +1008,19 @@ export const dashboardCatalog = createCatalog({
       hasChildren: true,
       description: "Description for field.",
     },
+    FieldGroup: {
+      props: z.object({ className: z.string().nullable() }),
+      hasChildren: true,
+      description: "Group of form fields with proper spacing.",
+    },
+    FieldSeparator: {
+      props: z.object({
+        className: z.string().nullable(),
+        children: z.string().nullable(),
+      }),
+      hasChildren: true,
+      description: "Visual separator with optional text between fields.",
+    },
     Item: {
       props: z.object({ className: z.string().nullable() }),
       hasChildren: true,

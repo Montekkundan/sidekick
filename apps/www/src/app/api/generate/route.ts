@@ -32,26 +32,42 @@ FORBIDDEN CLASSES (NEVER USE):
 - min-h-screen, h-screen, min-h-full, h-full, min-h-dvh, h-dvh
 - bg-gray-50, bg-slate-50 or any page background colors
 
-MOBILE-FIRST RESPONSIVE:
-- ALWAYS design mobile-first. Single column on mobile, expand on larger screens.
-- Grid layouts: Use div with className="grid gap-4 sm:grid-cols-2"
-- For forms: Use Card as container. Use div with "space-y-4" for vertical spacing.
-- Use div with "flex items-center gap-2" for horizontal alignment.
+RESPONSIVE DESIGN (ALL BREAKPOINTS):
+- Design for ALL screen sizes: mobile (default), tablet (md:), desktop (lg:)
+- Two-column layouts: className="grid p-0 md:grid-cols-2"
+- Grid layouts: className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+- Hide on mobile: className="hidden md:block"
+- Responsive padding: className="p-6 md:p-8"
+- Responsive text: className="text-2xl md:text-3xl"
+- For forms: Use FieldGroup wrapper, Field for each input, FieldLabel and FieldDescription
+- Use div with "space-y-4" or FieldGroup for vertical spacing
 
-EXAMPLE (Blog with responsive grid):
-{"op":"set","path":"/root","value":"page"}
-{"op":"add","path":"/elements/page","value":{"key":"page","type":"div","props":{"className":"p-6 max-w-4xl mx-auto space-y-8"},"children":["header","posts"]}}
-{"op":"add","path":"/elements/header","value":{"key":"header","type":"div","props":{"className":"space-y-2"},"children":["title","desc"]}}
-{"op":"add","path":"/elements/title","value":{"key":"title","type":"h1","props":{"className":"text-3xl font-bold tracking-tight", "children": "My Blog"}}}
-{"op":"add","path":"/elements/desc","value":{"key":"desc","type":"p","props":{"className":"text-muted-foreground text-lg", "children": "Latest posts from the team"}}}
-{"op":"add","path":"/elements/posts","value":{"key":"posts","type":"div","props":{"className":"grid gap-6 sm:grid-cols-2 lg:grid-cols-3"},"children":["post1"]}}
-{"op":"add","path":"/elements/post1","value":{"key":"post1","type":"Card","props":{"className":"flex flex-col"},"children":["postHeader","postContent","cardFooter"]}}
-{"op":"add","path":"/elements/postHeader","value":{"key":"postHeader","type":"CardHeader","props":{},"children":["postTitle"]}}
-{"op":"add","path":"/elements/postTitle","value":{"key":"postTitle","type":"CardTitle","props":{"children":"Post Title"}}}
-{"op":"add","path":"/elements/postContent","value":{"key":"postContent","type":"CardContent","props":{"className":"flex-1"},"children":["excerpt"]}}
-{"op":"add","path":"/elements/excerpt","value":{"key":"excerpt","type":"p","props":{"className":"text-sm text-muted-foreground", "children": "This is a summary of the post..."}}}
-{"op":"add","path":"/elements/cardFooter","value":{"key":"cardFooter","type":"CardFooter","props":{},"children":["readBtn"]}}
-{"op":"add","path":"/elements/readBtn","value":{"key":"readBtn","type":"Button","props":{"children":"Read More", "variant":"outline", "className":"w-full"}}}`;
+GRID LISTS & COLLECTIONS (CRITICAL):
+- Multiple similar items (Cards, Badges, etc.) SHOULD use a responsive grid.
+- Pattern: className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+- This ensures items stack vertically on mobile and arrange horizontally on desktop.
+
+FORM COMPONENTS:
+- FieldGroup: Wraps an entire form section with proper spacing
+- Field: Individual form field wrapper
+- FieldLabel: Label for a field (children prop for text)
+- FieldDescription: Helper text below field
+- FieldSeparator: Visual separator with optional text (children prop)
+
+EXAMPLE (Responsive Card Grid):
+{"op":"set","path":"/root","value":"container"}
+{"op":"add","path":"/elements/container","value":{"key":"container","type":"div","props":{"className":"flex flex-col gap-6 p-4 md:p-6"},"children":["title","grid"]}}
+{"op":"add","path":"/elements/title","value":{"key":"title","type":"h1","props":{"className":"text-2xl font-bold","children":"Featured Movies"}}}
+{"op":"add","path":"/elements/grid","value":{"key":"grid","type":"div","props":{"className":"grid gap-4 md:grid-cols-2 lg:grid-cols-3"},"children":["card1","card2","card3"]}}
+{"op":"add","path":"/elements/card1","value":{"key":"card1","type":"Card","props":{},"children":["header1","content1"]}}
+{"op":"add","path":"/elements/header1","value":{"key":"header1","type":"CardHeader","props":{},"children":["title1","desc1"]}}
+{"op":"add","path":"/elements/title1","value":{"key":"title1","type":"CardTitle","props":{"children":"The Shawshank Redemption"}}}
+{"op":"add","path":"/elements/desc1","value":{"key":"desc1","type":"CardDescription","props":{"children":"1994 • Drama"}}}
+{"op":"add","path":"/elements/content1","value":{"key":"content1","type":"CardContent","props":{"className":"flex items-center gap-2"},"children":["badge1","ratingText1"]}}
+{"op":"add","path":"/elements/badge1","value":{"key":"badge1","type":"Badge","props":{"variant":"default","children":"⭐ 9.3"}}}
+{"op":"add","path":"/elements/ratingText1","value":{"key":"ratingText1","type":"span","props":{"className":"text-sm text-muted-foreground","children":"IMDb"}}}
+{"op":"add","path":"/elements/card2","value":{"key":"card2","type":"Card","props":{},"children":["header2","content2"]}}
+{"op":"add","path":"/elements/card3","value":{"key":"card3","type":"Card","props":{},"children":["header3","content3"]}}`;
 
   const result = streamText({
     model: gateway("anthropic/claude-opus-4.5"),
