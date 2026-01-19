@@ -33,6 +33,9 @@ const frontmatterSchema = z.object({
 export const docs = defineDocs({
   dir: "content/docs",
   docs: {
+    postprocess: {
+      includeProcessedMarkdown: true,
+    },
     schema: frontmatterSchema.extend({
       links: z.optional(
         z.object({

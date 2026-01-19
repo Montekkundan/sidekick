@@ -34,7 +34,7 @@ let nextConfig: NextConfig = {
       {
         source: "/examples/chatgpt",
         destination: `${env.CHATGPT_APP_URL}/examples/chatgpt`,
-      },  
+      },
       {
         source: "/examples/chatgpt/:path*",
         destination: `${env.CHATGPT_APP_URL}/examples/chatgpt/:path*`,
@@ -46,7 +46,11 @@ let nextConfig: NextConfig = {
       {
         source: "/examples/cursor-editor/:path*",
         destination: `${env.CURSOR_EDITOR_APP_URL}/examples/cursor-editor/:path*`,
-      }
+      },
+      {
+        source: "/docs/:path*.mdx",
+        destination: "/llms.mdx/docs/:path*",
+      },
     ];
   },
 };
