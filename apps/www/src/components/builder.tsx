@@ -356,9 +356,12 @@ function treeToTsx(tree: UITree): string {
 interface PresetsInputProps {
   isLoading: boolean;
   onSubmit: (text: string) => void;
+  onPresetChange?: (value: string) => void;
 }
 
-function PresetRow() {
+function PresetRow({
+  onPresetChange,
+}: Pick<PresetsInputProps, "onPresetChange">) {
   const controller = usePromptInputController();
   const presets = [
     {
@@ -376,7 +379,10 @@ function PresetRow() {
         <button
           className="whitespace-nowrap underline-offset-4 transition hover:text-foreground hover:underline"
           key={preset.label}
-          onClick={() => controller.textInput.setInput(preset.value)}
+          onClick={() => {
+            controller.textInput.setInput(preset.value);
+            onPresetChange?.(preset.value);
+          }}
           type="button"
         >
           {preset.label}
@@ -386,9 +392,12 @@ function PresetRow() {
   );
 }
 
-function BuilderInput({ isLoading, onSubmit }: PresetsInputProps) {
-  const initialText = "Create a stack of 3 cards with movie titles and ratings";
-  const [charCount, setCharCount] = useState(initialText.length);
+function BuilderInput({
+  isLoading,
+  onSubmit,
+  onPresetChange,
+}: PresetsInputProps) {
+  const [charCount, setCharCount] = useState(0);
   const controller = usePromptInputController();
 
   useEffect(() => {
@@ -403,35 +412,33 @@ function BuilderInput({ isLoading, onSubmit }: PresetsInputProps) {
   }, [controller]);
 
   return (
-    <PromptInputProvider initialInput={initialText}>
-      <div className="space-y-3">
-        <PresetRow />
-        <PromptInput
-          className="font-mono text-sm"
-          onSubmit={(msg) => {
-            const text = typeof msg === "string" ? msg : msg.text;
-            if (text) {
-              onSubmit(text);
-            }
-          }}
-        >
-          <PromptInput.Body>
-            <PromptInput.Textarea
-              disabled={isLoading}
-              maxLength={140}
-              placeholder="Describe what you want to build..."
-            />
-          </PromptInput.Body>
-          <PromptInput.Footer>
-            <span className="mr-auto text-muted-foreground text-xs">
-              {charCount}/140
-            </span>
-            <PromptInput.Tools />
-            <PromptInput.Submit status={isLoading ? "streaming" : "ready"} />
-          </PromptInput.Footer>
-        </PromptInput>
-      </div>
-    </PromptInputProvider>
+    <div className="space-y-3">
+      <PresetRow onPresetChange={onPresetChange} />
+      <PromptInput
+        className="font-mono text-sm"
+        onSubmit={(msg) => {
+          const text = typeof msg === "string" ? msg : msg.text;
+          if (text) {
+            onSubmit(text);
+          }
+        }}
+      >
+        <PromptInput.Body>
+          <PromptInput.Textarea
+            disabled={isLoading}
+            maxLength={140}
+            placeholder="Describe what you want to build..."
+          />
+        </PromptInput.Body>
+        <PromptInput.Footer>
+          <span className="mr-auto text-muted-foreground text-xs">
+            {charCount}/140
+          </span>
+          <PromptInput.Tools />
+          <PromptInput.Submit status={isLoading ? "streaming" : "ready"} />
+        </PromptInput.Footer>
+      </PromptInput>
+    </div>
   );
 }
 

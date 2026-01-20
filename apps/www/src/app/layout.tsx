@@ -25,28 +25,24 @@ export const metadata: Metadata = {
     },
   ],
   creator: "montekkundan",
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: APP_URL,
-    title: siteConfig.name,
-    description: siteConfig.description,
-    siteName: siteConfig.name,
+openGraph: {
     images: [
       {
-        url: `${APP_URL}/opengraph-image.png`,
-        width: 1200,
-        height: 630,
-        alt: siteConfig.name,
+        url: `/og?title=${encodeURIComponent(
+          siteConfig.name
+        )}&description=${encodeURIComponent(siteConfig.description)}`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: siteConfig.name,
-    description: siteConfig.description,
-    images: [`${APP_URL}/opengraph-image.png`],
-    creator: "@montekkundan",
+    images: [
+      {
+        url: `/og?title=${encodeURIComponent(
+          siteConfig.name
+        )}&description=${encodeURIComponent(siteConfig.description)}`,
+      },
+    ],
   },
   icons: {
     icon: "/favicon.ico",
