@@ -1,7 +1,20 @@
 import { ImageResponse } from "next/og";
 
+export const runtime = "edge";
+
+const base64ToArrayBuffer = (base64: string) => {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+
+  for (let i = 0; i < binary.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+
+  return bytes.buffer;
+};
+
 async function loadAssets(): Promise<
-  { name: string; data: Buffer; weight: 400 | 600; style: "normal" }[]
+  { name: string; data: ArrayBuffer; weight: 400 | 600; style: "normal" }[]
 > {
   const [
     { base64Font: normal },
@@ -16,19 +29,19 @@ async function loadAssets(): Promise<
   return [
     {
       name: "Geist",
-      data: Buffer.from(normal, "base64"),
+      data: base64ToArrayBuffer(normal),
       weight: 400 as const,
       style: "normal" as const,
     },
     {
       name: "Geist Mono",
-      data: Buffer.from(mono, "base64"),
+      data: base64ToArrayBuffer(mono),
       weight: 400 as const,
       style: "normal" as const,
     },
     {
       name: "Geist",
-      data: Buffer.from(semibold, "base64"),
+      data: base64ToArrayBuffer(semibold),
       weight: 600 as const,
       style: "normal" as const,
     },
@@ -37,15 +50,15 @@ async function loadAssets(): Promise<
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const title = searchParams.get("title");
-  const description = searchParams.get("description");
+  const title = searchParams.get("title") ?? "";
+  const description = searchParams.get("description") ?? "";
 
   const [fonts] = await Promise.all([loadAssets()]);
 
   return new ImageResponse(
     <div
       className="flex h-full w-full bg-black text-white"
-      style={{ fontFamily: "Geist Sans" }}
+      style={{ fontFamily: "Geist" }}
     >
       <div className="absolute inset-y-0 left-16 flex w-[1px] border border-stone-700 border-dashed" />
       <div className="absolute inset-y-0 right-16 flex w-[1px] border border-stone-700 border-dashed" />
@@ -58,6 +71,7 @@ export async function GET(request: Request) {
           width={48}
           xmlns="http://www.w3.org/2000/svg"
         >
+          <title>Sidekick</title>
           <rect fill="none" height="256" width="256" />
           <line
             fill="none"
