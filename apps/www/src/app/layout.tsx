@@ -1,3 +1,5 @@
+import { fonts } from "@repo/design-system/lib/fonts";
+import { cn } from "@repo/design-system/lib/utils";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import { Analytics } from "@/components/analytics";
@@ -5,8 +7,6 @@ import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LayoutProvider } from "@/hooks/use-layout";
 import { APP_URL, META_THEME_COLORS, siteConfig } from "@/lib/config";
-import { cn } from "@repo/design-system/lib/utils";
-import { fonts } from "@repo/design-system/lib/fonts";
 
 import "@/app/globals.css";
 
@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     },
   ],
   creator: "montekkundan",
-openGraph: {
+  openGraph: {
     images: [
       {
-        url: `/og?title=${encodeURIComponent(
+        url: `${APP_URL}/og?title=${encodeURIComponent(
           siteConfig.name
         )}&description=${encodeURIComponent(siteConfig.description)}`,
       },
@@ -38,7 +38,7 @@ openGraph: {
     card: "summary_large_image",
     images: [
       {
-        url: `/og?title=${encodeURIComponent(
+        url: `${APP_URL}/og?title=${encodeURIComponent(
           siteConfig.name
         )}&description=${encodeURIComponent(siteConfig.description)}`,
       },
