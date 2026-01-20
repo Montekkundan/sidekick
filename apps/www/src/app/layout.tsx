@@ -26,23 +26,15 @@ export const metadata: Metadata = {
   ],
   creator: "montekkundan",
   openGraph: {
-    images: [
-      {
-        url: `${APP_URL}/og?title=${encodeURIComponent(
-          siteConfig.name
-        )}&description=${encodeURIComponent(siteConfig.description)}`,
-      },
-    ],
+    type: "website",
+    url: APP_URL,
+    title: siteConfig.name,
+    description: siteConfig.description,
   },
   twitter: {
     card: "summary_large_image",
-    images: [
-      {
-        url: `${APP_URL}/og?title=${encodeURIComponent(
-          siteConfig.name
-        )}&description=${encodeURIComponent(siteConfig.description)}`,
-      },
-    ],
+    title: siteConfig.name,
+    description: siteConfig.description,
   },
   icons: {
     icon: "/favicon.ico",
