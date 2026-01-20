@@ -7,60 +7,12 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const runtime = "edge";
 
-const base64ToArrayBuffer = (base64: string) => {
-  const binary = atob(base64);
-  const bytes = new Uint8Array(binary.length);
-
-  for (let i = 0; i < binary.length; i += 1) {
-    bytes[i] = binary.charCodeAt(i);
-  }
-
-  return bytes.buffer;
-};
-
-async function loadAssets(): Promise<
-  { name: string; data: ArrayBuffer; weight: 400 | 600; style: "normal" }[]
-> {
-  const [
-    { base64Font: normal },
-    { base64Font: mono },
-    { base64Font: semibold },
-  ] = await Promise.all([
-    import("./og/geist-regular-otf.json").then((mod) => mod.default || mod),
-    import("./og/geistmono-regular-otf.json").then((mod) => mod.default || mod),
-    import("./og/geist-semibold-otf.json").then((mod) => mod.default || mod),
-  ]);
-
-  return [
-    {
-      name: "Geist",
-      data: base64ToArrayBuffer(normal),
-      weight: 400 as const,
-      style: "normal" as const,
-    },
-    {
-      name: "Geist Mono",
-      data: base64ToArrayBuffer(mono),
-      weight: 400 as const,
-      style: "normal" as const,
-    },
-    {
-      name: "Geist",
-      data: base64ToArrayBuffer(semibold),
-      weight: 600 as const,
-      style: "normal" as const,
-    },
-  ];
-}
-
-export default async function Image() {
-  const [fonts] = await Promise.all([loadAssets()]);
-
+export default function Image() {
   return new ImageResponse(
     (
       <div
         className="flex h-full w-full bg-black text-white"
-        style={{ fontFamily: "Geist" }}
+        style={{ fontFamily: "ui-sans-serif, system-ui, sans-serif" }}
       >
         <div className="absolute inset-y-0 left-16 flex w-[1px] border border-stone-700 border-dashed" />
         <div className="absolute inset-y-0 right-16 flex w-[1px] border border-stone-700 border-dashed" />
@@ -123,9 +75,6 @@ export default async function Image() {
         </div>
       </div>
     ),
-    {
-      ...size,
-      fonts,
-    }
+    size
   );
 }
