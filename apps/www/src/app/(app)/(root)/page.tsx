@@ -24,23 +24,14 @@ export const metadata: Metadata = {
   title,
   description,
   openGraph: {
-    images: [
-      {
-        url: `/og?title=${encodeURIComponent(
-          title
-        )}&description=${encodeURIComponent(description)}`,
-      },
-    ],
+    title,
+    description,
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    images: [
-      {
-        url: `/og?title=${encodeURIComponent(
-          title
-        )}&description=${encodeURIComponent(description)}`,
-      },
-    ],
+    title,
+    description,
   },
 };
 
